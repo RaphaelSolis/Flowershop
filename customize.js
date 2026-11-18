@@ -150,12 +150,6 @@ function updateCustomization() {
       "</td><td>PHP " +
       money(addon.quantity * addon.unitPrice) +
       "</td></tr>";
-  const messageInput = document.getElementById("personalized-message");
-  const include = document.querySelector('[name="message-option"]:checked').value === "include";
-  messageInput.disabled = !include;
-  if (include && messageInput.value.trim())
-    rows +=
-      '<tr><td>Message</td><td colspan="2">' + escapeHTML(messageInput.value.trim()) + "</td></tr>";
   document.getElementById("custom-summary-rows").innerHTML = rows;
   document.getElementById("summary-total").textContent = "PHP " + money(customBouquetTotal());
   document.querySelector("[data-add-custom]").disabled = !flowers.length;
@@ -167,17 +161,12 @@ function addCustomizedBouquet() {
     return;
   }
   const wrapping = selectedWrapping();
-  const message =
-    document.querySelector('[name="message-option"]:checked').value === "include"
-      ? document.getElementById("personalized-message").value.trim()
-      : "";
   const extras = Object.values(customization.addons);
   const options = {
     flowers: flowers,
     wrappingMode: customization.wrappingMode,
     wrapping: wrapping,
     addons: extras,
-    message: message,
   };
   const details =
     flowers
@@ -191,11 +180,10 @@ function addCustomizedBouquet() {
       .map(function (addon) {
         return " · " + addon.quantity + " " + addon.name + " (" + addon.details + ")";
       })
-      .join("") +
-    (message ? " · Message: " + message : "");
+      .join("");
   const line = {
     productId: "custom-bouquet",
-    name: "Your Custom Bouquet",
+    name: "Customize Flowers",
     image: customFlowers[flowers[0].index].image,
     unitPrice: customBouquetTotal(),
     quantity: 1,
@@ -257,8 +245,5 @@ document.addEventListener("change", function (event) {
     );
     if (!customization.flowers[event.target.dataset.flowerQuantity]) delete customization.flowers[event.target.dataset.flowerQuantity];
     updateCustomization();
-  } else if (event.target.name === "message-option") updateCustomization();
-});
-document.addEventListener("input", function (event) {
-  if (page === "customize" && event.target.id === "personalized-message") updateCustomization();
+  }
 });

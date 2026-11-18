@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#577438" />
     <title>The Petal Haus | Checkout</title>
-    <link rel="stylesheet" href="styles.css?v=20261118" />
-    <link rel="stylesheet" href="design-spec.css?v=20261118-profile-photo" />
-    <script src="settings.js?v=20261118" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20261118-order-options" />
+    <link rel="stylesheet" href="design-spec.css?v=20261118-order-options" />
+    <script src="settings.js?v=20261118-order-options" defer></script>
     <script src="products.js?v=20261118-3" defer></script>
-    <script src="store.js?v=20261118-account-fix" defer></script>
-    <script src="app.js?v=20261118-profile-photo" defer></script>
-    <script src="shop.js" defer></script>
-    <script src="customize.js" defer></script>
-    <script src="pages.js?v=20261118-profile-photo" defer></script>
+    <script src="store.js?v=20261118-order-options" defer></script>
+    <script src="app.js?v=20261118-order-options" defer></script>
+    <script src="shop.js?v=20261118-order-options" defer></script>
+    <script src="customize.js?v=20261118-order-options" defer></script>
+    <script src="pages.js?v=20261118-order-options" defer></script>
   </head>
   <body data-page="checkout">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -137,7 +137,12 @@
         </section>
         <section class="content-page">
           <h1 class="floral-heading">CHECKOUT <img class="heading-flower" src="assets/home/petal-green.png" alt="" /></h1>
-          <div class="checkout-layout">
+          <div id="checkout-account-note" role="status" hidden>
+            <p>Create a profile or sign in before placing your order. Your cart will be saved.</p>
+            <a class="pill" href="Log-Sign/SignUp.html?next=checkout">Create Profile</a>
+            <a class="text-link" href="Log-Sign/LoginPage.html?next=checkout">Sign in</a>
+          </div>
+          <div class="checkout-layout" id="checkout-details" hidden>
             <form id="checkout-form" class="standard-form">
               <h2>Billing Details</h2>
               <h3 class="section-bar">Contact Information</h3>
@@ -175,7 +180,7 @@
               </section>
               <section class="delivery-section"><h3 class="section-bar">Delivery Type</h3><p><strong>Same day delivery</strong></p><p>Delivery fee: <span>Included</span></p></section>
               <p class="form-error" id="checkout-error" role="alert"></p>
-              <button class="pill" id="pay-button" type="submit" form="checkout-form">Place Order</button>
+              <button class="pill" id="pay-button" type="submit" form="checkout-form" disabled>Place Order</button>
             </aside>
           </div>
         </section>
@@ -192,7 +197,7 @@
             <h3 class="follow-title">Follow Us!</h3>
             <div class="social-links">
               <a
-                href="https://www.facebook.com/"
+                data-store-social="facebook" href="https://www.facebook.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -200,7 +205,7 @@
                 <img src="assets/footer/fb.png" alt="" />
               </a>
               <a
-                href="https://www.instagram.com/"
+                data-store-social="instagram" href="https://www.instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -208,7 +213,7 @@
                 <img src="assets/footer/ig.png" alt="" />
               </a>
               <a
-                href="https://x.com/"
+                data-store-social="x" href="https://x.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="X"

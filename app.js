@@ -82,6 +82,12 @@ function mapsLink() {
   );
 }
 function initializeContactLinks() {
+  for (const link of document.querySelectorAll("[data-store-social]")) {
+    link.href = SHOP_SETTINGS.socialLinks[link.dataset.storeSocial];
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.title = "Open " + link.getAttribute("aria-label");
+  }
   for (const link of document.querySelectorAll("[data-store-map]"))
     link.href = mapsLink();
   for (const link of document.querySelectorAll("[data-store-phone]")) {

@@ -92,6 +92,11 @@ const PetalStore = (function () {
   function logout() {
     write("petal-session", null);
   }
+  function hasProfile() {
+    const user = session();
+    const profiles = read("petal-profiles", []);
+    return !!user && Array.isArray(profiles) && profiles.some(profile => profile.id === user.id);
+  }
   function round(value) {
     return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
   }
@@ -145,7 +150,11 @@ const PetalStore = (function () {
       write(key, items);
       write("petal-haus-cart", []);
     }
-    return Array.isArray(items) ? items.filter(validLine) : [];
+    return Array.isArray(items) ? items.filter(validLine).map(function (item) {
+      return item.productId.startsWith("custom-")
+        ? { ...item, name: "Customize Flowers" }
+        : item;
+    }) : [];
   }
   function saveCart(items) {
     write("petal-cart:" + owner(), items.filter(validLine));
@@ -181,11 +190,6 @@ const PetalStore = (function () {
     if (!line) return;
     if (changes.quantity !== undefined)
       line.quantity = quantity(changes.quantity);
-    if (changes.unitPrice !== undefined) {
-      const price = Number(changes.unitPrice);
-      if (Number.isFinite(price) && price > 0 && price <= 1000000)
-        line.unitPrice = round(price);
-    }
     saveCart(lines);
   }
   function removeLine(lineId) {
@@ -305,6 +309,8 @@ const PetalStore = (function () {
     });
   }
   function placeOrder(customer, payment) {
+    if (!hasProfile())
+      throw new Error("Create a profile or sign in before placing an order.");
     for (const field of [
       "name",
       "email",
@@ -467,6 +473,7 @@ const PetalStore = (function () {
     owner,
     signIn,
     logout,
+    hasProfile,
     round,
     quantity,
     getCart,

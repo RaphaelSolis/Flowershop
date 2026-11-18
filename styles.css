@@ -981,51 +981,6 @@ p {
   font-size: 20rem;
   color: var(--yellow);
 }
-.message-step {
-  padding-bottom: 58rem;
-}
-.message-options {
-  display: flex;
-  flex-direction: column;
-  gap: 16rem;
-  font-size: 30rem;
-  margin: 34rem 25rem 30rem;
-}
-.message-options label {
-  display: flex;
-  gap: 12rem;
-  align-items: center;
-}
-.message-options input {
-  appearance: none;
-  border: 5rem solid var(--yellow);
-  border-radius: 50%;
-  width: 29rem;
-  height: 29rem;
-  margin: 0;
-  flex: none;
-}
-.message-options input:checked {
-  background: var(--yellow);
-}
-.message-step textarea {
-  display: block;
-  resize: vertical;
-  width: 83%;
-  min-height: 186rem;
-  border: 0;
-  border-radius: 12rem;
-  margin: auto;
-  background: var(--yellow);
-  padding: 20rem;
-  color: var(--green);
-  font:
-    20rem/1.5 Montserrat,
-    sans-serif;
-}
-.message-step textarea:disabled {
-  opacity: 0.8;
-}
 .summary-step {
   margin-top: 105rem;
   margin-bottom: 0;
@@ -1892,22 +1847,6 @@ They replace selected desktop sizes and stack content to fit a phone.
   }
   .popover-close {
     font-size: 15rem;
-  }
-  .message-options {
-    font-size: 21rem;
-    gap: 13rem;
-    margin: 22rem 3rem;
-  }
-  .message-options input {
-    width: 20rem;
-    height: 20rem;
-    border-width: 3rem;
-  }
-  .message-step textarea {
-    width: 94%;
-    min-height: 130rem;
-    font-size: 16rem;
-    padding: 14rem;
   }
   .summary-step {
     margin-top: 45rem;

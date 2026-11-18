@@ -11,17 +11,17 @@
     />
     <title>The Petal Haus | Customize Yours</title>
     <!-- styles.css controls colors, fonts, spacing, and phone layouts. -->
-    <link rel="stylesheet" href="styles.css?v=20261118" />
-    <link rel="stylesheet" href="design-spec.css?v=20261118-profile-photo" />
+    <link rel="stylesheet" href="styles.css?v=20261118-order-options" />
+    <link rel="stylesheet" href="design-spec.css?v=20261118-order-options" />
     <!-- defer means: finish reading this HTML before running app.js. -->
     <!-- products.js loads the price list first; app.js then makes buttons work. -->
-    <script src="settings.js?v=20261118" defer></script>
+    <script src="settings.js?v=20261118-order-options" defer></script>
     <script src="products.js?v=20261118-3" defer></script>
-    <script src="store.js?v=20261118-account-fix" defer></script>
-    <script src="app.js?v=20261118-profile-photo" defer></script>
-    <script src="shop.js" defer></script>
-    <script src="customize.js" defer></script>
-    <script src="pages.js?v=20261118-profile-photo" defer></script>
+    <script src="store.js?v=20261118-order-options" defer></script>
+    <script src="app.js?v=20261118-order-options" defer></script>
+    <script src="shop.js?v=20261118-order-options" defer></script>
+    <script src="customize.js?v=20261118-order-options" defer></script>
+    <script src="pages.js?v=20261118-order-options" defer></script>
   </head>
   <body data-page="customize">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -197,7 +197,7 @@
                   data-choice="flower"
                   data-index="0"
                   type="button"
-                ><span class="choice-photo"><img alt="Tulip — 120 PHP" loading="lazy" src="assets/customize/cost-1.png" /></span><span class="choice-caption"><strong>Tulip</strong>120 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="1" data-flower-index="0" aria-label="Add one Tulip stem">+</button><input type="number" min="0" max="99" step="1" data-flower-quantity="0" aria-label="Tulip stem quantity" /><button type="button" data-flower-adjust="-1" data-flower-index="0" aria-label="Remove one Tulip stem">−</button></div></div>
+                ><span class="choice-photo"><img alt="Tulip — 120 PHP" loading="lazy" src="assets/customize/cost-1.png" /></span><span class="choice-caption"><strong>Tulip</strong>120 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="-1" data-flower-index="0" aria-label="Remove one Tulip stem">−</button><input type="number" min="0" max="99" step="1" data-flower-quantity="0" aria-label="Tulip stem quantity" /><button type="button" data-flower-adjust="1" data-flower-index="0" aria-label="Add one Tulip stem">+</button></div></div>
 <div class="flower-choice"><button
                   aria-label="Daisy, 80 PHP"
                   aria-pressed="false"
@@ -205,7 +205,7 @@
                   data-choice="flower"
                   data-index="1"
                   type="button"
-                ><span class="choice-photo"><img alt="Daisy — 80 PHP" loading="lazy" src="assets/customize/cost-2.png" /></span><span class="choice-caption"><strong>Daisy</strong>80 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="1" data-flower-index="1" aria-label="Add one Daisy stem">+</button><input type="number" min="0" max="99" step="1" data-flower-quantity="1" aria-label="Daisy stem quantity" /><button type="button" data-flower-adjust="-1" data-flower-index="1" aria-label="Remove one Daisy stem">−</button></div></div>
+                ><span class="choice-photo"><img alt="Daisy — 80 PHP" loading="lazy" src="assets/customize/cost-2.png" /></span><span class="choice-caption"><strong>Daisy</strong>80 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="-1" data-flower-index="1" aria-label="Remove one Daisy stem">−</button><input type="number" min="0" max="99" step="1" data-flower-quantity="1" aria-label="Daisy stem quantity" /><button type="button" data-flower-adjust="1" data-flower-index="1" aria-label="Add one Daisy stem">+</button></div></div>
 <div class="flower-choice"><button
                   aria-label="Sunflower, 100 PHP"
                   aria-pressed="true"
@@ -213,7 +213,7 @@
                   data-choice="flower"
                   data-index="2"
                   type="button"
-                ><span class="choice-photo"><img alt="Sunflower — 100 PHP" loading="lazy" src="assets/customize/cost-3.png" /></span><span class="choice-caption"><strong>Sunflower</strong>100 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="1" data-flower-index="2" aria-label="Add one Sunflower stem">+</button><input type="number" min="0" max="99" step="1" data-flower-quantity="2" aria-label="Sunflower stem quantity" /><button type="button" data-flower-adjust="-1" data-flower-index="2" aria-label="Remove one Sunflower stem">−</button></div></div>
+                ><span class="choice-photo"><img alt="Sunflower — 100 PHP" loading="lazy" src="assets/customize/cost-3.png" /></span><span class="choice-caption"><strong>Sunflower</strong>100 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="-1" data-flower-index="2" aria-label="Remove one Sunflower stem">−</button><input type="number" min="0" max="99" step="1" data-flower-quantity="2" aria-label="Sunflower stem quantity" /><button type="button" data-flower-adjust="1" data-flower-index="2" aria-label="Add one Sunflower stem">+</button></div></div>
 <div class="flower-choice"><button
                   aria-label="Jasmine, 70 PHP"
                   aria-pressed="false"
@@ -221,7 +221,7 @@
                   data-choice="flower"
                   data-index="3"
                   type="button"
-                ><span class="choice-photo"><img alt="Jasmine — 70 PHP" loading="lazy" src="assets/customize/cost-4.png" /></span><span class="choice-caption"><strong>Jasmine</strong>70 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="1" data-flower-index="3" aria-label="Add one Jasmine stem">+</button><input type="number" min="0" max="99" step="1" data-flower-quantity="3" aria-label="Jasmine stem quantity" /><button type="button" data-flower-adjust="-1" data-flower-index="3" aria-label="Remove one Jasmine stem">−</button></div></div>
+                ><span class="choice-photo"><img alt="Jasmine — 70 PHP" loading="lazy" src="assets/customize/cost-4.png" /></span><span class="choice-caption"><strong>Jasmine</strong>70 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="-1" data-flower-index="3" aria-label="Remove one Jasmine stem">−</button><input type="number" min="0" max="99" step="1" data-flower-quantity="3" aria-label="Jasmine stem quantity" /><button type="button" data-flower-adjust="1" data-flower-index="3" aria-label="Add one Jasmine stem">+</button></div></div>
 <div class="flower-choice"><button
                   aria-label="Hibiscus, 60 PHP"
                   aria-pressed="false"
@@ -229,7 +229,7 @@
                   data-choice="flower"
                   data-index="4"
                   type="button"
-                ><span class="choice-photo"><img alt="Hibiscus — 60 PHP" loading="lazy" src="assets/customize/cost-5.png" /></span><span class="choice-caption"><strong>Hibiscus</strong>60 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="1" data-flower-index="4" aria-label="Add one Hibiscus stem">+</button><input type="number" min="0" max="99" step="1" data-flower-quantity="4" aria-label="Hibiscus stem quantity" /><button type="button" data-flower-adjust="-1" data-flower-index="4" aria-label="Remove one Hibiscus stem">−</button></div></div>
+                ><span class="choice-photo"><img alt="Hibiscus — 60 PHP" loading="lazy" src="assets/customize/cost-5.png" /></span><span class="choice-caption"><strong>Hibiscus</strong>60 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="-1" data-flower-index="4" aria-label="Remove one Hibiscus stem">−</button><input type="number" min="0" max="99" step="1" data-flower-quantity="4" aria-label="Hibiscus stem quantity" /><button type="button" data-flower-adjust="1" data-flower-index="4" aria-label="Add one Hibiscus stem">+</button></div></div>
 <div class="flower-choice"><button
                   aria-label="Lily, 150 PHP"
                   aria-pressed="false"
@@ -237,7 +237,7 @@
                   data-choice="flower"
                   data-index="5"
                   type="button"
-                ><span class="choice-photo"><img alt="Lily — 150 PHP" loading="lazy" src="assets/customize/cost-6.png" /></span><span class="choice-caption"><strong>Lily</strong>150 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="1" data-flower-index="5" aria-label="Add one Lily stem">+</button><input type="number" min="0" max="99" step="1" data-flower-quantity="5" aria-label="Lily stem quantity" /><button type="button" data-flower-adjust="-1" data-flower-index="5" aria-label="Remove one Lily stem">−</button></div></div>
+                ><span class="choice-photo"><img alt="Lily — 150 PHP" loading="lazy" src="assets/customize/cost-6.png" /></span><span class="choice-caption"><strong>Lily</strong>150 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="-1" data-flower-index="5" aria-label="Remove one Lily stem">−</button><input type="number" min="0" max="99" step="1" data-flower-quantity="5" aria-label="Lily stem quantity" /><button type="button" data-flower-adjust="1" data-flower-index="5" aria-label="Add one Lily stem">+</button></div></div>
 <div class="flower-choice"><button
                   aria-label="Peony, 150 PHP"
                   aria-pressed="false"
@@ -245,7 +245,7 @@
                   data-choice="flower"
                   data-index="6"
                   type="button"
-                ><span class="choice-photo"><img alt="Peony — 150 PHP" loading="lazy" src="assets/customize/cost-7.png" /></span><span class="choice-caption"><strong>Peony</strong>150 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="1" data-flower-index="6" aria-label="Add one Peony stem">+</button><input type="number" min="0" max="99" step="1" data-flower-quantity="6" aria-label="Peony stem quantity" /><button type="button" data-flower-adjust="-1" data-flower-index="6" aria-label="Remove one Peony stem">−</button></div></div>
+                ><span class="choice-photo"><img alt="Peony — 150 PHP" loading="lazy" src="assets/customize/cost-7.png" /></span><span class="choice-caption"><strong>Peony</strong>150 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="-1" data-flower-index="6" aria-label="Remove one Peony stem">−</button><input type="number" min="0" max="99" step="1" data-flower-quantity="6" aria-label="Peony stem quantity" /><button type="button" data-flower-adjust="1" data-flower-index="6" aria-label="Add one Peony stem">+</button></div></div>
 <div class="flower-choice"><button
                   aria-label="Rose, 150 PHP"
                   aria-pressed="false"
@@ -253,7 +253,7 @@
                   data-choice="flower"
                   data-index="7"
                   type="button"
-                ><span class="choice-photo"><img alt="Rose — 150 PHP" loading="lazy" src="assets/customize/cost-8.png" /></span><span class="choice-caption"><strong>Rose</strong>150 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="1" data-flower-index="7" aria-label="Add one Rose stem">+</button><input type="number" min="0" max="99" step="1" data-flower-quantity="7" aria-label="Rose stem quantity" /><button type="button" data-flower-adjust="-1" data-flower-index="7" aria-label="Remove one Rose stem">−</button></div></div>
+                ><span class="choice-photo"><img alt="Rose — 150 PHP" loading="lazy" src="assets/customize/cost-8.png" /></span><span class="choice-caption"><strong>Rose</strong>150 PHP</span></button><div class="stem-quantity"><button type="button" data-flower-adjust="-1" data-flower-index="7" aria-label="Remove one Rose stem">−</button><input type="number" min="0" max="99" step="1" data-flower-quantity="7" aria-label="Rose stem quantity" /><button type="button" data-flower-adjust="1" data-flower-index="7" aria-label="Add one Rose stem">+</button></div></div>
               </div>
               <div aria-live="polite" id="selected-flowers"></div>
             </section>
@@ -444,24 +444,6 @@
               </div>
               <div id="selected-addons"></div>
             </section>
-            <details class="builder-step message-step">
-              <summary class="step-heading">Personalized Message</summary>
-              <div class="message-options">
-                <label>
-                  <input checked name="message-option" type="radio" value="none" />
-                  None
-                </label>
-                <label>
-                  <input name="message-option" type="radio" value="include" />
-                  Include personalized message
-                </label>
-              </div>
-              <textarea
-                aria-label="Personalized message"
-                id="personalized-message"
-                maxlength="500"
-              ></textarea>
-            </details>
             <section aria-labelledby="summary-heading" class="builder-step summary-step">
               <h3 id="summary-heading">SUMMARY</h3>
               <table class="summary-table">
@@ -501,7 +483,7 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
             <h3 class="follow-title">Follow Us!</h3>
             <div class="social-links">
               <a
-                href="https://www.facebook.com/"
+                data-store-social="facebook" href="https://www.facebook.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -509,14 +491,14 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
                 <img src="assets/footer/fb.png" alt="" />
               </a>
               <a
-                href="https://www.instagram.com/"
+                data-store-social="instagram" href="https://www.instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
               >
                 <img src="assets/footer/ig.png" alt="" />
               </a>
-              <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X">
+              <a data-store-social="x" href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X">
                 <img src="assets/footer/x.png" alt="" />
               </a>
             </div>

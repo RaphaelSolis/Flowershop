@@ -3,6 +3,13 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.querySelector("form");
   const isSignup = !!form.elements.namedItem("fname");
+  const returnToCheckout = new URLSearchParams(location.search).get("next") === "checkout";
+  if (returnToCheckout) {
+    document.getElementById("account-status").textContent =
+      "Create a profile or sign in to continue to checkout. Your cart is saved.";
+    for (const link of document.querySelectorAll(".signup a, .account-switch a"))
+      link.href = link.getAttribute("href") + "?next=checkout";
+  }
   let submitting = false;
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -41,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
       else saved.push(user);
       PetalStore.write("petal-profiles", saved);
       PetalStore.write("petal-session", user);
-      location.href = "../index.html";
+      location.href = returnToCheckout ? "../checkout.html" : "../index.html";
     } catch (error) {
       console.error("Account " + (isSignup ? "creation" : "sign-in") + " failed:", error);
       status.textContent = "Could not " + (isSignup ? "create your account" : "sign in") + ". Please refresh the page and try again.";

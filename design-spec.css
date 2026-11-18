@@ -59,7 +59,6 @@
 .choice-caption { display: block; background: var(--yellow); border-radius: 17.4rem; padding: 12rem 6rem; color: var(--green); font: 400 23rem/1.2 "EB Garamond", serif; }
 .choice-caption strong { display: block; font-size: 30.8rem; }
 .color-swatch, .option-color-row button { border-color: #000; }
-.message-step textarea { font-family: "EB Garamond", serif; border-radius: 17.4rem; }
 .summary-step h3, .summary-table th, .summary-total { color: var(--yellow); font: italic 700 41.6rem/1.2 "EB Garamond", serif; }
 .summary-table { color: var(--yellow); font-size: 29.3rem; }
 .summary-table td:first-child { font-size: 30rem; font-weight: 700; }
@@ -374,8 +373,6 @@ body[data-page="cart"] .cart-line-card { display: grid; grid-template-columns: 1
 .cart-quantity input { width: 66rem; min-height: 98rem; padding: 6rem; font-size: 40rem; background: var(--input-yellow); color: var(--deep-pink); text-align: center; border-radius: 10rem; }
 .cart-price-cell { text-align: center; min-width: 0; }
 .cart-price-cell output { color: var(--deep-pink); font-size: 43rem; }
-.cart-price-cell details { font-size: 16rem; color: var(--pink); margin-top: 15rem; }
-.cart-price-cell input { font-size: 22rem; min-height: 44rem; width: 120rem; }
 .cart-delete { border: 0; padding: 0; background: none; color: var(--input-yellow); font: 400 70rem/1 "EB Garamond",serif; }
 .cart-line-card .text-button { font-size: 18rem; }
 body[data-page="cart"] .order-sidebar { background: none; border: 0; box-shadow: none; padding: 0 20rem; text-align: right; }
@@ -524,8 +521,6 @@ body[data-page="notifications"] .content-page h1 { font-size: 66.3rem; margin-bo
   .cart-quantity input { width: 45px; min-height: 44px; font-size: 23px; }
   .cart-price-cell { grid-column: 2; }
   .cart-price-cell output { font-size: 25px; }
-  .cart-price-cell details { font-size: 14px; }
-  .cart-price-cell input { font-size: 18px; width: 110px; }
   .cart-delete { grid-column: 3; grid-row: 1; font-size: 40px; }
   body[data-page="cart"] .order-sidebar { padding: 0; }
   body[data-page="cart"] .order-sidebar h2 { font-size: 24px; }
@@ -644,9 +639,6 @@ body[data-page="feedback"] .hero-reference .hero-image { object-position: left t
 .stem-quantity input { width: 65rem; min-width: 0; border: 0; border-radius: 8rem; padding: 4rem; min-height: 26rem; background: var(--yellow); color: var(--green); font-size: 18rem; text-align: center; }
 #selected-flowers { display: none; }
 .builder-help { font-size: 20rem; margin-bottom: 25rem; }
-.builder .message-step { padding-bottom: 18rem; }
-.builder .message-step[open] { padding-bottom: 36rem; }
-.builder .message-step summary { cursor: pointer; margin-bottom: 0; }
 @media (min-width: 601px) {
   .flower-options { gap: 42rem 56rem; }
   .choice-caption { font-size: 18rem; }
@@ -695,3 +687,19 @@ body[data-page="feedback"] .hero-reference .hero-image { object-position: left t
   .cart-product-photo { height: 90px; }
   .cart-price-cell output { font-size: 22px; }
 }
+
+/* Quantity buttons use the same order in shop dialogs, the builder, and cart. */
+.product-quantity { display: flex; align-items: center; gap: 8px; }
+.product-quantity button { flex: none; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: var(--yellow); color: var(--deep-pink); font: 700 26px/1 "EB Garamond", serif; }
+.product-options-dialog .product-quantity input { width: 54px; min-width: 0; padding: 6px; text-align: center; appearance: textfield; -moz-appearance: textfield; }
+.product-quantity input::-webkit-inner-spin-button, .product-quantity input::-webkit-outer-spin-button,
+.stem-quantity input::-webkit-inner-spin-button, .stem-quantity input::-webkit-outer-spin-button,
+.cart-quantity input::-webkit-inner-spin-button, .cart-quantity input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.stem-quantity input, .cart-quantity input { appearance: textfield; -moz-appearance: textfield; }
+.social-links a { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; cursor: pointer; }
+.social-links img { width: 35rem; height: 35rem; }
+.social-links a:hover { opacity: .8; }
+.social-links a:focus-visible, .product-quantity button:focus-visible { outline: 2px solid var(--deep-pink); outline-offset: 3px; }
+#checkout-account-note { padding: 24px 0; }
+#checkout-account-note p { margin-bottom: 20px; }
+#checkout-account-note .text-link { display: inline-block; margin: 12px; }

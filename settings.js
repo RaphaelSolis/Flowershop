@@ -6,6 +6,11 @@ const SHOP_SETTINGS = {
   phone: "+631234567890", // Reference-image number; replace with the official number.
   address:
     "Golden Gate Basketball Court, Topland Ave, Las Piñas, 1747 Metro Manila",
+  socialLinks: {
+    facebook: "https://www.facebook.com/",
+    instagram: "https://www.instagram.com/",
+    x: "https://x.com/",
+  },
   chocolateFlavors: ["Classic Hazelnut", "Dark Chocolate", "White Chocolate"],
   peperoFlavors: ["Chocolate", "Almond", "Strawberry", "Cookies and Cream"],
   candleScents: ["Vanilla", "Lavender", "Rose", "Citrus"],

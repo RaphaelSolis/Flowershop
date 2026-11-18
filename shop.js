@@ -7,7 +7,8 @@ function productKind(product) {
   if (name.includes("ferrero")) return "chocolate";
   if (name.includes("pepero")) return "pepero";
   if (name.includes("candle")) return "candle";
-  if (name.includes("letter") || name.includes("card")) return "letter";
+  if (name.includes("card")) return "card";
+  if (name.includes("letter")) return "letter";
   return product.group === "gifts" || product.section === "gifts" || product.group === "addon"
     ? "gift"
     : "flower";
@@ -46,7 +47,7 @@ function openProductOptions(product, context, existing) {
   };
   const form = document.getElementById("product-options-form");
   let fields = "";
-  if (kind === "flower")
+  if (kind === "flower" && product.section !== "potted-flowers")
     fields += optionSelect(
       "Wrapper color",
       "color",
@@ -55,7 +56,7 @@ function openProductOptions(product, context, existing) {
       }),
       options.color || "Pink",
     );
-  if (kind === "flower")
+  if (kind === "flower" && product.section !== "potted-flowers")
     fields +=
       '<div class="option-color-row" role="group" aria-label="Wrapper color swatches">' +
       colors
@@ -81,11 +82,13 @@ function openProductOptions(product, context, existing) {
       kind === "chocolate" ? SHOP_SETTINGS.chocolateFlavors : SHOP_SETTINGS.peperoFlavors,
       options.flavor,
     );
+  }
+  if (kind === "chocolate") {
     fields += optionSelect(
       "Pieces per pack",
       "pieces",
-      kind === "chocolate" ? [3, 5, 8, 12] : [10, 20, 30],
-      options.pieces || (kind === "chocolate" ? 5 : 10),
+      [3, 5, 8, 12],
+      options.pieces || 5,
     );
   }
   if (kind === "candle")
@@ -104,9 +107,11 @@ function openProductOptions(product, context, existing) {
     escapeHTML(product.name) +
     '"></div><div class="option-fields">' +
     fields +
-    '<label>Quantity<input name="quantity" type="number" min="1" max="99" step="1" value="' +
+    '<label for="product-option-quantity">Quantity</label><div class="product-quantity">' +
+    '<button type="button" data-product-adjust="-1" aria-label="Decrease quantity">−</button>' +
+    '<input id="product-option-quantity" name="quantity" type="number" min="1" max="99" step="1" value="' +
     (existing?.quantity || 1) +
-    '" required></label>' +
+    '" required><button type="button" data-product-adjust="1" aria-label="Increase quantity">+</button></div>' +
     '<div class="option-total">Price: <output id="product-options-price"></output></div><p id="product-options-error" class="form-error" role="alert"></p>' +
     '<button class="pill" type="submit">' +
     (context === "addon" ? "Select add-on" : existing ? "Save changes" : "Add to Cart") +
@@ -131,7 +136,6 @@ function productUnitPrice(product, options) {
     if (product.group === "addon") return ferreroPrices[options.pieces || 5];
     return PetalStore.round((product.price * (options.pieces || 5)) / 5);
   }
-  if (kind === "pepero") return PetalStore.round((product.price * (options.pieces || 10)) / 10);
   return product.price;
 }
 function optionDetails(options) {
@@ -267,7 +271,11 @@ function initializeShop() {
 document.addEventListener("click", function (event) {
   const button = event.target.closest("button,a");
   if (!button) return;
-  if (button.dataset.optionColor) {
+  if (button.hasAttribute("data-product-adjust")) {
+    const input = document.getElementById("product-option-quantity");
+    input.value = boundedQuantity(Number(input.value) + Number(button.dataset.productAdjust), 1, 99);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  } else if (button.dataset.optionColor) {
     const form = document.getElementById("product-options-form");
     form.querySelector('[name="color"]').value = button.dataset.optionColor;
     for (const swatch of form.querySelectorAll("[data-option-color]"))

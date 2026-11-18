@@ -17,11 +17,10 @@ function renderCartPage() {
       '<p class="cart-product-details">' + escapeHTML(line.details || "") + '</p>' +
       (!PetalStore.lineAvailable(line) ? '<p class="form-error">Currently unavailable. Remove this item before checkout.</p>' : '') +
       (findProduct(line.productId) ? '<button type="button" class="text-button" data-edit-options="' + escapeHTML(line.lineId) + '">Edit options</button>' : '') + '</div>' +
-      '<div class="cart-quantity"><button type="button" data-cart-adjust="1" aria-label="Add one ' + escapeHTML(line.name) + '">+</button>' +
+      '<div class="cart-quantity"><button type="button" data-cart-adjust="-1" aria-label="Remove one ' + escapeHTML(line.name) + '">−</button>' +
       '<input type="number" min="1" max="99" step="1" value="' + line.quantity + '" data-line-quantity aria-label="Quantity for ' + escapeHTML(line.name) + '">' +
-      '<button type="button" data-cart-adjust="-1" aria-label="Remove one ' + escapeHTML(line.name) + '">−</button></div>' +
-      '<div class="cart-price-cell"><output data-line-total>₱' + money(line.unitPrice * line.quantity) + '</output>' +
-      '<details><summary>Edit unit price</summary><label class="sr-only" for="price-' + escapeHTML(line.lineId) + '">Unit price in pesos</label><input id="price-' + escapeHTML(line.lineId) + '" type="number" min="0.01" max="1000000" step="0.01" value="' + line.unitPrice + '" data-line-price></details></div>' +
+      '<button type="button" data-cart-adjust="1" aria-label="Add one ' + escapeHTML(line.name) + '">+</button></div>' +
+      '<div class="cart-price-cell"><output data-line-total>₱' + money(line.unitPrice * line.quantity) + '</output></div>' +
       '<button type="button" class="cart-delete" data-delete-line="' + escapeHTML(line.lineId) + '" aria-label="Delete ' + escapeHTML(line.name) + '">×</button></article>';
   }).join("") || '<p class="empty-state">You do not have current saved<br>products in the cart</p>';
   updateCartPageTotal();
@@ -36,16 +35,24 @@ function updateCartPageTotal() {
   document.getElementById("cart-page-total").textContent =
     "₱" + money(PetalStore.total(items));
   const proceed = document.getElementById("proceed-checkout");
+  proceed.href = PetalStore.hasProfile() ? "checkout.html" : "Log-Sign/SignUp.html?next=checkout";
   proceed.setAttribute("aria-disabled", blocked);
   proceed.tabIndex = blocked ? -1 : 0;
   document.getElementById("cart-page-note").textContent = !items.length
     ? "Add items to continue."
     : blocked
       ? "Remove unavailable items to continue."
-      : "You can edit quantities and unit prices before checkout.";
+      : !PetalStore.hasProfile()
+        ? "Create a profile or sign in before placing your order. Your cart will be saved."
+        : "You can edit quantities and product options before checkout.";
   refreshCartUI();
 }
 function renderCheckoutPage() {
+  const hasProfile = PetalStore.hasProfile();
+  document.getElementById("checkout-account-note").hidden = hasProfile;
+  document.getElementById("checkout-details").hidden = !hasProfile;
+  document.getElementById("pay-button").disabled = true;
+  if (!hasProfile) return;
   const items = PetalStore.getCart();
   document.getElementById("checkout-summary").innerHTML =
     items
@@ -80,6 +87,10 @@ let checkoutInProgress = false;
 function submitCheckout(event) {
   event.preventDefault();
   if (checkoutInProgress) return;
+  if (!PetalStore.hasProfile()) {
+    renderCheckoutPage();
+    return;
+  }
   const form = event.target;
   if (typeof form.reportValidity === "function" && !form.reportValidity())
     return;
@@ -118,7 +129,7 @@ function submitCheckout(event) {
     // Keep the confirmation visible until the customer chooses View receipt.
   } catch (error) {
     checkoutInProgress = false;
-    document.getElementById("pay-button").disabled = false;
+    document.getElementById("pay-button").disabled = !PetalStore.hasProfile();
     document.getElementById("checkout-error").textContent = error.message;
   }
 }
@@ -394,18 +405,13 @@ document.addEventListener("click", function (event) {
 });
 document.addEventListener("input", function (event) {
   const input = event.target;
-  if (
-    input.hasAttribute("data-line-quantity") ||
-    input.hasAttribute("data-line-price")
-  ) {
+  if (input.hasAttribute("data-line-quantity")) {
     const row = input.closest("[data-line-id]");
     const value = Number(input.value);
-    const valid = input.hasAttribute("data-line-quantity")
-      ? Number.isInteger(value) && value >= 1 && value <= 99
-      : Number.isFinite(value) && value > 0 && value <= 1000000;
+    const valid = Number.isInteger(value) && value >= 1 && value <= 99;
     if (!valid) {
       document.getElementById("cart-page-note").textContent =
-        "Enter a whole quantity from 1 to 99 and a positive unit price.";
+        "Enter a whole quantity from 1 to 99.";
       const proceed = document.getElementById("proceed-checkout");
       proceed.setAttribute("aria-disabled", "true");
       proceed.tabIndex = -1;
@@ -413,9 +419,7 @@ document.addEventListener("input", function (event) {
     }
     PetalStore.updateLine(
       row.dataset.lineId,
-      input.hasAttribute("data-line-quantity")
-        ? { quantity: value }
-        : { unitPrice: value },
+      { quantity: value },
     );
     const item = PetalStore.getCart().find(function (line) {
       return line.lineId === row.dataset.lineId;
