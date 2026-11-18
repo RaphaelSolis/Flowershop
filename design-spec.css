@@ -703,3 +703,14 @@ body[data-page="feedback"] .hero-reference .hero-image { object-position: left t
 #checkout-account-note { padding: 24px 0; }
 #checkout-account-note p { margin-bottom: 20px; }
 #checkout-account-note .text-link { display: inline-block; margin: 12px; }
+
+/* Feedback controls remain interactive while publishing checks order eligibility. */
+.rating-stars .rating-star { transition: color .15s ease; }
+#review-rating-value { margin-top: -45rem; text-align: center; font-style: normal; }
+#review-form.anonymous-review .form-two-columns { grid-template-columns: minmax(0, 1fr); }
+.review-account-actions { display: flex; flex-wrap: wrap; gap: 16px; }
+.review-account-actions .text-link { font-size: 20rem; text-decoration: underline; }
+@media (max-width: 700px) {
+  #review-rating-value { margin-top: -20px; }
+  .review-account-actions .text-link { font-size: 16px; }
+}

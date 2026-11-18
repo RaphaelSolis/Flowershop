@@ -300,59 +300,73 @@ function submitInquiry(event) {
 }
 function updateReviewEligibility() {
   const eligible = PetalStore.eligibleOrders();
-  document.getElementById("review-order").innerHTML =
-    '<option value="">Choose a delivered order</option>' +
-    eligible
-      .map(function (order) {
-        return (
-          '<option value="' +
-          escapeHTML(order.reference) +
-          '">' +
-          escapeHTML(order.reference) +
-          " — " +
-          escapeHTML(
-            order.items
-              .map(function (item) {
-                return item.name;
-              })
-              .join(", "),
-          ) +
-          "</option>"
-        );
-      })
-      .join("");
   const orderSelect = document.getElementById("review-order");
+  const selectedReference = orderSelect.value;
+  orderSelect.innerHTML =
+    '<option value="">Choose a delivered order</option>' +
+    eligible.map(function (order) {
+      return '<option value="' + escapeHTML(order.reference) + '">' +
+        escapeHTML(order.reference) + " — " +
+        escapeHTML(order.items.map(function (item) { return item.name; }).join(", ")) +
+        "</option>";
+    }).join("");
   orderSelect.closest("label").hidden = eligible.length <= 1;
+  orderSelect.disabled = !eligible.length;
+  orderSelect.required = eligible.length > 1;
   if (eligible.length === 1) orderSelect.value = eligible[0].reference;
-  for (const control of document.querySelectorAll(
-    "#review-form input,#review-form select,#review-form textarea,#review-submit",
-  ))
-    control.disabled = !eligible.length;
-  document.getElementById("review-eligibility").textContent = eligible.length
-    ? "Choose one of your delivered orders. One review per order."
-    : "You can leave a review after your order is delivered. Orders already reviewed cannot be reviewed again.";
+  else if (eligible.some(function (order) { return order.reference === selectedReference; }))
+    orderSelect.value = selectedReference;
+  document.getElementById("review-submit").disabled = false;
+  const hasProfile = PetalStore.hasProfile();
+  document.getElementById("review-account-actions").hidden = hasProfile;
+  document.getElementById("review-eligibility").textContent = !hasProfile
+    ? "Sign in or create a profile to submit a review for a delivered order."
+    : eligible.length
+      ? (eligible.length === 1 ? "Your delivered order is selected." : "Choose a delivered order.") + " One review per order."
+      : PetalStore.orders().some(function (order) { return order.status === "Delivered"; })
+        ? "You have already reviewed your delivered orders. Each order can be reviewed once."
+        : "You can submit a review after your order is delivered. You can choose a rating and write your review now.";
+  return eligible;
 }
 function submitBuyerReview(event) {
   event.preventDefault();
   const form = event.target;
-  if (typeof form.reportValidity === "function" && !form.reportValidity())
+  const status = document.getElementById("review-status");
+  const eligible = updateReviewEligibility();
+  if (!PetalStore.hasProfile() || !eligible.length) {
+    status.textContent = document.getElementById("review-eligibility").textContent;
     return;
+  }
+  updateReviewPresentation();
+  const rating = Number(form.querySelector('[name="rating"]:checked')?.value || 0);
+  if (!rating) {
+    status.textContent = "Choose a star rating before submitting your review.";
+    form.querySelector('[name="rating"]').focus();
+    return;
+  }
+  if (typeof form.reportValidity === "function" && !form.reportValidity()) {
+    status.textContent = "Complete the required fields and enter a valid email address.";
+    return;
+  }
   try {
     PetalStore.submitReview(
-      formValue(form, "reference"),
-      Number(formValue(form, "rating")),
-      formValue(form, "message"),
+      formValue(form, "reference"), rating, formValue(form, "message"),
       { name: formValue(form, "reviewName"), anonymous: form.elements.namedItem("anonymous").checked },
     );
-    document.getElementById("review-status").textContent =
-      "Your review is now displayed below and on the home page.";
+    status.textContent = "Your review is now displayed below and on the home page.";
     form.reset();
+    const user = PetalStore.session();
+    if (user) {
+      form.elements.namedItem("reviewName").value = user.name;
+      form.elements.namedItem("reviewEmail").value = user.email;
+    }
     updateReviewEligibility();
     updateReviewPresentation();
     renderPublicReviews();
     refreshCartUI();
+    showSuccess("Thank you! Your review has been submitted.", "feedback.html#published-reviews", "View reviews");
   } catch (error) {
-    document.getElementById("review-status").textContent = error.message;
+    status.textContent = error.message;
   }
 }
 function initializePages() {
@@ -463,13 +477,22 @@ function rememberSearch(value) {
 function updateReviewPresentation() {
   const form = document.getElementById("review-form");
   if (!form) return;
-  const message = formValue(form, "message");
+  const message = form.elements.namedItem("message").value;
   document.getElementById("review-character-count").textContent = message.length + "/1000 characters";
-  const rating = Number(formValue(form, "rating")) || 0;
+  const rating = Number(form.querySelector('[name="rating"]:checked')?.value || 0);
   for (const star of form.querySelectorAll(".rating-star")) {
     const radio = star.querySelector("input");
     star.classList.toggle("selected", Number(radio.value) <= rating);
   }
+  document.getElementById("review-rating-value").textContent = rating
+    ? rating + " out of 5 stars"
+    : "Choose a star rating";
+  const anonymous = form.elements.namedItem("anonymous").checked;
+  const nameInput = form.elements.namedItem("reviewName");
+  nameInput.required = !anonymous;
+  nameInput.disabled = anonymous;
+  nameInput.closest("label").hidden = anonymous;
+  form.classList.toggle("anonymous-review", anonymous);
 }
 function initializeProfile() {
   const user = PetalStore.session();
