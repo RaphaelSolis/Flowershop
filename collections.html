@@ -1,0 +1,1577 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- PAGE SETUP: browser title, fonts/styles, and button behavior. -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#577438" />
+    <meta
+      name="description"
+      content="The Petal Haus — flowers for every story and every occasion. Explore our blooms or create your own bouquet."
+    />
+    <title>The Petal Haus | Shop by Collections</title>
+    <!-- styles.css controls colors, fonts, spacing, and phone layouts. -->
+    <link rel="stylesheet" href="styles.css?v=20261118" />
+    <link rel="stylesheet" href="design-spec.css?v=20261118-profile-photo" />
+    <!-- defer means: finish reading this HTML before running app.js. -->
+    <!-- products.js loads the price list first; app.js then makes buttons work. -->
+    <script src="settings.js?v=20261118" defer></script>
+    <script src="products.js?v=20261118-3" defer></script>
+    <script src="store.js?v=20261118-account-fix" defer></script>
+    <script src="app.js?v=20261118-profile-photo" defer></script>
+    <script src="shop.js" defer></script>
+    <script src="customize.js" defer></script>
+    <script src="pages.js?v=20261118-profile-photo" defer></script>
+  </head>
+  <body data-page="collections">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- PAGE CONTENT: edit the visible words and photos below. -->
+    <div id="site">
+      <!-- 1. TOP MENU: logo, page links, search, cart, and phone menu. -->
+      <header class="site-header">
+        <a href="index.html" class="brand" aria-label="The Petal Haus home">
+          <img src="assets/logo.png" alt="The Petal Haus" />
+        </a>
+        <a href="Log-Sign/LoginPage.html" class="profile-link" aria-label="Log in">
+          <img src="assets/home/profile.png" alt="" />
+        </a>
+        <nav class="main-nav" id="main-nav" aria-label="Main navigation">
+          <a class="nav-link" href="index.html">
+            <img src="assets/home/home.png" alt="" />
+            Home
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <div class="shop-menu">
+            <button
+              class="nav-link active"
+              type="button"
+              aria-expanded="false"
+              aria-controls="shop-dropdown"
+              data-shop-menu=""
+            >
+              <img src="assets/home/flower.png" alt="" />
+              Shop
+            </button>
+            <div class="shop-dropdown" id="shop-dropdown">
+              <a href="collections.html">
+                <img src="assets/home/petal-green.png" alt="" />
+                Shop by Collection
+              </a>
+              <a href="occasions.html">
+                <img src="assets/home/petal-green.png" alt="" />
+                Shop by Occasions
+              </a>
+              <a href="customize.html">
+                <img src="assets/home/petal-green.png" alt="" />
+                Customized Yours
+              </a>
+            </div>
+          </div>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="contact.html">
+            <img src="assets/home/tele.png" alt="" />
+            Contact Us
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="about.html">
+            <img src="assets/home/info.png" alt="" />
+            About Us
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="gallery.html">
+            <img src="assets/home/gal.png" alt="" />
+            Gallery
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="feedback.html">
+            <img src="assets/home/star.png" alt="" />
+            Feedback
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a data-logout="" class="nav-link" href="Log-Sign/LoginPage.html">
+            <img src="assets/home/out.png" alt="" />
+            Logout
+          </a>
+        </nav>
+        <div class="header-actions">
+          <button class="icon-button" type="button" aria-label="Search flowers" data-search="">
+            <img src="assets/home/search.png" alt="" />
+          </button>
+          <a href="cart.html" data-cart="" aria-label="Open my cart" class="icon-button">
+            <img src="assets/home/cart.png" alt="" />
+            <span class="cart-count" data-cart-count=""></span>
+          </a>
+          <a href="notifications.html" aria-label="Store announcements" class="icon-button">
+            <img src="assets/home/notif.png" alt="" />
+            <span class="notification-dot"></span>
+          </a>
+        </div>
+        <button
+          class="mobile-menu"
+          type="button"
+          aria-controls="main-nav"
+          aria-expanded="false"
+          aria-label="Toggle menu"
+          data-mobile-menu=""
+        >
+          ☰
+        </button>
+      </header>
+      <!-- 2. MAIN PAGE: each HTML file has its own content here. -->
+      <main id="main">
+        <!-- FLOWER BANNER: edit the greeting, heading, tagline, and photo here. -->
+        <section class="hero hero-collections" aria-labelledby="hero-title">
+          <img
+            class="hero-image"
+            src="assets/banners/shop coll.png"
+            alt="Vibrant pink peonies"
+            fetchpriority="high"
+          />
+          <div class="hero-copy">
+            <h1 class="hero-title" id="hero-title">SHOP</h1>
+            <p class="hero-heading">
+              Timeless Blooms,
+              <br />
+              Lasting Memories
+            </p>
+            <p class="hero-tagline">Elegant flowers that make every moment unforgettable.</p>
+          </div>
+        </section>
+        <section class="category-selector" aria-labelledby="collections-heading">
+          <h2 class="section-heading" id="collections-heading">
+            SHOP BY COLLECTIONS
+            <img class="floret" src="assets/home/petal-green.png" alt="" />
+          </h2>
+          <div class="category-grid">
+            <a class="category-link" href="collections.html#flower">
+              <span class="category-label">Flower</span>
+              <img src="assets/home/coll-1.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="collections.html#bouquet">
+              <span class="category-label">Bouquet</span>
+              <img src="assets/home/coll-2.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="collections.html#new-arrival">
+              <span class="category-label">New Arrivals</span>
+              <img src="assets/home/coll-3.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="collections.html#best-sellers">
+              <span class="category-label">Best Sellers</span>
+              <img src="assets/home/coll-4.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="collections.html#potted-flowers">
+              <span class="category-label">Potted Flowers</span>
+              <img src="assets/home/coll-5.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="collections.html#gifts">
+              <span class="category-label">Gifts</span>
+              <img src="assets/home/coll-6.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="customize.html">
+              <span class="category-label">Customized Yours</span>
+              <img src="assets/home/coll-7.png" alt="" loading="lazy" />
+            </a>
+          </div>
+          <div class="selector-actions">
+            <a class="pill" href="occasions.html">SHOP BY OCCASIONS</a>
+            <a href="cart.html" data-cart="" class="pill">MY CART</a>
+          </div>
+        </section>
+        <!-- PRODUCT LISTS: photos and Add to Cart buttons. app.js stores cart prices. -->
+        <div class="catalog">
+          <button hidden data-show-all="" type="button" class="pill green" id="show-all-sections">
+            Show all sections
+          </button>
+          <section class="product-section" id="flower" aria-labelledby="flower-title">
+            <div class="product-section-heading">
+              <h2 id="flower-title">FLOWER</h2>
+              <button type="button" class="pill green see-more" data-section="flower">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="flower-1">
+                  <button
+                    aria-label="Configure Tulip"
+                    data-configure="flower-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/flo-1.png"
+                          alt="Tulip — 120 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Tulip</h3>
+                        <p>120 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="flower-1"
+                    aria-label="Add Tulip to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="flower-2">
+                  <button
+                    aria-label="Configure Daisy"
+                    data-configure="flower-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/flo-2.png"
+                          alt="Daisy — 80 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Daisy</h3>
+                        <p>80 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="flower-2"
+                    aria-label="Add Daisy to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="flower-3">
+                  <button
+                    aria-label="Configure Sunflower"
+                    data-configure="flower-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/flo-3.png"
+                          alt="Sunflower — 100 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Sunflower</h3>
+                        <p>100 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="flower-3"
+                    aria-label="Add Sunflower to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="flower-4">
+                  <button
+                    aria-label="Configure Jasmine"
+                    data-configure="flower-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/flo-4.png"
+                          alt="Jasmine — 70 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Jasmine</h3>
+                        <p>70 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="flower-4"
+                    aria-label="Add Jasmine to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="flower-5">
+                  <button
+                    aria-label="Configure Hibiscus"
+                    data-configure="flower-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/flo-5.png"
+                          alt="Hibiscus — 60 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Hibiscus</h3>
+                        <p>60 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="flower-5"
+                    aria-label="Add Hibiscus to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="flower-6">
+                  <button
+                    aria-label="Configure Lily"
+                    data-configure="flower-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/flo-6.png"
+                          alt="Lily — 150 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Lily</h3>
+                        <p>150 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="flower-6"
+                    aria-label="Add Lily to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="flower"
+                aria-label="Scroll flower products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+          <section class="product-section" id="bouquet" aria-labelledby="bouquet-title">
+            <div class="product-section-heading">
+              <h2 id="bouquet-title">BOUQUET</h2>
+              <button type="button" class="pill green see-more" data-section="bouquet">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="bouquet-1">
+                  <button
+                    aria-label="Configure Sweet Bouquet"
+                    data-configure="bouquet-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/bou-1.png"
+                          alt="Sweet Bouquet — 1,499 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Sweet Bouquet</h3>
+                        <p>1,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="bouquet-1"
+                    aria-label="Add Sweet Bouquet to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="bouquet-2">
+                  <button
+                    aria-label="Configure Love Lavender"
+                    data-configure="bouquet-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/bou-2.png"
+                          alt="Love Lavender — 1,599 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Love Lavender</h3>
+                        <p>1,599 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="bouquet-2"
+                    aria-label="Add Love Lavender to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="bouquet-3">
+                  <button
+                    aria-label="Configure Summer Charm"
+                    data-configure="bouquet-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/bou-3.png"
+                          alt="Summer Charm — 1,399 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Summer Charm</h3>
+                        <p>1,399 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="bouquet-3"
+                    aria-label="Add Summer Charm to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="bouquet-4">
+                  <button
+                    aria-label="Configure Romantic Bloom"
+                    data-configure="bouquet-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/bou-4.png"
+                          alt="Romantic Bloom — 1,599 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Romantic Bloom</h3>
+                        <p>1,599 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="bouquet-4"
+                    aria-label="Add Romantic Bloom to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="bouquet-5">
+                  <button
+                    aria-label="Configure Coral Blush"
+                    data-configure="bouquet-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/bou-5.png"
+                          alt="Coral Blush — 1,499 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Coral Blush</h3>
+                        <p>1,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="bouquet-5"
+                    aria-label="Add Coral Blush to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="bouquet-6">
+                  <button
+                    aria-label="Configure Elegant Roses"
+                    data-configure="bouquet-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/bou-6.png"
+                          alt="Elegant Roses — 1,399 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Elegant Roses</h3>
+                        <p>1,399 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="bouquet-6"
+                    aria-label="Add Elegant Roses to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="bouquet"
+                aria-label="Scroll bouquet products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+          <section class="product-section" id="new-arrival" aria-labelledby="new-arrival-title">
+            <div class="product-section-heading">
+              <h2 id="new-arrival-title">NEW ARRIVAL</h2>
+              <button type="button" class="pill green see-more" data-section="new-arrival">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="new-arrival-1">
+                  <button
+                    aria-label="Configure Bougainvillea"
+                    data-configure="new-arrival-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/new-1.png"
+                          alt="Bougainvillea — 125 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Bougainvillea</h3>
+                        <p>125 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="new-arrival-1"
+                    aria-label="Add Bougainvillea to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="new-arrival-2">
+                  <button
+                    aria-label="Configure Orchid"
+                    data-configure="new-arrival-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/new-2.png"
+                          alt="Orchid — 80 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Orchid</h3>
+                        <p>80 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="new-arrival-2"
+                    aria-label="Add Orchid to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="new-arrival-3">
+                  <button
+                    aria-label="Configure Chrysanthemum"
+                    data-configure="new-arrival-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/new-3.png"
+                          alt="Chrysanthemum — 80 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Chrysanthemum</h3>
+                        <p>80 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="new-arrival-3"
+                    aria-label="Add Chrysanthemum to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="new-arrival-4">
+                  <button
+                    aria-label="Configure The Great Peonies"
+                    data-configure="new-arrival-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/new-4.png"
+                          alt="The Great Peonies — 1,399 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>The Great Peonies</h3>
+                        <p>1,399 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="new-arrival-4"
+                    aria-label="Add The Great Peonies to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="new-arrival-5">
+                  <button
+                    aria-label="Configure Iris"
+                    data-configure="new-arrival-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/new-5.png"
+                          alt="Iris — 100 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Iris</h3>
+                        <p>100 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="new-arrival-5"
+                    aria-label="Add Iris to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="new-arrival-6">
+                  <button
+                    aria-label="Configure Hyacinth"
+                    data-configure="new-arrival-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/new-6.png"
+                          alt="Hyacinth — 100 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Hyacinth</h3>
+                        <p>100 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="new-arrival-6"
+                    aria-label="Add Hyacinth to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="new-arrival"
+                aria-label="Scroll new arrival products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+          <section class="product-section" id="best-sellers" aria-labelledby="best-sellers-title">
+            <div class="product-section-heading">
+              <h2 id="best-sellers-title">BEST SELLERS</h2>
+              <button type="button" class="pill green see-more" data-section="best-sellers">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="best-sellers-1">
+                  <button
+                    aria-label="Configure Sunflower"
+                    data-configure="best-sellers-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/best-1.png"
+                          alt="Sunflower — 100 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Sunflower</h3>
+                        <p>100 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="best-sellers-1"
+                    aria-label="Add Sunflower to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="best-sellers-2">
+                  <button
+                    aria-label="Configure Love Lavender"
+                    data-configure="best-sellers-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/best-2.png"
+                          alt="Love Lavender — 699 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Love Lavender</h3>
+                        <p>699 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="best-sellers-2"
+                    aria-label="Add Love Lavender to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="best-sellers-3">
+                  <button
+                    aria-label="Configure Coral Blush"
+                    data-configure="best-sellers-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/best-3.png"
+                          alt="Coral Blush — 1,499 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Coral Blush</h3>
+                        <p>1,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="best-sellers-3"
+                    aria-label="Add Coral Blush to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="best-sellers-4">
+                  <button
+                    aria-label="Configure Chrysanthemum"
+                    data-configure="best-sellers-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/best-4.png"
+                          alt="Chrysanthemum — 80 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Chrysanthemum</h3>
+                        <p>80 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="best-sellers-4"
+                    aria-label="Add Chrysanthemum to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="best-sellers-5">
+                  <button
+                    aria-label="Configure Dahlia"
+                    data-configure="best-sellers-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/best-5.png"
+                          alt="Dahlia — 1,500 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Dahlia</h3>
+                        <p>1,500 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="best-sellers-5"
+                    aria-label="Add Dahlia to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="best-sellers-6">
+                  <button
+                    aria-label="Configure Tulip"
+                    data-configure="best-sellers-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/best-6.png"
+                          alt="Tulip — 120 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Tulip</h3>
+                        <p>120 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="best-sellers-6"
+                    aria-label="Add Tulip to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="best-sellers"
+                aria-label="Scroll best sellers products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+          <section
+            class="product-section"
+            id="potted-flowers"
+            aria-labelledby="potted-flowers-title"
+          >
+            <div class="product-section-heading">
+              <h2 id="potted-flowers-title">POTTED FLOWERS</h2>
+              <button type="button" class="pill green see-more" data-section="potted-flowers">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="potted-flowers-1">
+                  <button
+                    aria-label="Configure Dahlia"
+                    data-configure="potted-flowers-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/pot-1.png"
+                          alt="Dahlia — 1,500 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Dahlia</h3>
+                        <p>1,500 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="potted-flowers-1"
+                    aria-label="Add Dahlia to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="potted-flowers-2">
+                  <button
+                    aria-label="Configure White Chrysanthemums"
+                    data-configure="potted-flowers-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/pot-2.png"
+                          alt="White Chrysanthemums — 1,500 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>White Chrysanthemums</h3>
+                        <p>1,500 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="potted-flowers-2"
+                    aria-label="Add White Chrysanthemums to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="potted-flowers-3">
+                  <button
+                    aria-label="Configure Lupine"
+                    data-configure="potted-flowers-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/pot-3.png"
+                          alt="Lupine — 1,500 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Lupine</h3>
+                        <p>1,500 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="potted-flowers-3"
+                    aria-label="Add Lupine to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="potted-flowers-4">
+                  <button
+                    aria-label="Configure Tillandsia"
+                    data-configure="potted-flowers-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/pot-4.png"
+                          alt="Tillandsia — 1,500 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Tillandsia</h3>
+                        <p>1,500 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="potted-flowers-4"
+                    aria-label="Add Tillandsia to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="potted-flowers-5">
+                  <button
+                    aria-label="Configure Petunai"
+                    data-configure="potted-flowers-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/pot-5.png"
+                          alt="Petunai — 1,500 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Petunai</h3>
+                        <p>1,500 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="potted-flowers-5"
+                    aria-label="Add Petunai to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="potted-flowers-6">
+                  <button
+                    aria-label="Configure Begonia"
+                    data-configure="potted-flowers-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/pot-6.png"
+                          alt="Begonia — 1,500 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Begonia</h3>
+                        <p>1,500 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="potted-flowers-6"
+                    aria-label="Add Begonia to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="potted-flowers"
+                aria-label="Scroll potted flowers products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+          <section class="product-section" id="gifts" aria-labelledby="gifts-title">
+            <div class="product-section-heading">
+              <h2 id="gifts-title">GIFTS</h2>
+              <button type="button" class="pill green see-more" data-section="gifts">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="gifts-1">
+                  <button
+                    aria-label="Configure Stuffed Toy"
+                    data-configure="gifts-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/gift-1.png"
+                          alt="Stuffed Toy — 700 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Stuffed Toy</h3>
+                        <p>700 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="gifts-1"
+                    aria-label="Add Stuffed Toy to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="gifts-2">
+                  <button
+                    aria-label="Configure Ferrero"
+                    data-configure="gifts-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/gift-2.png"
+                          alt="Ferrero — 200 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Ferrero</h3>
+                        <p>200 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="gifts-2"
+                    aria-label="Add Ferrero to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="gifts-3">
+                  <button
+                    aria-label="Configure Greeting Card"
+                    data-configure="gifts-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/gift-3.png"
+                          alt="Greeting Card — 30 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Greeting Card</h3>
+                        <p>30 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="gifts-3"
+                    aria-label="Add Greeting Card to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="gifts-4">
+                  <button
+                    aria-label="Configure Customized Letter"
+                    data-configure="gifts-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/gift-4.png"
+                          alt="Customized Letter — 150 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Customized Letter</h3>
+                        <p>150 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="gifts-4"
+                    aria-label="Add Customized Letter to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="gifts-5">
+                  <button
+                    aria-label="Configure Scented Candle"
+                    data-configure="gifts-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/gift-5.png"
+                          alt="Scented Candle — 250 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Scented Candle</h3>
+                        <p>250 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="gifts-5"
+                    aria-label="Add Scented Candle to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="gifts-6">
+                  <button
+                    aria-label="Configure Pepero"
+                    data-configure="gifts-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window">
+                        <img
+                          src="assets/collections/gift-6.png"
+                          alt="Pepero — 150 PHP"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Pepero</h3>
+                        <p>150 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="gifts-6"
+                    aria-label="Add Pepero to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="gifts"
+                aria-label="Scroll gifts products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+      <!-- 3. FOOTER: menu, address, phone, social links, and FAQs.
+This footer is copied into each storefront page. Edit each copy for a site-wide change. -->
+      <footer class="site-footer">
+        <div class="footer-left">
+          <div class="footer-brand">
+            <a href="index.html">
+              <img src="assets/logo.png" alt="The Petal Haus" loading="lazy" />
+            </a>
+            <p class="footer-quote">“Every petal tells a story, every bloom holds a feeling.”</p>
+            <h3 class="follow-title">Follow Us!</h3>
+            <div class="social-links">
+              <a
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+              >
+                <img src="assets/footer/fb.png" alt="" />
+              </a>
+              <a
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <img src="assets/footer/ig.png" alt="" />
+              </a>
+              <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X">
+                <img src="assets/footer/x.png" alt="" />
+              </a>
+            </div>
+          </div>
+          <div class="footer-location">
+            <h3>Location:</h3>
+            <p>
+              <a data-store-map="" target="_blank" rel="noopener noreferrer">
+                Golden Gate Basketball Court,
+                <br />
+                Topland Ave, Las Piñas, 1747 Metro Manila
+              </a>
+            </p>
+          </div>
+          <div class="footer-contact" id="contact">
+            <h3>Contact Number:</h3>
+            <p><a data-store-phone="" href="tel:+631234567890">(+63) 123 456 7890</a></p>
+          </div>
+        </div>
+        <div class="footer-right">
+          <h2 class="footer-heading">MENU</h2>
+          <nav class="footer-menu" aria-label="Footer navigation">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="collections.html">Shop</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="feedback.html">Feedback</a>
+          </nav>
+          <h2 class="footer-heading">FAQS</h2>
+          <div class="faq-list">
+            <details class="faq" open>
+              <summary>How long do your flowers stay fresh?</summary>
+              <p>
+                Our flowers are carefully selected and arranged using fresh blooms. With proper
+                care, most bouquets can remain fresh and beautiful for 5–10 days.
+              </p>
+            </details>
+            <details class="faq" open>
+              <summary>Can I customize my bouquet?</summary>
+              <p>
+                Absolutely! We can create custom arrangements based on your preferred flowers,
+                colors, budget, and occasion.
+              </p>
+            </details>
+            <details class="faq" open>
+              <summary>Do you offer same-day flower delivery?</summary>
+              <p>
+                Yes! We offer same-day delivery for orders placed before our daily cut-off time.
+                Delivery availability may vary depending on your location.
+              </p>
+            </details>
+          </div>
+        </div>
+      </footer>
+      <!-- 4. POP-UP WINDOWS: hidden until Search, Cart, or another button opens them. -->
+
+      <dialog class="site-dialog" id="search-dialog" aria-labelledby="search-title">
+        <div class="dialog-heading">
+          <h2 id="search-title">SEARCH PRODUCTS</h2>
+          <button class="dialog-close" type="button" data-close="" aria-label="Close search">
+            ×
+          </button>
+        </div>
+        <form class="search-form" id="search-form">
+          <input
+            type="search"
+            id="search-input"
+            placeholder="Search for Flowers"
+            aria-label="Search products"
+          />
+          <button class="pill" type="submit">Search</button>
+        </form>
+        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">Rose</button><button type="button" data-search-query="Sunflower">Sunflower</button><button type="button" data-search-query="Bouquet">Bouquet</button><button type="button" data-search-query="Birthday">Birthday</button></div><a href="search.html">Open search page</a>
+        <div class="search-results" id="search-results" aria-live="polite"></div>
+      </dialog>
+
+      <!-- This small message appears briefly after adding an item to the cart. -->
+
+      <!-- PRODUCT OPTIONS: shop products, gift variants, and customization add-ons. -->
+      <dialog
+        class="site-dialog product-options-dialog"
+        id="product-options-dialog"
+        aria-labelledby="product-options-title"
+      >
+        <div class="dialog-heading">
+          <h2 id="product-options-title">Select your item</h2>
+          <button
+            class="dialog-close"
+            type="button"
+            data-close=""
+            aria-label="Close product options"
+          >
+            ×
+          </button>
+        </div>
+        <form id="product-options-form"></form>
+      </dialog>
+      <!-- SUCCESS MESSAGE: appears after a selection has actually been saved. -->
+      <dialog class="site-dialog" id="success-dialog" aria-labelledby="success-title">
+        <div class="success-check" aria-hidden="true">✓</div>
+        <div class="dialog-heading">
+          <h2 id="success-title">The Petal Haus</h2>
+          <button class="dialog-close" type="button" data-close="" aria-label="Close message">
+            ×
+          </button>
+        </div>
+        <p data-success-message="" role="status"></p>
+        <div class="dialog-actions">
+          <a class="pill" href="cart.html" data-success-link="">MY CART</a>
+          <button class="pill green" type="button" data-close="">Continue</button>
+        </div>
+      </dialog>
+      <dialog class="site-dialog gallery-dialog" id="photo-dialog" aria-label="Gallery photo">
+        <button type="button" class="dialog-close" data-close="" aria-label="Close photo">×</button>
+        <img id="full-gallery-photo" alt="" />
+      </dialog>
+
+      <div class="toast" role="status" aria-live="polite" id="toast"></div>
+    </div>
+    <noscript>Please enable JavaScript to use the cart, search, and slideshow.</noscript>
+  </body>
+</html>

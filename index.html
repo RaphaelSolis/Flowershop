@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- PAGE SETUP: browser title, fonts/styles, and button behavior. -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#577438" />
+    <meta
+      name="description"
+      content="The Petal Haus — flowers for every story and every occasion. Explore our blooms or create your own bouquet."
+    />
+    <title>The Petal Haus | Home</title>
+    <!-- styles.css controls colors, fonts, spacing, and phone layouts. -->
+    <link rel="stylesheet" href="styles.css?v=20261118-landscape" />
+    <link rel="stylesheet" href="design-spec.css?v=20261118-profile-photo" />
+    <!-- defer means: finish reading this HTML before running app.js. -->
+    <!-- products.js loads the price list first; app.js then makes buttons work. -->
+    <script src="settings.js?v=20261118" defer></script>
+    <script src="products.js?v=20261118-3" defer></script>
+    <script src="store.js?v=20261118-account-fix" defer></script>
+    <script src="app.js?v=20261118-profile-photo" defer></script>
+    <script src="shop.js" defer></script>
+    <script src="customize.js" defer></script>
+    <script src="pages.js?v=20261118-profile-photo" defer></script>
+  </head>
+  <body data-page="home">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- PAGE CONTENT: edit the visible words and photos below. -->
+    <div id="site">
+      <!-- 1. TOP MENU: logo, page links, search, cart, and phone menu. -->
+      <header class="site-header">
+        <a href="index.html" class="brand" aria-label="The Petal Haus home">
+          <img src="assets/logo.png" alt="The Petal Haus" />
+        </a>
+        <a href="Log-Sign/LoginPage.html" class="profile-link" aria-label="Log in">
+          <img src="assets/home/profile.png" alt="" />
+        </a>
+        <nav class="main-nav" id="main-nav" aria-label="Main navigation">
+          <a class="nav-link active" href="index.html" aria-current="page">
+            <img src="assets/home/home.png" alt="" />
+            Home
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <div class="shop-menu">
+            <button
+              class="nav-link"
+              type="button"
+              aria-expanded="false"
+              aria-controls="shop-dropdown"
+              data-shop-menu=""
+            >
+              <img src="assets/home/flower.png" alt="" />
+              Shop
+            </button>
+            <div class="shop-dropdown" id="shop-dropdown">
+              <a href="collections.html">
+                <img src="assets/home/petal-green.png" alt="" />
+                Shop by Collection
+              </a>
+              <a href="occasions.html">
+                <img src="assets/home/petal-green.png" alt="" />
+                Shop by Occasions
+              </a>
+              <a href="customize.html">
+                <img src="assets/home/petal-green.png" alt="" />
+                Customized Yours
+              </a>
+            </div>
+          </div>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="contact.html">
+            <img src="assets/home/tele.png" alt="" />
+            Contact Us
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="about.html">
+            <img src="assets/home/info.png" alt="" />
+            About Us
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="gallery.html">
+            <img src="assets/home/gal.png" alt="" />
+            Gallery
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="feedback.html">
+            <img src="assets/home/star.png" alt="" />
+            Feedback
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a data-logout="" class="nav-link" href="Log-Sign/LoginPage.html">
+            <img src="assets/home/out.png" alt="" />
+            Logout
+          </a>
+        </nav>
+        <div class="header-actions">
+          <button class="icon-button" type="button" aria-label="Search flowers" data-search="">
+            <img src="assets/home/search.png" alt="" />
+          </button>
+          <a href="cart.html" data-cart="" aria-label="Open my cart" class="icon-button">
+            <img src="assets/home/cart.png" alt="" />
+            <span class="cart-count" data-cart-count=""></span>
+          </a>
+          <a href="notifications.html" aria-label="Store announcements" class="icon-button">
+            <img src="assets/home/notif.png" alt="" />
+            <span class="notification-dot"></span>
+          </a>
+        </div>
+        <button
+          class="mobile-menu"
+          type="button"
+          aria-controls="main-nav"
+          aria-expanded="false"
+          aria-label="Toggle menu"
+          data-mobile-menu=""
+        >
+          ☰
+        </button>
+      </header>
+      <!-- 2. MAIN PAGE: each HTML file has its own content here. -->
+      <main id="main">
+        <!-- FLOWER BANNER: edit the greeting, heading, tagline, and photo here. -->
+        <section class="hero hero-home" aria-labelledby="hero-heading">
+          <img
+            class="hero-image"
+            src="assets/banners/home.png"
+            alt="A bouquet of lush red roses"
+            fetchpriority="high"
+          />
+          <div class="hero-copy">
+            <p data-animate="shift" class="hero-greeting">Hey there, visitor!</p>
+            <h1 data-animate="shift" class="hero-heading" id="hero-heading">
+              Make Every Moment
+              <br />
+              Bloom Brighter
+            </h1>
+            <p data-animate="shift" class="hero-tagline">
+              “Every petal tells a story, every bloom holds a feeling.”
+            </p>
+            <a class="pill" href="collections.html">
+              SHOP NOW
+              <img src="assets/home/arrow.png" alt="" />
+            </a>
+          </div>
+        </section>
+        <!-- HOME: the four service promises. -->
+        <div class="service-badges"><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M5 8h22l-4 15H8m19-12h8l6 7v5H23M3 13h9M1 18h8"/><circle cx="14" cy="26" r="4"/><circle cx="33" cy="26" r="4"/></svg><span>Fast and Reliable Delivery</span></div><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 35 7 21C-4 10 12 0 22 12 32 0 48 10 37 21Z"/></svg><span>Handpicked with Care</span></div><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18"/><path d="M11 15q4-5 8 0m6 0q4-5 8 0M11 25h22c-2 13-20 13-22 0Z"/></svg><span>Customer Satisfaction Guaranteed</span></div><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="6"/><path d="M22 16c-15-20-25 0-6 6-20 15 0 25 6 6 15 20 25 0 6-6 20-15 0-25-6-6Z"/></svg><span>Crafted by Expert Florists</span></div></div>
+        <!-- CUSTOMER REVIEWS: edit each review and customer name here. -->
+        <section class="testimonials" id="feedback" aria-labelledby="service-heading">
+          <h2 data-animate="shift" class="section-heading" id="service-heading">
+            EXCELLENT SERVICE
+            <img class="floret" src="assets/home/petal-green.png" alt="" />
+          </h2>
+          <div class="testimonial-grid">
+            <article data-animate="rise" class="testimonial-card testimonial-1">
+              <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+              <p>
+                Absolutely stunning flowers! The bouquet was fresh, beautifully arranged, and lasted
+                much longer than expected. Highly recommended!
+              </p>
+              <div class="review-author">
+                <img src="assets/home/profile-pink.png" alt="" />
+                <span>Jerlyn T.</span>
+              </div>
+            </article>
+            <article data-animate="rise" class="testimonial-card testimonial-2">
+              <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+              <p>
+                “I ordered a sunflower bouquet for my best friend’s birthday and she absolutely
+                loved it! The arrangement was stunning.”
+              </p>
+              <div class="review-author">
+                <img src="assets/home/profile.png" alt="" />
+                <span>Anonymous Person</span>
+              </div>
+            </article>
+            <article data-animate="rise" class="testimonial-card testimonial-3">
+              <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+              <p>
+                “I love that I can customize my own bouquet! I got to choose my preferred flowers
+                and colors. It turned out even prettier than I expected.”
+              </p>
+              <div class="review-author">
+                <img src="assets/home/profile.png" alt="" />
+                <span>Olivia R.</span>
+              </div>
+            </article>
+          </div>
+          <div data-public-reviews="" class="public-review-grid"></div>
+        </section>
+        <section class="story" id="story" aria-labelledby="story-heading">
+          <img src="assets/home/story-florist.png" alt="A florist carefully arranging a bouquet" loading="lazy" />
+          <div class="story-copy">
+            <h2 id="story-heading" data-animate="shift">FLOWERS THAT SPEAK FROM THE HEART</h2>
+            <p data-animate="rise">We believe flowers speak a language of their own. That's why every bouquet is carefully arranged to convey heartfelt emotions and celebrate the moments that matter most.</p>
+            <a data-animate="rise" class="pill" href="about.html">OUR STORY <img src="assets/home/arrow.png" alt="" /></a>
+          </div>
+        </section>
+        <!-- STORE DETAILS: address and opening hours. The footer has another copy. -->
+        <section class="store-info" aria-label="Visit our store">
+          <article>
+            <h2 data-animate="shift">LOCATED AT:</h2>
+            <img class="store-icon" src="assets/home/store.png" alt="" loading="lazy" />
+            <p data-animate="rise">
+              Golden Gate Basketball Court, Topland Ave, Las Piñas,
+              <br />
+              1747 Metro Manila
+            </p>
+          </article>
+          <article>
+            <h2 data-animate="shift">STORE HOURS:</h2>
+            <img class="store-icon" src="assets/home/clock.png" alt="" loading="lazy" />
+            <div class="hours">
+              <p data-animate="shift">
+                Delivery:
+                <br />
+                <time>8:00 AM - 6:00 PM</time>
+              </p>
+              <p data-animate="shift">
+                Physical Store:
+                <br />
+                <time>8:00 AM - 6:00 PM</time>
+              </p>
+            </div>
+          </article>
+        </section>
+        <div class="home-selectors">
+          <section class="category-selector" aria-labelledby="collections-heading">
+            <h2 data-animate="shift" class="section-heading" id="collections-heading">
+              SHOP BY COLLECTIONS
+              <img class="floret" src="assets/home/petal-green.png" alt="" />
+            </h2>
+            <div class="category-grid">
+              <a data-animate="shift" class="category-link" href="collections.html#flower">
+                <span class="category-label">Flower</span>
+                <img src="assets/home/coll-1.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="collections.html#bouquet">
+                <span class="category-label">Bouquet</span>
+                <img src="assets/home/coll-2.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="collections.html#new-arrival">
+                <span class="category-label">New Arrivals</span>
+                <img src="assets/home/coll-3.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="collections.html#best-sellers">
+                <span class="category-label">Best Sellers</span>
+                <img src="assets/home/coll-4.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="collections.html#potted-flowers">
+                <span class="category-label">Potted Flowers</span>
+                <img src="assets/home/coll-5.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="collections.html#gifts">
+                <span class="category-label">Gifts</span>
+                <img src="assets/home/coll-6.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="customize.html">
+                <span class="category-label">Customized Yours</span>
+                <img src="assets/home/coll-7.png" alt="" loading="lazy" />
+              </a>
+            </div>
+            <div class="selector-actions">
+              <a data-animate="shift" class="pill green" href="collections.html">
+                SHOP NOW
+                <img src="assets/home/arrow.png" alt="" />
+              </a>
+            </div>
+          </section>
+          <section class="category-selector" aria-labelledby="occasions-heading">
+            <h2 data-animate="shift" class="section-heading" id="occasions-heading">
+              SHOP BY OCCASIONS
+              <img class="floret" src="assets/home/petal-green.png" alt="" />
+            </h2>
+            <div class="category-grid occasion-grid">
+              <a data-animate="shift" class="category-link" href="occasions.html#birthday">
+                <span class="category-label">Birthday</span>
+                <img src="assets/home/occ-1.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="occasions.html#wedding">
+                <span class="category-label">Wedding</span>
+                <img src="assets/home/occ-2.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="occasions.html#anniversary">
+                <span class="category-label">Anniversary</span>
+                <img src="assets/home/occ-3.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="occasions.html#achievement">
+                <span class="category-label">Achievement</span>
+                <img src="assets/home/occ-4.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="occasions.html#sympathy">
+                <span class="category-label">Sympathy</span>
+                <img src="assets/home/occ-5.png" alt="" loading="lazy" />
+              </a>
+              <a data-animate="shift" class="category-link" href="occasions.html#thank-you">
+                <span class="category-label">Thank You</span>
+                <img src="assets/home/occ-6.png" alt="" loading="lazy" />
+              </a>
+            </div>
+            <div class="selector-actions">
+              <a data-animate="shift" class="pill green" href="occasions.html">
+                SHOP NOW
+                <img src="assets/home/arrow.png" alt="" />
+              </a>
+            </div>
+          </section>
+        </div>
+        <!-- ONE-PHOTO SLIDESHOW: replace each image src to change the photos. -->
+        <section class="gallery" id="gallery">
+          <h2 data-animate="shift">CAPTURING BEAUTY IN EVERY BLOOM</h2>
+          <div class="gallery-slideshow" role="region" aria-roledescription="carousel" aria-label="Flower gallery">
+            <div class="gallery-viewport" tabindex="0" aria-label="Gallery photos: use left and right arrow keys to browse">
+              <div class="gallery-track" aria-live="off">
+                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="1 of 4" aria-hidden="false"><img src="assets/home/feat-pic-1.png" alt="Flower shop displays" loading="eager" /></div>
+                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="2 of 4" aria-hidden="true"><img src="assets/home/feat-pic-2.png" alt="A florist arranging flowers" loading="eager" /></div>
+                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="3 of 4" aria-hidden="true"><img src="assets/home/feat-pic-3.png" alt="Flowers being prepared in the studio" loading="eager" /></div>
+                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="4 of 4" aria-hidden="true"><img src="assets/home/feat-pic-4.png" alt="The flower-filled storefront" loading="eager" /></div>
+              </div>
+            </div>
+            <div class="gallery-controls">
+              <button class="gallery-arrow gallery-previous" type="button" data-gallery-direction="-1" aria-label="Previous photo">‹</button>
+              <div class="gallery-dots" aria-label="Choose a photo">
+                <button type="button" class="gallery-dot" data-gallery-slide="0" aria-label="Show photo 1: Flower shop displays" aria-current="true"></button>
+                <button type="button" class="gallery-dot" data-gallery-slide="1" aria-label="Show photo 2: A florist arranging flowers" aria-current="false"></button>
+                <button type="button" class="gallery-dot" data-gallery-slide="2" aria-label="Show photo 3: Flowers being prepared in the studio" aria-current="false"></button>
+                <button type="button" class="gallery-dot" data-gallery-slide="3" aria-label="Show photo 4: The flower-filled storefront" aria-current="false"></button>
+              </div>
+              <button class="gallery-arrow gallery-next" type="button" data-gallery-direction="1" aria-label="Next photo">›</button>
+              <button class="gallery-playback" type="button" data-gallery-playback="" aria-label="Pause slideshow">Pause</button>
+            </div>
+          </div>
+          <p data-animate="rise">
+            Browse our gallery and find inspiration in arrangements designed to brighten every
+            occasion.
+          </p>
+          <a data-animate="shift" href="gallery.html" class="pill">
+            VIEW GALLERY
+            <img src="assets/home/arrow.png" alt="" />
+          </a>
+        </section>
+      </main>
+      <!-- 3. FOOTER: menu, address, phone, social links, and FAQs.
+This footer is copied into each storefront page. Edit each copy for a site-wide change. -->
+      <footer class="site-footer">
+        <div class="footer-left">
+          <div class="footer-brand">
+            <a href="index.html">
+              <img src="assets/logo.png" alt="The Petal Haus" loading="lazy" />
+            </a>
+            <p class="footer-quote">“Every petal tells a story, every bloom holds a feeling.”</p>
+            <h3 class="follow-title">Follow Us!</h3>
+            <div class="social-links">
+              <a
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+              >
+                <img src="assets/footer/fb.png" alt="" />
+              </a>
+              <a
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <img src="assets/footer/ig.png" alt="" />
+              </a>
+              <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X">
+                <img src="assets/footer/x.png" alt="" />
+              </a>
+            </div>
+          </div>
+          <div class="footer-location">
+            <h3>Location:</h3>
+            <p>
+              <a data-store-map="" target="_blank" rel="noopener noreferrer">
+                Golden Gate Basketball Court,
+                <br />
+                Topland Ave, Las Piñas, 1747 Metro Manila
+              </a>
+            </p>
+          </div>
+          <div class="footer-contact" id="contact">
+            <h3>Contact Number:</h3>
+            <p><a data-store-phone="" href="tel:+631234567890">(+63) 123 456 7890</a></p>
+          </div>
+        </div>
+        <div class="footer-right">
+          <h2 class="footer-heading">MENU</h2>
+          <nav class="footer-menu" aria-label="Footer navigation">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="collections.html">Shop</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="feedback.html">Feedback</a>
+          </nav>
+          <h2 class="footer-heading">FAQS</h2>
+          <div class="faq-list">
+            <details class="faq" open>
+              <summary>How long do your flowers stay fresh?</summary>
+              <p>
+                Our flowers are carefully selected and arranged using fresh blooms. With proper
+                care, most bouquets can remain fresh and beautiful for 5–10 days.
+              </p>
+            </details>
+            <details class="faq" open>
+              <summary>Can I customize my bouquet?</summary>
+              <p>
+                Absolutely! We can create custom arrangements based on your preferred flowers,
+                colors, budget, and occasion.
+              </p>
+            </details>
+            <details class="faq" open>
+              <summary>Do you offer same-day flower delivery?</summary>
+              <p>
+                Yes! We offer same-day delivery for orders placed before our daily cut-off time.
+                Delivery availability may vary depending on your location.
+              </p>
+            </details>
+          </div>
+        </div>
+      </footer>
+      <!-- 4. POP-UP WINDOWS: hidden until Search, Cart, or another button opens them. -->
+
+      <dialog class="site-dialog" id="search-dialog" aria-labelledby="search-title">
+        <div class="dialog-heading">
+          <h2 id="search-title">SEARCH PRODUCTS</h2>
+          <button class="dialog-close" type="button" data-close="" aria-label="Close search">
+            ×
+          </button>
+        </div>
+        <form class="search-form" id="search-form">
+          <input
+            type="search"
+            id="search-input"
+            placeholder="Search for Flowers"
+            aria-label="Search products"
+          />
+          <button class="pill" type="submit">Search</button>
+        </form>
+        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">Rose</button><button type="button" data-search-query="Sunflower">Sunflower</button><button type="button" data-search-query="Bouquet">Bouquet</button><button type="button" data-search-query="Birthday">Birthday</button></div><a href="search.html">Open search page</a>
+        <div class="search-results" id="search-results" aria-live="polite"></div>
+      </dialog>
+
+      <!-- This small message appears briefly after adding an item to the cart. -->
+
+      <!-- PRODUCT OPTIONS: shop products, gift variants, and customization add-ons. -->
+      <dialog
+        class="site-dialog product-options-dialog"
+        id="product-options-dialog"
+        aria-labelledby="product-options-title"
+      >
+        <div class="dialog-heading">
+          <h2 id="product-options-title">Select your item</h2>
+          <button
+            class="dialog-close"
+            type="button"
+            data-close=""
+            aria-label="Close product options"
+          >
+            ×
+          </button>
+        </div>
+        <form id="product-options-form"></form>
+      </dialog>
+      <!-- SUCCESS MESSAGE: appears after a selection has actually been saved. -->
+      <dialog class="site-dialog" id="success-dialog" aria-labelledby="success-title">
+        <div class="success-check" aria-hidden="true">✓</div>
+        <div class="dialog-heading">
+          <h2 id="success-title">The Petal Haus</h2>
+          <button class="dialog-close" type="button" data-close="" aria-label="Close message">
+            ×
+          </button>
+        </div>
+        <p data-success-message="" role="status"></p>
+        <div class="dialog-actions">
+          <a class="pill" href="cart.html" data-success-link="">MY CART</a>
+          <button class="pill green" type="button" data-close="">Continue</button>
+        </div>
+      </dialog>
+      <dialog class="site-dialog gallery-dialog" id="photo-dialog" aria-label="Gallery photo">
+        <button type="button" class="dialog-close" data-close="" aria-label="Close photo">×</button>
+        <img id="full-gallery-photo" alt="" />
+      </dialog>
+
+      <div class="toast" role="status" aria-live="polite" id="toast"></div>
+    </div>
+    <noscript>Please enable JavaScript to use the cart, search, and slideshow.</noscript>
+  </body>
+</html>

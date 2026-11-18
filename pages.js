@@ -1,0 +1,679 @@
+"use strict";
+/* DEDICATED PAGES
+   Cart → checkout → saved receipt.
+   Feedback checks the saved order's Delivered status before allowing a review. */
+function formValue(form, name) {
+  return form.elements.namedItem(name)?.value?.trim() || "";
+}
+function renderCartPage() {
+  const container = document.getElementById("cart-page-items");
+  if (!container) return;
+  const items = PetalStore.getCart();
+  container.closest(".cart-page-layout").classList.toggle("cart-empty", !items.length);
+  container.innerHTML = items.map(function (line) {
+    return '<article class="cart-line-card" data-line-id="' + escapeHTML(line.lineId) + '">' +
+      '<div class="cart-product"><div class="cart-product-photo"><img src="' + escapeHTML(line.image) + '" alt="' + escapeHTML(line.name) + '"></div>' +
+      '<strong class="cart-product-name">' + escapeHTML(line.name) + '</strong>' +
+      '<p class="cart-product-details">' + escapeHTML(line.details || "") + '</p>' +
+      (!PetalStore.lineAvailable(line) ? '<p class="form-error">Currently unavailable. Remove this item before checkout.</p>' : '') +
+      (findProduct(line.productId) ? '<button type="button" class="text-button" data-edit-options="' + escapeHTML(line.lineId) + '">Edit options</button>' : '') + '</div>' +
+      '<div class="cart-quantity"><button type="button" data-cart-adjust="1" aria-label="Add one ' + escapeHTML(line.name) + '">+</button>' +
+      '<input type="number" min="1" max="99" step="1" value="' + line.quantity + '" data-line-quantity aria-label="Quantity for ' + escapeHTML(line.name) + '">' +
+      '<button type="button" data-cart-adjust="-1" aria-label="Remove one ' + escapeHTML(line.name) + '">−</button></div>' +
+      '<div class="cart-price-cell"><output data-line-total>₱' + money(line.unitPrice * line.quantity) + '</output>' +
+      '<details><summary>Edit unit price</summary><label class="sr-only" for="price-' + escapeHTML(line.lineId) + '">Unit price in pesos</label><input id="price-' + escapeHTML(line.lineId) + '" type="number" min="0.01" max="1000000" step="0.01" value="' + line.unitPrice + '" data-line-price></details></div>' +
+      '<button type="button" class="cart-delete" data-delete-line="' + escapeHTML(line.lineId) + '" aria-label="Delete ' + escapeHTML(line.name) + '">×</button></article>';
+  }).join("") || '<p class="empty-state">You do not have current saved<br>products in the cart</p>';
+  updateCartPageTotal();
+}
+function updateCartPageTotal() {
+  const items = PetalStore.getCart();
+  const blocked =
+    !items.length ||
+    items.some(function (line) {
+      return !PetalStore.lineAvailable(line);
+    }) || Array.from(document.querySelectorAll("#cart-page-items input")).some(input => !input.checkValidity());
+  document.getElementById("cart-page-total").textContent =
+    "₱" + money(PetalStore.total(items));
+  const proceed = document.getElementById("proceed-checkout");
+  proceed.setAttribute("aria-disabled", blocked);
+  proceed.tabIndex = blocked ? -1 : 0;
+  document.getElementById("cart-page-note").textContent = !items.length
+    ? "Add items to continue."
+    : blocked
+      ? "Remove unavailable items to continue."
+      : "You can edit quantities and unit prices before checkout.";
+  refreshCartUI();
+}
+function renderCheckoutPage() {
+  const items = PetalStore.getCart();
+  document.getElementById("checkout-summary").innerHTML =
+    items
+      .map(function (line) {
+        return (
+          '<article class="checkout-summary-item"><img src="' + escapeHTML(line.image) + '" alt=""><div><h3>' +
+          escapeHTML(line.name) +
+          '</h3><p>' + line.quantity + ' × ' + escapeHTML(line.details || line.name) +
+          '</p><output>PHP ' + money(line.unitPrice * line.quantity) + '</output></div></article>' 
+        );
+      })
+      .join("") ||
+    '<p>Your cart is empty. <a href="collections.html">Shop now.</a></p>';
+  document.getElementById("checkout-total").textContent =
+    "PHP " + money(PetalStore.total(items));
+  document.getElementById("pay-button").disabled =
+    !items.length ||
+    items.some(function (line) {
+      return !PetalStore.lineAvailable(line);
+    });
+  const user = PetalStore.session();
+  const form = document.getElementById("checkout-form");
+  if (user) {
+    const parts = user.name.split(" ");
+    form.elements.namedItem("firstName").value = parts.shift();
+    form.elements.namedItem("lastName").value = parts.join(" ");
+    form.elements.namedItem("email").value = user.email;
+    form.elements.namedItem("phone").value = user.phone || "";
+  }
+}
+let checkoutInProgress = false;
+function submitCheckout(event) {
+  event.preventDefault();
+  if (checkoutInProgress) return;
+  const form = event.target;
+  if (typeof form.reportValidity === "function" && !form.reportValidity())
+    return;
+  const customer = {};
+  for (const name of [
+    "email",
+    "phone",
+    "city",
+    "province",
+    "postalCode",
+  ])
+    customer[name] = formValue(form, name);
+  customer.name = [formValue(form, "firstName"), formValue(form, "lastName")].join(" ").trim();
+  customer.address = [formValue(form, "houseNumber"), formValue(form, "street"), formValue(form, "barangay")].join(", ");
+  const payment = {
+    method: document.querySelector('[name="payment"]:checked')?.value || "",
+    provider: formValue(form, "provider"),
+  };
+  if (payment.method === "e-wallet" && !payment.provider) {
+    document.getElementById("checkout-error").textContent =
+      "Choose an e-wallet.";
+    return;
+  }
+  try {
+    checkoutInProgress = true;
+    document.getElementById("pay-button").disabled = true;
+    const order = PetalStore.placeOrder(customer, payment);
+    refreshCartUI();
+    const receiptLink =
+      "receipt.html?reference=" + encodeURIComponent(order.reference);
+    showSuccess(
+      "Your order has been successfully placed, thank you!",
+      receiptLink,
+      "View receipt",
+    );
+    // Keep the confirmation visible until the customer chooses View receipt.
+  } catch (error) {
+    checkoutInProgress = false;
+    document.getElementById("pay-button").disabled = false;
+    document.getElementById("checkout-error").textContent = error.message;
+  }
+}
+function receiptMarkup(order) {
+  const address = [
+    order.customer.address,
+    order.customer.city,
+    order.customer.province,
+    order.customer.postalCode,
+  ].join(", ");
+  return (
+    '<article class="receipt-sheet"><header><h2>The Petal Haus</h2><p>ORDER RECEIPT</p><strong>' +
+    escapeHTML(order.reference) +
+    "</strong><p>" +
+    escapeHTML(new Date(order.date).toLocaleString("en-PH")) +
+    '</p></header><div class="receipt-customer"><h3>Deliver to</h3><p>' +
+    escapeHTML(order.customer.name) +
+    "<br>" +
+    escapeHTML(address) +
+    "<br>" +
+    escapeHTML(order.customer.phone) +
+    "<br>" +
+    escapeHTML(order.customer.email) +
+    "</p><p>Status: <strong>" +
+    escapeHTML(order.status) +
+    "</strong></p><p>Payment: " +
+    (order.payment.method === "credit-card"
+      ? "Credit card"
+      : "E-wallet — " + escapeHTML(order.payment.provider)) +
+    "</p></div><table><thead><tr><th>Item</th><th>Qty</th><th>Unit price</th><th>Total</th></tr></thead><tbody>" +
+    order.items
+      .map(function (line) {
+        return (
+          "<tr><td><strong>" +
+          escapeHTML(line.name) +
+          "</strong><small>" +
+          escapeHTML(line.details || "") +
+          "</small></td><td>" +
+          line.quantity +
+          "</td><td>PHP " +
+          money(line.unitPrice) +
+          "</td><td>PHP " +
+          money(line.quantity * line.unitPrice) +
+          "</td></tr>"
+        );
+      })
+      .join("") +
+    '</tbody></table><p class="receipt-grand-total">Total: PHP ' +
+    money(order.total) +
+    "</p></article>"
+  );
+}
+function currentReceiptOrder() {
+  const reference = new URLSearchParams(location.search).get("reference");
+  return reference ? PetalStore.getOrder(reference) : PetalStore.orders()[0];
+}
+function renderReceiptPage() {
+  const order = currentReceiptOrder();
+  const container = document.getElementById("receipt-content");
+  if (!order) {
+    container.innerHTML =
+      '<p>No receipt was found for your account. <a href="cart.html">Return to your cart.</a></p>';
+    return;
+  }
+  container.innerHTML =
+    receiptMarkup(order) +
+    '<div class="receipt-actions"><button class="pill" type="button" data-print-receipt>Print / save as PDF</button><button class="pill green" type="button" data-download-receipt>Download receipt</button><a class="pill" href="feedback.html">Review after delivery</a></div>';
+}
+function downloadReceipt() {
+  const order = currentReceiptOrder();
+  if (!order) return;
+  const html =
+    '<!DOCTYPE html><html lang="en"><meta charset="UTF-8"><title>' +
+    escapeHTML(order.reference) +
+    "</title><style>body{font:16px/1.5 Georgia,serif;max-width:900px;margin:30px auto;padding:20px;color:#344a25}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #ccc;padding:12px;text-align:left}small{display:block}.receipt-grand-total{font-size:24px;font-weight:bold}</style><body>" +
+    receiptMarkup(order) +
+    "</body></html>";
+  const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = order.reference + ".html";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(function () {
+    URL.revokeObjectURL(url);
+  }, 1000);
+}
+function renderNotificationsPage() {
+  const notes = PetalStore.notifications();
+  document.getElementById("notification-list").innerHTML =
+    notes
+      .map(function (note) {
+        let link = "";
+        if (note.kind === "order" && note.reference)
+          link =
+            '<a href="receipt.html?reference=' +
+            encodeURIComponent(note.reference) +
+            '">View order</a>';
+        else if (note.kind === "stock")
+          link = '<a href="cart.html">Open cart</a>';
+        else if (note.kind === "new")
+          link =
+            '<a href="collections.html?section=new-arrival">See new arrivals</a>';
+        else if (note.kind === "inquiry")
+          link = '<a href="contact.html">View inquiry</a>';
+        return (
+          '<article class="notification-card"><p>' +
+          escapeHTML(note.message) +
+          "</p><small>" +
+          escapeHTML(new Date(note.date).toLocaleString("en-PH")) +
+          "</small>" +
+          link +
+          "</article>"
+        );
+      })
+      .join("") || '<p class="empty-state">You do not have current notifications</p>';
+  PetalStore.readNotifications();
+  refreshCartUI();
+}
+function renderCustomerInquiries() {
+  const list = PetalStore.inquiries().filter(function (inquiry) {
+    return inquiry.owner === PetalStore.owner();
+  });
+  document.querySelector(".saved-inquiries").hidden = !list.length;
+  document.getElementById("customer-inquiries").innerHTML =
+    list
+      .map(function (inquiry) {
+        return (
+          '<article class="notification-card"><h3>' +
+          escapeHTML(inquiry.subject) +
+          "</h3><p>" +
+          escapeHTML(inquiry.message) +
+          "</p><small>" +
+          escapeHTML(inquiry.id) +
+          " · " +
+          escapeHTML(inquiry.status) +
+          "</small>" +
+          (inquiry.reply
+            ? "<p><strong>Reply to " +
+              escapeHTML(inquiry.email) +
+              ":</strong><br>" +
+              escapeHTML(inquiry.reply) +
+              "</p>"
+            : "") +
+          "</article>"
+        );
+      })
+      .join("") || "<p>You have no saved inquiries.</p>";
+}
+function submitInquiry(event) {
+  event.preventDefault();
+  const form = event.target;
+  if (typeof form.reportValidity === "function" && !form.reportValidity())
+    return;
+  const details = {};
+  for (const name of ["email", "phone", "type", "subject", "message"])
+    details[name] = formValue(form, name);
+  details.name = [formValue(form, "firstName"), formValue(form, "lastName")].join(" ").trim();
+  if (!details.name || !details.email || !details.subject || !details.message)
+    return;
+  const inquiry = PetalStore.saveInquiry(details);
+  document.getElementById("contact-status").textContent =
+    "Your inquiry " + inquiry.id + " has been saved.";
+  form.reset();
+  renderCustomerInquiries();
+  showSuccess("Feedback successfully submitted, thank you!", "contact.html", "Contact details");
+}
+function updateReviewEligibility() {
+  const eligible = PetalStore.eligibleOrders();
+  document.getElementById("review-order").innerHTML =
+    '<option value="">Choose a delivered order</option>' +
+    eligible
+      .map(function (order) {
+        return (
+          '<option value="' +
+          escapeHTML(order.reference) +
+          '">' +
+          escapeHTML(order.reference) +
+          " — " +
+          escapeHTML(
+            order.items
+              .map(function (item) {
+                return item.name;
+              })
+              .join(", "),
+          ) +
+          "</option>"
+        );
+      })
+      .join("");
+  const orderSelect = document.getElementById("review-order");
+  orderSelect.closest("label").hidden = eligible.length <= 1;
+  if (eligible.length === 1) orderSelect.value = eligible[0].reference;
+  for (const control of document.querySelectorAll(
+    "#review-form input,#review-form select,#review-form textarea,#review-submit",
+  ))
+    control.disabled = !eligible.length;
+  document.getElementById("review-eligibility").textContent = eligible.length
+    ? "Choose one of your delivered orders. One review per order."
+    : "You can leave a review after your order is delivered. Orders already reviewed cannot be reviewed again.";
+}
+function submitBuyerReview(event) {
+  event.preventDefault();
+  const form = event.target;
+  if (typeof form.reportValidity === "function" && !form.reportValidity())
+    return;
+  try {
+    PetalStore.submitReview(
+      formValue(form, "reference"),
+      Number(formValue(form, "rating")),
+      formValue(form, "message"),
+      { name: formValue(form, "reviewName"), anonymous: form.elements.namedItem("anonymous").checked },
+    );
+    document.getElementById("review-status").textContent =
+      "Your review is now displayed below and on the home page.";
+    form.reset();
+    updateReviewEligibility();
+    updateReviewPresentation();
+    renderPublicReviews();
+    refreshCartUI();
+  } catch (error) {
+    document.getElementById("review-status").textContent = error.message;
+  }
+}
+function initializePages() {
+  if (page === "cart") renderCartPage();
+  if (page === "checkout") renderCheckoutPage();
+  if (page === "receipt") renderReceiptPage();
+  if (page === "notifications") renderNotificationsPage();
+  if (page === "contact") renderCustomerInquiries();
+  if (page === "feedback") {
+    updateReviewEligibility();
+    const user = PetalStore.session();
+    const form = document.getElementById("review-form");
+    if (user) {
+      form.elements.namedItem("reviewName").value = user.name;
+      form.elements.namedItem("reviewEmail").value = user.email;
+    }
+    updateReviewPresentation();
+  }
+  if (page === "profile") initializeProfile();
+  if (page === "search") {
+    const query = new URLSearchParams(location.search).get("q") || "";
+    document.getElementById("page-search-input").value = query;
+    searchProducts("page-search-input", "page-search-results");
+  }
+  renderRecentSearches();
+}
+document.addEventListener("click", function (event) {
+  const button = event.target.closest("button,a");
+  if (!button) return;
+  if (button.hasAttribute("data-cart-adjust")) {
+    const input = button.closest("[data-line-id]").querySelector("[data-line-quantity]");
+    input.value = boundedQuantity(Number(input.value) + Number(button.dataset.cartAdjust), 1, 99);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  } else if (button.dataset.deleteLine) {
+    PetalStore.removeLine(button.dataset.deleteLine);
+    renderCartPage();
+  } else if (
+    button.id === "proceed-checkout" &&
+    button.getAttribute("aria-disabled") === "true"
+  )
+    event.preventDefault();
+  else if (button.hasAttribute("data-print-receipt")) window.print();
+  else if (button.hasAttribute("data-download-receipt")) downloadReceipt();
+  else if (button.dataset.galleryPhoto) {
+    const img = document.getElementById("full-gallery-photo");
+    img.src = button.dataset.galleryPhoto;
+    img.alt = button.querySelector("img").alt;
+    openDialog("photo-dialog");
+  }
+});
+document.addEventListener("input", function (event) {
+  const input = event.target;
+  if (
+    input.hasAttribute("data-line-quantity") ||
+    input.hasAttribute("data-line-price")
+  ) {
+    const row = input.closest("[data-line-id]");
+    const value = Number(input.value);
+    const valid = input.hasAttribute("data-line-quantity")
+      ? Number.isInteger(value) && value >= 1 && value <= 99
+      : Number.isFinite(value) && value > 0 && value <= 1000000;
+    if (!valid) {
+      document.getElementById("cart-page-note").textContent =
+        "Enter a whole quantity from 1 to 99 and a positive unit price.";
+      const proceed = document.getElementById("proceed-checkout");
+      proceed.setAttribute("aria-disabled", "true");
+      proceed.tabIndex = -1;
+      return;
+    }
+    PetalStore.updateLine(
+      row.dataset.lineId,
+      input.hasAttribute("data-line-quantity")
+        ? { quantity: value }
+        : { unitPrice: value },
+    );
+    const item = PetalStore.getCart().find(function (line) {
+      return line.lineId === row.dataset.lineId;
+    });
+    row.querySelector("[data-line-total]").textContent =
+      "₱" + money(item.quantity * item.unitPrice);
+    updateCartPageTotal();
+  }
+});
+document.addEventListener("change", function (event) {
+  if (event.target.name === "payment") {
+    const wallet = event.target.value === "e-wallet";
+    document.getElementById("wallet-provider-field").hidden = !wallet;
+    document.querySelector('[name="provider"]').required = wallet;
+  }
+});
+document.addEventListener("submit", function (event) {
+  if (event.target.id === "checkout-form") submitCheckout(event);
+  if (event.target.id === "contact-form") submitInquiry(event);
+  if (event.target.id === "review-form") submitBuyerReview(event);
+});
+
+// Search suggestions and recent searches are shared by the page and popup.
+function renderRecentSearches() {
+  const stored = PetalStore.read("petal-recent-searches:" + PetalStore.owner(), []);
+  const queries = Array.isArray(stored) ? stored.filter(query => typeof query === "string").slice(0, 6) : [];
+  for (const container of document.querySelectorAll("[data-recent-searches]"))
+    container.innerHTML = queries.length
+      ? queries.map(query => '<button type="button" data-search-query="' + escapeHTML(query) + '">' + escapeHTML(query) + '</button>').join("")
+      : '<p>No recent searches yet.</p>';
+}
+function rememberSearch(value) {
+  const query = value.trim().slice(0, 80);
+  if (!query) return;
+  const key = "petal-recent-searches:" + PetalStore.owner();
+  const stored = PetalStore.read(key, []);
+  const queries = Array.isArray(stored) ? stored : [];
+  PetalStore.write(key, [query, ...queries.filter(item => typeof item === "string" && item.toLowerCase() !== query.toLowerCase())].slice(0, 6));
+  renderRecentSearches();
+}
+function updateReviewPresentation() {
+  const form = document.getElementById("review-form");
+  if (!form) return;
+  const message = formValue(form, "message");
+  document.getElementById("review-character-count").textContent = message.length + "/1000 characters";
+  const rating = Number(formValue(form, "rating")) || 0;
+  for (const star of form.querySelectorAll(".rating-star")) {
+    const radio = star.querySelector("input");
+    star.classList.toggle("selected", Number(radio.value) <= rating);
+  }
+}
+function initializeProfile() {
+  const user = PetalStore.session();
+  document.getElementById("profile-layout").hidden = !user;
+  document.getElementById("profile-signin-note").hidden = !!user;
+  if (!user) return;
+  refreshAccountUI();
+  for (const name of document.querySelectorAll("[data-profile-name]")) name.textContent = user.name;
+  for (const email of document.querySelectorAll("[data-profile-email]")) email.textContent = user.email;
+  document.getElementById("profile-bio").textContent = user.bio || "Your Bio";
+  document.getElementById("profile-phone").textContent = user.phone || "—";
+  document.getElementById("profile-address").textContent = user.address || "—";
+  const orders = PetalStore.orders();
+  const joined = user.createdAt || orders.at(-1)?.date;
+  document.getElementById("profile-member-since").textContent = joined
+    ? new Date(joined).toLocaleDateString("en-PH", { month: "long", year: "numeric" }) : "—";
+  document.getElementById("profile-orders").textContent = orders.length;
+  const flowers = PetalStore.getCart().reduce(function (sum, line) {
+    if (line.options.flowers) return sum + line.options.flowers.reduce((count, flower) => count + flower.quantity, 0) * line.quantity;
+    const product = findProduct(line.productId);
+    return sum + (product && productKind(product) === "flower" ? line.quantity : 0);
+  }, 0);
+  document.getElementById("profile-flowers").textContent = flowers;
+  const form = document.getElementById("profile-edit-form");
+  for (const field of ["name", "bio", "phone", "address"]) form.elements.namedItem(field).value = user[field] || "";
+}
+function saveProfile(event) {
+  event.preventDefault();
+  const form = event.target;
+  if (!form.reportValidity()) return;
+  const user = PetalStore.session();
+  if (!user) return;
+  for (const field of ["name", "bio", "phone", "address"]) user[field] = formValue(form, field);
+  if (!user.name) return;
+  const profiles = PetalStore.read("petal-profiles", []);
+  const index = profiles.findIndex(profile => profile.id === user.id);
+  if (index >= 0) profiles[index] = user;
+  else profiles.push(user);
+  PetalStore.write("petal-profiles", profiles);
+  PetalStore.write("petal-session", user);
+  form.hidden = true;
+  document.getElementById("edit-profile").setAttribute("aria-expanded", "false");
+  initializeProfile();
+  document.getElementById("profile-status").textContent = "Profile saved.";
+}
+
+let profilePhotoSaving = false;
+function persistProfilePhoto(photo, userId) {
+  const current = PetalStore.session();
+  if (!current || current.id !== userId) throw new Error("Please sign in again to change your photo.");
+  const user = { ...current, photo };
+  const profiles = PetalStore.read("petal-profiles", []).map(profile => profile.id === userId ? user : profile);
+  if (!profiles.some(profile => profile.id === userId)) profiles.push(user);
+  const previousProfiles = localStorage.getItem("petal-profiles");
+  const previousSession = localStorage.getItem("petal-session");
+  try {
+    localStorage.setItem("petal-profiles", JSON.stringify(profiles));
+    localStorage.setItem("petal-session", JSON.stringify(user));
+  } catch (error) {
+    try {
+      if (previousProfiles === null) localStorage.removeItem("petal-profiles");
+      else localStorage.setItem("petal-profiles", previousProfiles);
+      if (previousSession === null) localStorage.removeItem("petal-session");
+      else localStorage.setItem("petal-session", previousSession);
+    } catch {}
+    throw new Error("There is not enough browser storage to save this photo. Please choose a smaller photo.");
+  }
+  refreshAccountUI();
+}
+
+async function changeProfilePhoto(file) {
+  const user = PetalStore.session();
+  if (!file || !user || profilePhotoSaving) return;
+  const status = document.getElementById("profile-photo-status");
+  const input = document.getElementById("profile-photo-input");
+  if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
+    status.textContent = "Choose a JPG, PNG, WebP, or GIF photo.";
+    input.value = "";
+    return;
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    status.textContent = "Please choose a photo smaller than 10 MB.";
+    input.value = "";
+    return;
+  }
+  profilePhotoSaving = true;
+  const buttons = document.querySelectorAll("#change-profile-photo,#remove-profile-photo");
+  for (const button of buttons) button.disabled = true;
+  status.textContent = "Saving your photo…";
+  try {
+    const source = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("Could not read that photo. Please choose another image."));
+      reader.readAsDataURL(file);
+    });
+    const image = await new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error("That image could not be opened. Please choose another photo."));
+      image.src = source;
+    });
+    const scale = Math.min(1, 512 / Math.max(image.naturalWidth, image.naturalHeight));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const context = canvas.getContext("2d");
+    context.fillStyle = "white";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    persistProfilePhoto(canvas.toDataURL("image/jpeg", 0.85), user.id);
+    status.textContent = "Profile photo saved.";
+  } catch (error) {
+    status.textContent = error.message || "Could not save that photo. Please try again.";
+  } finally {
+    profilePhotoSaving = false;
+    input.value = "";
+    for (const button of buttons) button.disabled = false;
+  }
+}
+
+document.addEventListener("click", function (event) {
+  const button = event.target.closest("button");
+  if (!button) return;
+  if (button.hasAttribute("data-profile-tab")) {
+    showProfileTab(button.dataset.profileTab);
+  } else if (button.hasAttribute("data-search-query")) {
+    const onPage = !!button.closest(".search-page");
+    const inputId = onPage ? "page-search-input" : "search-input";
+    const resultId = onPage ? "page-search-results" : "search-results";
+    document.getElementById(inputId).value = button.dataset.searchQuery;
+    searchProducts(inputId, resultId);
+    rememberSearch(button.dataset.searchQuery);
+    document.getElementById(inputId).focus();
+  } else if (button.id === "edit-profile") {
+    const form = document.getElementById("profile-edit-form");
+    form.hidden = !form.hidden;
+    button.setAttribute("aria-expanded", String(!form.hidden));
+    if (!form.hidden) form.elements.namedItem("name").focus();
+  } else if (button.id === "password-help") {
+    showProfileTab("password");
+  } else if (button.id === "change-profile-photo") {
+    document.getElementById("profile-photo-input").click();
+  } else if (button.id === "remove-profile-photo") {
+    const user = PetalStore.session();
+    if (!user || profilePhotoSaving) return;
+    const status = document.getElementById("profile-photo-status");
+    try {
+      persistProfilePhoto("", user.id);
+      status.textContent = "Profile photo removed.";
+    } catch (error) {
+      status.textContent = error.message;
+    }
+  }
+});
+document.addEventListener("input", function (event) {
+  if (event.target.closest("#review-form")) updateReviewPresentation();
+});
+document.addEventListener("change", function (event) {
+  if (event.target.closest("#review-form")) updateReviewPresentation();
+  if (event.target.id === "profile-photo-input") changeProfilePhoto(event.target.files[0]);
+});
+document.addEventListener("submit", function (event) {
+  if (event.target.id === "profile-edit-form") saveProfile(event);
+});
+
+function showProfileTab(tab) {
+  for (const panel of document.querySelectorAll("[data-profile-panel]")) panel.hidden = panel.dataset.profilePanel !== tab;
+  for (const control of document.querySelectorAll(".profile-nav button")) {
+    control.classList.toggle("active", (control.dataset.profileTab || "password") === tab);
+  }
+  if (tab === "password") {
+    const hasPassword = !!PetalStore.session()?.passwordRecord;
+    const field = document.getElementById("current-password-field");
+    field.hidden = !hasPassword;
+    field.querySelector("input").required = hasPassword;
+    document.getElementById("password-account-note").textContent = hasPassword ? "" : "Set a password for this saved account. Use at least 8 characters.";
+  }
+}
+async function saveProfilePassword(event) {
+  event.preventDefault();
+  const form = event.target;
+  if (!form.reportValidity()) return;
+  const status = document.getElementById("password-status");
+  const password = form.elements.namedItem("newPassword").value;
+  const confirm = form.elements.namedItem("confirmPassword").value;
+  if (password !== confirm) { status.textContent = "The new passwords must match."; return; }
+  const user = PetalStore.session();
+  if (!user) return;
+  const submit = form.querySelector('[type="submit"]');
+  submit.disabled = true;
+  try {
+    if (user.passwordRecord && !(await verifyAccountPassword(form.elements.namedItem("currentPassword").value, user.passwordRecord))) {
+      status.textContent = "Your current password is incorrect."; return;
+    }
+    user.passwordRecord = await makeAccountPassword(password);
+    const profiles = PetalStore.read("petal-profiles", []);
+    const index = profiles.findIndex(profile => profile.id === user.id);
+    if (index >= 0) profiles[index] = user;
+    else profiles.push(user);
+    PetalStore.write("petal-profiles", profiles);
+    PetalStore.write("petal-session", user);
+    form.reset();
+    status.textContent = "Password saved.";
+    showProfileTab("password");
+  } catch (error) { status.textContent = "Could not save the password. Please try again."; }
+  finally { submit.disabled = false; }
+}
+document.addEventListener("submit", function (event) {
+  if (event.target.id === "profile-password-form") saveProfilePassword(event);
+});

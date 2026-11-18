@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Petal Haus | Sign Up</title>
+    <link rel="stylesheet" href="style.css?v=4-account" />
+    <script src="../settings.js" defer></script>
+    <script src="../products.js" defer></script>
+    <script src="../store.js?v=20261118-account-fix" defer></script>
+    <script src="../account.js?v=20261118-account-fix" defer></script>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <img
+        class="photo"
+        src="BG.jpg"
+        alt="Flower shop"
+        width="440"
+        height="580"
+      />
+      <img
+        class="logo"
+        src="logo.png"
+        alt="The Petal Haus"
+        width="280"
+        height="280"
+      />
+      <div class="card signup-card">
+        <h1>SIGN UP</h1>
+        <p id="account-status" role="status"></p>
+        <form method="POST" action="../index.html">
+          <table cellpadding="0" cellspacing="0" width="424">
+            <tr>
+              <td width="200">
+                <label for="account-fname">First Name:</label>
+                <input
+                  id="account-fname"
+                  class="half"
+                  type="text"
+                  name="fname"
+                  required
+                />
+              </td>
+              <td width="24"></td>
+              <td width="200">
+                <label for="account-lname">Lastname:</label>
+                <input
+                  id="account-lname"
+                  class="half"
+                  type="text"
+                  name="lname"
+                  required
+                />
+              </td>
+            </tr>
+          </table>
+          <label for="account-email">Enter your email:</label>
+          <input
+            autocomplete="email"
+            id="account-email"
+            class="field"
+            type="email"
+            name="email"
+            required
+          />
+          <label for="account-password">Enter your password:</label>
+          <input
+            autocomplete="new-password"
+            id="account-password"
+            class="field"
+            type="password"
+            name="password"
+            minlength="8"
+            maxlength="128"
+            required
+          />
+          <label for="account-mobile">Enter your mobile number:</label>
+          <input
+            id="account-mobile"
+            class="field"
+            type="tel"
+            name="mobile"
+            required
+          />
+          <input class="button" type="submit" value="CREATE ACCOUNT" />
+        </form>
+        <p class="account-switch">
+          Already have an account? <a href="LoginPage.html">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

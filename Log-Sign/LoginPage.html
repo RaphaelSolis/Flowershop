@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Petal Haus | Log In</title>
+    <link rel="stylesheet" href="style.css?v=2" />
+    <script src="../settings.js" defer></script>
+    <script src="../products.js" defer></script>
+    <script src="../store.js?v=20261118-account-fix" defer></script>
+    <script src="../account.js?v=20261118-account-fix" defer></script>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <img
+        class="photo"
+        src="BG.jpg"
+        alt="Flower shop"
+        width="440"
+        height="580"
+      />
+      <img
+        class="logo"
+        src="logo.png"
+        alt="The Petal Haus"
+        width="280"
+        height="280"
+      />
+      <div class="card">
+        <h1>LOG IN</h1>
+        <p class="intro">
+          We are delighted to meet you! Please login or register to continue.
+        </p>
+        <p id="account-status" role="status"></p>
+        <form method="POST" action="../index.html">
+          <label for="account-email">Email:</label>
+          <input
+            autocomplete="email"
+            id="account-email"
+            class="field"
+            type="email"
+            name="email"
+            required
+          />
+          <label for="account-password">Password:</label>
+          <input
+            autocomplete="current-password"
+            id="account-password"
+            class="field"
+            type="password"
+            name="password"
+            required
+          />
+          <a class="forgot" href="#">Forgotten Password?</a>
+          <input class="button" type="submit" value="LOG IN" />
+        </form>
+        <p class="signup">
+          Don't have an account here?
+          <a href="SignUp.html">Sign up here.</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1557 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- PAGE SETUP: browser title, fonts/styles, and button behavior. -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#577438" />
+    <meta
+      name="description"
+      content="The Petal Haus — flowers for every story and every occasion. Explore our blooms or create your own bouquet."
+    />
+    <title>The Petal Haus | Shop by Occasions</title>
+    <!-- styles.css controls colors, fonts, spacing, and phone layouts. -->
+    <link rel="stylesheet" href="styles.css?v=20261118" />
+    <link rel="stylesheet" href="design-spec.css?v=20261118-profile-photo" />
+    <!-- defer means: finish reading this HTML before running app.js. -->
+    <!-- products.js loads the price list first; app.js then makes buttons work. -->
+    <script src="settings.js?v=20261118" defer></script>
+    <script src="products.js?v=20261118-3" defer></script>
+    <script src="store.js?v=20261118-account-fix" defer></script>
+    <script src="app.js?v=20261118-profile-photo" defer></script>
+    <script src="shop.js" defer></script>
+    <script src="customize.js" defer></script>
+    <script src="pages.js?v=20261118-profile-photo" defer></script>
+  </head>
+  <body data-page="occasions">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- PAGE CONTENT: edit the visible words and photos below. -->
+    <div id="site">
+      <!-- 1. TOP MENU: logo, page links, search, cart, and phone menu. -->
+      <header class="site-header">
+        <a href="index.html" class="brand" aria-label="The Petal Haus home">
+          <img src="assets/logo.png" alt="The Petal Haus" />
+        </a>
+        <a href="Log-Sign/LoginPage.html" class="profile-link" aria-label="Log in">
+          <img src="assets/home/profile.png" alt="" />
+        </a>
+        <nav class="main-nav" id="main-nav" aria-label="Main navigation">
+          <a class="nav-link" href="index.html">
+            <img src="assets/home/home.png" alt="" />
+            Home
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <div class="shop-menu">
+            <button
+              class="nav-link active"
+              type="button"
+              aria-expanded="false"
+              aria-controls="shop-dropdown"
+              data-shop-menu=""
+            >
+              <img src="assets/home/flower.png" alt="" />
+              Shop
+            </button>
+            <div class="shop-dropdown" id="shop-dropdown">
+              <a href="collections.html">
+                <img src="assets/home/petal-green.png" alt="" />
+                Shop by Collection
+              </a>
+              <a href="occasions.html">
+                <img src="assets/home/petal-green.png" alt="" />
+                Shop by Occasions
+              </a>
+              <a href="customize.html">
+                <img src="assets/home/petal-green.png" alt="" />
+                Customized Yours
+              </a>
+            </div>
+          </div>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="contact.html">
+            <img src="assets/home/tele.png" alt="" />
+            Contact Us
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="about.html">
+            <img src="assets/home/info.png" alt="" />
+            About Us
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="gallery.html">
+            <img src="assets/home/gal.png" alt="" />
+            Gallery
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a class="nav-link" href="feedback.html">
+            <img src="assets/home/star.png" alt="" />
+            Feedback
+          </a>
+          <span class="nav-separator" aria-hidden="true">|</span>
+          <a data-logout="" class="nav-link" href="Log-Sign/LoginPage.html">
+            <img src="assets/home/out.png" alt="" />
+            Logout
+          </a>
+        </nav>
+        <div class="header-actions">
+          <button class="icon-button" type="button" aria-label="Search flowers" data-search="">
+            <img src="assets/home/search.png" alt="" />
+          </button>
+          <a href="cart.html" data-cart="" aria-label="Open my cart" class="icon-button">
+            <img src="assets/home/cart.png" alt="" />
+            <span class="cart-count" data-cart-count=""></span>
+          </a>
+          <a href="notifications.html" aria-label="Store announcements" class="icon-button">
+            <img src="assets/home/notif.png" alt="" />
+            <span class="notification-dot"></span>
+          </a>
+        </div>
+        <button
+          class="mobile-menu"
+          type="button"
+          aria-controls="main-nav"
+          aria-expanded="false"
+          aria-label="Toggle menu"
+          data-mobile-menu=""
+        >
+          ☰
+        </button>
+      </header>
+      <!-- 2. MAIN PAGE: each HTML file has its own content here. -->
+      <main id="main">
+        <!-- FLOWER BANNER: edit the greeting, heading, tagline, and photo here. -->
+        <section class="hero hero-occasions" aria-labelledby="hero-title">
+          <img
+            class="hero-image"
+            src="assets/banners/shop occ.png"
+            alt="Soft pink hibiscus flowers"
+            fetchpriority="high"
+          />
+          <div class="hero-copy">
+            <h1 class="hero-title" id="hero-title">SHOP</h1>
+            <p class="hero-heading">
+              Flowers That Turn
+              <br />
+              Moments Into
+              <br />
+              Memories
+            </p>
+            <p class="hero-tagline">
+              Thoughtfully arranged blooms for celebrations, surprises, and heartfelt gestures.
+            </p>
+          </div>
+        </section>
+        <section class="category-selector" aria-labelledby="occasions-heading">
+          <h2 class="section-heading" id="occasions-heading">
+            SHOP BY OCCASIONS
+            <img class="floret" src="assets/home/petal-green.png" alt="" />
+          </h2>
+          <div class="category-grid occasion-grid">
+            <a class="category-link" href="occasions.html#birthday">
+              <span class="category-label">Birthday</span>
+              <img src="assets/home/occ-1.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="occasions.html#wedding">
+              <span class="category-label">Wedding</span>
+              <img src="assets/home/occ-2.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="occasions.html#anniversary">
+              <span class="category-label">Anniversary</span>
+              <img src="assets/home/occ-3.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="occasions.html#achievement">
+              <span class="category-label">Achievement</span>
+              <img src="assets/home/occ-4.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="occasions.html#sympathy">
+              <span class="category-label">Sympathy</span>
+              <img src="assets/home/occ-5.png" alt="" loading="lazy" />
+            </a>
+            <a class="category-link" href="occasions.html#thank-you">
+              <span class="category-label">Thank You</span>
+              <img src="assets/home/occ-6.png" alt="" loading="lazy" />
+            </a>
+          </div>
+          <div class="selector-actions">
+            <a class="pill" href="collections.html">SHOP BY COLLECTIONS</a>
+            <a href="cart.html" data-cart="" class="pill">MY CART</a>
+          </div>
+        </section>
+        <!-- PRODUCT LISTS: photos and Add to Cart buttons. app.js stores cart prices. -->
+        <div class="catalog">
+          <button hidden data-show-all="" type="button" class="pill green" id="show-all-sections">
+            Show all sections
+          </button>
+          <section class="product-section" id="birthday" aria-labelledby="birthday-title">
+            <div class="product-section-heading">
+              <h2 id="birthday-title">BIRTHDAY</h2>
+              <button type="button" class="pill green see-more" data-section="birthday">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="birthday-1">
+                  <button
+                    aria-label="Configure Blushing Romance"
+                    data-configure="birthday-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/birthday-1.png"
+                          alt="Blushing Romance"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Blushing Romance</h3>
+                        <p>1,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="birthday-1"
+                    aria-label="Add Blushing Romance to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="birthday-2">
+                  <button
+                    aria-label="Configure Sweet Serenity"
+                    data-configure="birthday-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/birthday-2.png"
+                          alt="Sweet Serenity"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Sweet Serenity</h3>
+                        <p>1,799 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="birthday-2"
+                    aria-label="Add Sweet Serenity to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="birthday-3">
+                  <button
+                    aria-label="Configure Garden Whisper"
+                    data-configure="birthday-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/birthday-3.png"
+                          alt="Garden Whisper"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Garden Whisper</h3>
+                        <p>2,339 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="birthday-3"
+                    aria-label="Add Garden Whisper to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="birthday-4">
+                  <button
+                    aria-label="Configure Peony Dreams"
+                    data-configure="birthday-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/birthday-4.png"
+                          alt="Peony Dreams"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Peony Dreams</h3>
+                        <p>2,299 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="birthday-4"
+                    aria-label="Add Peony Dreams to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="birthday-5">
+                  <button
+                    aria-label="Configure Stargazer Elegance"
+                    data-configure="birthday-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/birthday-5.png"
+                          alt="Stargazer Elegance"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Stargazer Elegance</h3>
+                        <p>2,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="birthday-5"
+                    aria-label="Add Stargazer Elegance to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="birthday-6">
+                  <button
+                    aria-label="Configure Pink Paradise"
+                    data-configure="birthday-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/birthday-6.png"
+                          alt="Pink Paradise"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Pink Paradise</h3>
+                        <p>3,299 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="birthday-6"
+                    aria-label="Add Pink Paradise to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="birthday"
+                aria-label="Scroll birthday products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+          <section class="product-section" id="wedding" aria-labelledby="wedding-title">
+            <div class="product-section-heading">
+              <h2 id="wedding-title">WEDDING</h2>
+              <button type="button" class="pill green see-more" data-section="wedding">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="wedding-1">
+                  <button
+                    aria-label="Configure Pure Grace"
+                    data-configure="wedding-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img src="assets/occasions/wedding-1.png" alt="Pure Grace" loading="lazy" />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Pure Grace</h3>
+                        <p>1,299 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="wedding-1"
+                    aria-label="Add Pure Grace to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="wedding-2">
+                  <button
+                    aria-label="Configure Ivory Luxe"
+                    data-configure="wedding-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img src="assets/occasions/wedding-2.png" alt="Ivory Luxe" loading="lazy" />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Ivory Luxe</h3>
+                        <p>2,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="wedding-2"
+                    aria-label="Add Ivory Luxe to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="wedding-3">
+                  <button
+                    aria-label="Configure Lavender Blush"
+                    data-configure="wedding-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/wedding-3.png"
+                          alt="Lavender Blush"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Lavender Blush</h3>
+                        <p>2,199 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="wedding-3"
+                    aria-label="Add Lavender Blush to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="wedding-4">
+                  <button
+                    aria-label="Configure Heavenly Vows"
+                    data-configure="wedding-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/wedding-4.png"
+                          alt="Heavenly Vows"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Heavenly Vows</h3>
+                        <p>2,799 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="wedding-4"
+                    aria-label="Add Heavenly Vows to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="wedding-5">
+                  <button
+                    aria-label="Configure Champagne Kiss"
+                    data-configure="wedding-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/wedding-5.png"
+                          alt="Champagne Kiss"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Champagne Kiss</h3>
+                        <p>2,399 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="wedding-5"
+                    aria-label="Add Champagne Kiss to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="wedding-6">
+                  <button
+                    aria-label="Configure Snow Pearl"
+                    data-configure="wedding-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img src="assets/occasions/wedding-6.png" alt="Snow Pearl" loading="lazy" />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Snow Pearl</h3>
+                        <p>1,999 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="wedding-6"
+                    aria-label="Add Snow Pearl to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="wedding"
+                aria-label="Scroll wedding products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+          <section class="product-section" id="anniversary" aria-labelledby="anniversary-title">
+            <div class="product-section-heading">
+              <h2 id="anniversary-title">ANNIVERSARY</h2>
+              <button type="button" class="pill green see-more" data-section="anniversary">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="anniversary-1">
+                  <button
+                    aria-label="Configure Bright sunflowers"
+                    data-configure="anniversary-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/anniversary-1.png"
+                          alt="Bright sunflowers"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Bright sunflowers</h3>
+                        <p>1,299 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="anniversary-1"
+                    aria-label="Add Bright sunflowers to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="anniversary-2">
+                  <button
+                    aria-label="Configure Classic red roses"
+                    data-configure="anniversary-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/anniversary-2.png"
+                          alt="Classic red roses"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Classic red roses</h3>
+                        <p>1,999 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="anniversary-2"
+                    aria-label="Add Classic red roses to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="anniversary-3">
+                  <button
+                    aria-label="Configure Sweet Pink Blooms"
+                    data-configure="anniversary-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/anniversary-3.png"
+                          alt="Sweet Pink Blooms"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Sweet Pink Blooms</h3>
+                        <p>1,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="anniversary-3"
+                    aria-label="Add Sweet Pink Blooms to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="anniversary-4">
+                  <button
+                    aria-label="Configure Soft pink flowers"
+                    data-configure="anniversary-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/anniversary-4.png"
+                          alt="Soft pink flowers"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Soft pink flowers</h3>
+                        <p>1,799 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="anniversary-4"
+                    aria-label="Add Soft pink flowers to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="anniversary-5">
+                  <button
+                    aria-label="Configure Rosy Romance"
+                    data-configure="anniversary-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/anniversary-5.png"
+                          alt="Rosy Romance"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Rosy Romance</h3>
+                        <p>2,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="anniversary-5"
+                    aria-label="Add Rosy Romance to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="anniversary-6">
+                  <button
+                    aria-label="Configure Eternal Love"
+                    data-configure="anniversary-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/anniversary-6.png"
+                          alt="Eternal Love"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Eternal Love</h3>
+                        <p>2,299 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="anniversary-6"
+                    aria-label="Add Eternal Love to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="anniversary"
+                aria-label="Scroll anniversary products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+          <section class="product-section" id="achievement" aria-labelledby="achievement-title">
+            <div class="product-section-heading">
+              <h2 id="achievement-title">ACHIEVEMENT</h2>
+              <button type="button" class="pill green see-more" data-section="achievement">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="achievement-1">
+                  <button
+                    aria-label="Configure Blossom of Success"
+                    data-configure="achievement-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/achievement-1.png"
+                          alt="Blossom of Success"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Blossom of Success</h3>
+                        <p>1,399 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="achievement-1"
+                    aria-label="Add Blossom of Success to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="achievement-2">
+                  <button
+                    aria-label="Configure New Beginnings"
+                    data-configure="achievement-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/achievement-2.png"
+                          alt="New Beginnings"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>New Beginnings</h3>
+                        <p>1,299 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="achievement-2"
+                    aria-label="Add New Beginnings to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="achievement-3">
+                  <button
+                    aria-label="Configure Dream Chaser"
+                    data-configure="achievement-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/achievement-3.png"
+                          alt="Dream Chaser"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Dream Chaser</h3>
+                        <p>1,899 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="achievement-3"
+                    aria-label="Add Dream Chaser to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="achievement-4">
+                  <button
+                    aria-label="Configure Milestone Moments"
+                    data-configure="achievement-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/achievement-4.png"
+                          alt="Milestone Moments"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Milestone Moments</h3>
+                        <p>2,099 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="achievement-4"
+                    aria-label="Add Milestone Moments to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="achievement-5">
+                  <button
+                    aria-label="Configure Triumph Bloom"
+                    data-configure="achievement-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/achievement-5.png"
+                          alt="Triumph Bloom"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Triumph Bloom</h3>
+                        <p>1,799 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="achievement-5"
+                    aria-label="Add Triumph Bloom to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="achievement-6">
+                  <button
+                    aria-label="Configure Blue Horizon"
+                    data-configure="achievement-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/achievement-6.png"
+                          alt="Blue Horizon"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Blue Horizon</h3>
+                        <p>1,999 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="achievement-6"
+                    aria-label="Add Blue Horizon to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="achievement"
+                aria-label="Scroll achievement products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+          <section class="product-section" id="sympathy" aria-labelledby="sympathy-title">
+            <div class="product-section-heading">
+              <h2 id="sympathy-title">SYMPATHY</h2>
+              <button type="button" class="pill green see-more" data-section="sympathy">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="sympathy-1">
+                  <button
+                    aria-label="Configure Eternal Remembrance Wreath"
+                    data-configure="sympathy-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/sympathy-1.png"
+                          alt="Eternal Remembrance Wreath"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Eternal Remembrance Wreath</h3>
+                        <p>3,999 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="sympathy-1"
+                    aria-label="Add Eternal Remembrance Wreath to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="sympathy-2">
+                  <button
+                    aria-label="Configure Peaceful Tribute Stand"
+                    data-configure="sympathy-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/sympathy-2.png"
+                          alt="Peaceful Tribute Stand"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Peaceful Tribute Stand</h3>
+                        <p>3,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="sympathy-2"
+                    aria-label="Add Peaceful Tribute Stand to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="sympathy-3">
+                  <button
+                    aria-label="Configure Sacred Memories Stand"
+                    data-configure="sympathy-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/sympathy-3.png"
+                          alt="Sacred Memories Stand"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Sacred Memories Stand</h3>
+                        <p>4,299 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="sympathy-3"
+                    aria-label="Add Sacred Memories Stand to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="sympathy-4">
+                  <button
+                    aria-label="Configure Serenity"
+                    data-configure="sympathy-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img src="assets/occasions/sympathy-4.png" alt="Serenity" loading="lazy" />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Serenity</h3>
+                        <p>2,999 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="sympathy-4"
+                    aria-label="Add Serenity to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="sympathy-5">
+                  <button
+                    aria-label="Configure Heavenly Grace"
+                    data-configure="sympathy-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/sympathy-5.png"
+                          alt="Heavenly Grace"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Heavenly Grace</h3>
+                        <p>3,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="sympathy-5"
+                    aria-label="Add Heavenly Grace to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="sympathy-6">
+                  <button
+                    aria-label="Configure Forever in Our Hearts"
+                    data-configure="sympathy-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/sympathy-6.png"
+                          alt="Forever in Our Hearts"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Forever in Our Hearts</h3>
+                        <p>3,799 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="sympathy-6"
+                    aria-label="Add Forever in Our Hearts to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="sympathy"
+                aria-label="Scroll sympathy products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+          <section class="product-section" id="thank-you" aria-labelledby="thank-you-title">
+            <div class="product-section-heading">
+              <h2 id="thank-you-title">THANK YOU!</h2>
+              <button type="button" class="pill green see-more" data-section="thank-you">
+                SEE MORE
+              </button>
+            </div>
+            <div class="product-carousel">
+              <div class="product-grid">
+                <article class="product-card" data-product="thank-you-1">
+                  <button
+                    aria-label="Configure Grateful Heart Basket"
+                    data-configure="thank-you-1"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/thank-you-1.png"
+                          alt="Grateful Heart Basket"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Grateful Heart Basket</h3>
+                        <p>1,499 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="thank-you-1"
+                    aria-label="Add Grateful Heart Basket to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="thank-you-2">
+                  <button
+                    aria-label="Configure Appreciation Blooms Basket"
+                    data-configure="thank-you-2"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/thank-you-2.png"
+                          alt="Appreciation Blooms Basket"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Appreciation Blooms Basket</h3>
+                        <p>1,899 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="thank-you-2"
+                    aria-label="Add Appreciation Blooms Basket to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="thank-you-3">
+                  <button
+                    aria-label="Configure Sweet Gratitude Basket"
+                    data-configure="thank-you-3"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/thank-you-3.png"
+                          alt="Sweet Gratitude Basket"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Sweet Gratitude Basket</h3>
+                        <p>1,699 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="thank-you-3"
+                    aria-label="Add Sweet Gratitude Basket to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="thank-you-4">
+                  <button
+                    aria-label="Configure Thankful Wishes Basket"
+                    data-configure="thank-you-4"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/thank-you-4.png"
+                          alt="Thankful Wishes Basket"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Thankful Wishes Basket</h3>
+                        <p>1,799 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="thank-you-4"
+                    aria-label="Add Thankful Wishes Basket to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="thank-you-5">
+                  <button
+                    aria-label="Configure Endless Appreciation Basket"
+                    data-configure="thank-you-5"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/thank-you-5.png"
+                          alt="Endless Appreciation Basket"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Endless Appreciation Basket</h3>
+                        <p>2,099 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="thank-you-5"
+                    aria-label="Add Endless Appreciation Basket to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+                <article class="product-card" data-product="thank-you-6">
+                  <button
+                    aria-label="Configure Blooming Thanks Basket"
+                    data-configure="thank-you-6"
+                    class="product-selection-button"
+                    type="button"
+                  >
+                    <div class="photo-card">
+                      <div class="catalog-photo-window photo-only">
+                        <img
+                          src="assets/occasions/thank-you-6.png"
+                          alt="Blooming Thanks Basket"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="photo-caption">
+                        <h3>Blooming Thanks Basket</h3>
+                        <p>1,999 PHP</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    class="add-cart"
+                    type="button"
+                    data-add="thank-you-6"
+                    aria-label="Add Blooming Thanks Basket to cart"
+                  >
+                    Add to Cart
+                    <img src="assets/home/cart.png" alt="" />
+                  </button>
+                </article>
+              </div>
+              <button
+                type="button"
+                class="carousel-next"
+                data-next="thank-you"
+                aria-label="Scroll thank you products right"
+              >
+                ➜
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+      <!-- 3. FOOTER: menu, address, phone, social links, and FAQs.
+This footer is copied into each storefront page. Edit each copy for a site-wide change. -->
+      <footer class="site-footer">
+        <div class="footer-left">
+          <div class="footer-brand">
+            <a href="index.html">
+              <img src="assets/logo.png" alt="The Petal Haus" loading="lazy" />
+            </a>
+            <p class="footer-quote">“Every petal tells a story, every bloom holds a feeling.”</p>
+            <h3 class="follow-title">Follow Us!</h3>
+            <div class="social-links">
+              <a
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+              >
+                <img src="assets/footer/fb.png" alt="" />
+              </a>
+              <a
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <img src="assets/footer/ig.png" alt="" />
+              </a>
+              <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X">
+                <img src="assets/footer/x.png" alt="" />
+              </a>
+            </div>
+          </div>
+          <div class="footer-location">
+            <h3>Location:</h3>
+            <p>
+              <a data-store-map="" target="_blank" rel="noopener noreferrer">
+                Golden Gate Basketball Court,
+                <br />
+                Topland Ave, Las Piñas, 1747 Metro Manila
+              </a>
+            </p>
+          </div>
+          <div class="footer-contact" id="contact">
+            <h3>Contact Number:</h3>
+            <p><a data-store-phone="" href="tel:+631234567890">(+63) 123 456 7890</a></p>
+          </div>
+        </div>
+        <div class="footer-right">
+          <h2 class="footer-heading">MENU</h2>
+          <nav class="footer-menu" aria-label="Footer navigation">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="collections.html">Shop</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="feedback.html">Feedback</a>
+          </nav>
+          <h2 class="footer-heading">FAQS</h2>
+          <div class="faq-list">
+            <details class="faq" open>
+              <summary>How long do your flowers stay fresh?</summary>
+              <p>
+                Our flowers are carefully selected and arranged using fresh blooms. With proper
+                care, most bouquets can remain fresh and beautiful for 5–10 days.
+              </p>
+            </details>
+            <details class="faq" open>
+              <summary>Can I customize my bouquet?</summary>
+              <p>
+                Absolutely! We can create custom arrangements based on your preferred flowers,
+                colors, budget, and occasion.
+              </p>
+            </details>
+            <details class="faq" open>
+              <summary>Do you offer same-day flower delivery?</summary>
+              <p>
+                Yes! We offer same-day delivery for orders placed before our daily cut-off time.
+                Delivery availability may vary depending on your location.
+              </p>
+            </details>
+          </div>
+        </div>
+      </footer>
+      <!-- 4. POP-UP WINDOWS: hidden until Search, Cart, or another button opens them. -->
+
+      <dialog class="site-dialog" id="search-dialog" aria-labelledby="search-title">
+        <div class="dialog-heading">
+          <h2 id="search-title">SEARCH PRODUCTS</h2>
+          <button class="dialog-close" type="button" data-close="" aria-label="Close search">
+            ×
+          </button>
+        </div>
+        <form class="search-form" id="search-form">
+          <input
+            type="search"
+            id="search-input"
+            placeholder="Search for Flowers"
+            aria-label="Search products"
+          />
+          <button class="pill" type="submit">Search</button>
+        </form>
+        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">Rose</button><button type="button" data-search-query="Sunflower">Sunflower</button><button type="button" data-search-query="Bouquet">Bouquet</button><button type="button" data-search-query="Birthday">Birthday</button></div><a href="search.html">Open search page</a>
+        <div class="search-results" id="search-results" aria-live="polite"></div>
+      </dialog>
+
+      <!-- This small message appears briefly after adding an item to the cart. -->
+
+      <!-- PRODUCT OPTIONS: shop products, gift variants, and customization add-ons. -->
+      <dialog
+        class="site-dialog product-options-dialog"
+        id="product-options-dialog"
+        aria-labelledby="product-options-title"
+      >
+        <div class="dialog-heading">
+          <h2 id="product-options-title">Select your item</h2>
+          <button
+            class="dialog-close"
+            type="button"
+            data-close=""
+            aria-label="Close product options"
+          >
+            ×
+          </button>
+        </div>
+        <form id="product-options-form"></form>
+      </dialog>
+      <!-- SUCCESS MESSAGE: appears after a selection has actually been saved. -->
+      <dialog class="site-dialog" id="success-dialog" aria-labelledby="success-title">
+        <div class="success-check" aria-hidden="true">✓</div>
+        <div class="dialog-heading">
+          <h2 id="success-title">The Petal Haus</h2>
+          <button class="dialog-close" type="button" data-close="" aria-label="Close message">
+            ×
+          </button>
+        </div>
+        <p data-success-message="" role="status"></p>
+        <div class="dialog-actions">
+          <a class="pill" href="cart.html" data-success-link="">MY CART</a>
+          <button class="pill green" type="button" data-close="">Continue</button>
+        </div>
+      </dialog>
+      <dialog class="site-dialog gallery-dialog" id="photo-dialog" aria-label="Gallery photo">
+        <button type="button" class="dialog-close" data-close="" aria-label="Close photo">×</button>
+        <img id="full-gallery-photo" alt="" />
+      </dialog>
+
+      <div class="toast" role="status" aria-live="polite" id="toast"></div>
+    </div>
+    <noscript>Please enable JavaScript to use the cart, search, and slideshow.</noscript>
+  </body>
+</html>
