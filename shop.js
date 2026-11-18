@@ -131,12 +131,7 @@ function readProductOptionForm() {
   return { options: options, quantity: boundedQuantity(value("quantity"), 1, 99) };
 }
 function productUnitPrice(product, options) {
-  const kind = productKind(product);
-  if (kind === "chocolate") {
-    if (product.group === "addon") return ferreroPrices[options.pieces || 5];
-    return PetalStore.round((product.price * (options.pieces || 5)) / 5);
-  }
-  return product.price;
+  return PetalStore.productPrice(product, options);
 }
 function optionDetails(options) {
   const parts = [];
@@ -163,7 +158,7 @@ function submitProductOptions(event) {
   const values = readProductOptionForm();
   if (
     !selection ||
-    (selection.context !== "addon" && !PetalStore.available(selection.product.id))
+    (selection.context === "addon" ? !PetalStore.addonAvailable(selection.product.id) : !PetalStore.available(selection.product.id))
   ) {
     document.getElementById("product-options-error").textContent =
       "This item is currently unavailable.";
@@ -188,8 +183,13 @@ function submitProductOptions(event) {
     options: values.options,
     details: optionDetails(values.options),
   };
-  if (selection.context === "addon") setCustomizationAddon(selection.product.addonIndex, line);
-  else PetalStore.addLine(line, selection.replaceId);
+  try {
+    if (selection.context === "addon") setCustomizationAddon(selection.product.addonIndex, line);
+    else PetalStore.addLine(line, selection.replaceId);
+  } catch (error) {
+    document.getElementById("product-options-error").textContent = error.message;
+    return;
+  }
   closeDialog(document.getElementById("product-options-dialog"));
   refreshCartUI();
   if (page === "cart") renderCartPage();
@@ -227,6 +227,7 @@ function searchProducts(inputId = "search-input", resultsId = "search-results") 
   });
   results.innerHTML = matches
     .map(function (product) {
+      const available = PetalStore.available(product.id);
       return (
         '<article class="search-result"><img src="' +
         product.image +
@@ -236,7 +237,7 @@ function searchProducts(inputId = "search-input", resultsId = "search-results") 
         money(product.price) +
         '</p></div><button class="pill" type="button" data-configure="' +
         product.id +
-        '">Select</button></article>'
+        '"' + (available ? "" : " disabled") + '>' + (available ? "Select" : "Unavailable") + '</button></article>'
       );
     })
     .join("");

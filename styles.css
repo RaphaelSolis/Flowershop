@@ -3294,3 +3294,7 @@ body[data-page="cart"] #proceed-checkout {
 body[data-page="cart"] .cart-line-card > img {
   border-radius: 56.4px;
 }
+
+/* Saved delivery address fields. */
+.profile-address-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+.profile-address-fields legend { font-weight: 700; margin-bottom: 12px; }

@@ -66,7 +66,7 @@ function refreshCartUI() {
   }, 0);
   for (const counter of document.querySelectorAll("[data-cart-count]"))
     counter.textContent = quantity || "";
-  PetalStore.syncNotifications();
+  try { PetalStore.syncNotifications(); } catch {}
   const unread = PetalStore.notifications().filter(function (note) {
     return !note.read;
   }).length;
@@ -194,7 +194,7 @@ document.addEventListener("keydown", function (event) {
     document.querySelector(".shop-menu")?.classList.remove("open");
     document.getElementById("main-nav")?.classList.remove("open");
     for (const button of document.querySelectorAll(
-      "[data-shop-menu],[data-mobile-menu]",
+      "[data-shop-menu],[data-mobile-menu],[data-logout]",
     ))
       button.setAttribute("aria-expanded", "false");
   }

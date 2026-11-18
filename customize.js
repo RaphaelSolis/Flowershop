@@ -191,10 +191,11 @@ function addCustomizedBouquet() {
     details: details,
   };
   if (!PetalStore.lineAvailable(line)) {
-    toast("One of your selected flowers is unavailable.");
+    toast("One of your selected flowers or add-ons is unavailable.");
     return;
   }
-  PetalStore.addLine(line);
+  try { PetalStore.addLine(line); }
+  catch (error) { toast(error.message); return; }
   refreshCartUI();
   showSuccess("successfully added to cart", "cart.html", "MY CART");
 }

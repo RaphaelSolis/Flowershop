@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#577438" />
     <title>The Petal Haus | Checkout</title>
-    <link rel="stylesheet" href="styles.css?v=20261118-order-options" />
+    <link rel="stylesheet" href="styles.css?v=20261118-audit-fixes" />
     <link rel="stylesheet" href="design-spec.css?v=20261118-feedback-controls" />
     <script src="settings.js?v=20261118-order-options" defer></script>
     <script src="products.js?v=20261118-3" defer></script>
-    <script src="store.js?v=20261118-order-options" defer></script>
-    <script src="app.js?v=20261118-order-options" defer></script>
-    <script src="shop.js?v=20261118-order-options" defer></script>
-    <script src="customize.js?v=20261118-order-options" defer></script>
-    <script src="pages.js?v=20261118-feedback-controls" defer></script>
+    <script src="store.js?v=20261118-audit-fixes" defer></script>
+    <script src="app.js?v=20261118-audit-fixes" defer></script>
+    <script src="shop.js?v=20261118-audit-fixes" defer></script>
+    <script src="customize.js?v=20261118-audit-fixes" defer></script>
+    <script src="pages.js?v=20261118-audit-fixes" defer></script>
   </head>
   <body data-page="checkout">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -30,7 +30,7 @@
           <img src="assets/home/profile.png" alt="" />
         </a>
         <nav class="main-nav" id="main-nav" aria-label="Main navigation">
-          <a class="nav-link active" href="index.html" aria-current="page">
+          <a class="nav-link" href="index.html">
             <img src="assets/home/home.png" alt="" />
             Home
           </a>
@@ -151,7 +151,7 @@
                 <label>Last Name<input name="lastName" autocomplete="family-name" maxlength="50" required /></label>
               </div>
               <label>Email<input name="email" type="email" autocomplete="email" maxlength="150" required /></label>
-              <label>Phone Number<input name="phone" type="tel" autocomplete="tel" pattern="[+0-9() -]{7,20}" required /></label>
+              <label>Phone Number<input name="phone" type="tel" autocomplete="tel" pattern="(?=(?:[^0-9]*[0-9]){7,15}[^0-9]*$)\+?[0-9\(\) \-]{7,20}" title="Enter a phone number with 7 to 15 digits." required /></label>
               <h3 class="section-bar">Shipping Address</h3>
               <div class="form-two-columns">
                 <label>House Number<input name="houseNumber" autocomplete="address-line1" maxlength="100" required /></label>

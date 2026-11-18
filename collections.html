@@ -10,18 +10,18 @@
       content="The Petal Haus — flowers for every story and every occasion. Explore our blooms or create your own bouquet."
     />
     <title>The Petal Haus | Shop by Collections</title>
-    <!-- styles.css controls colors, fonts, spacing, and phone layouts. -->
-    <link rel="stylesheet" href="styles.css?v=20261118-order-options" />
+    <!-- styles.css?v=20261118-audit-fixes controls colors, fonts, spacing, and phone layouts. -->
+    <link rel="stylesheet" href="styles.css?v=20261118-audit-fixes" />
     <link rel="stylesheet" href="design-spec.css?v=20261118-feedback-controls" />
-    <!-- defer means: finish reading this HTML before running app.js. -->
-    <!-- products.js loads the price list first; app.js then makes buttons work. -->
+    <!-- defer means: finish reading this HTML before running app.js?v=20261118-audit-fixes. -->
+    <!-- products.js loads the price list first; app.js?v=20261118-audit-fixes then makes buttons work. -->
     <script src="settings.js?v=20261118-order-options" defer></script>
     <script src="products.js?v=20261118-3" defer></script>
-    <script src="store.js?v=20261118-order-options" defer></script>
-    <script src="app.js?v=20261118-order-options" defer></script>
-    <script src="shop.js?v=20261118-order-options" defer></script>
-    <script src="customize.js?v=20261118-order-options" defer></script>
-    <script src="pages.js?v=20261118-feedback-controls" defer></script>
+    <script src="store.js?v=20261118-audit-fixes" defer></script>
+    <script src="app.js?v=20261118-audit-fixes" defer></script>
+    <script src="shop.js?v=20261118-audit-fixes" defer></script>
+    <script src="customize.js?v=20261118-audit-fixes" defer></script>
+    <script src="pages.js?v=20261118-audit-fixes" defer></script>
   </head>
   <body data-page="collections">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -53,7 +53,7 @@
               Shop
             </button>
             <div class="shop-dropdown" id="shop-dropdown">
-              <a href="collections.html">
+              <a href="collections.html" aria-current="page">
                 <img src="assets/home/petal-green.png" alt="" />
                 Shop by Collection
               </a>
@@ -177,7 +177,7 @@
             <a href="cart.html" data-cart="" class="pill">MY CART</a>
           </div>
         </section>
-        <!-- PRODUCT LISTS: photos and Add to Cart buttons. app.js stores cart prices. -->
+        <!-- PRODUCT LISTS: photos and Add to Cart buttons. app.js?v=20261118-audit-fixes stores cart prices. -->
         <div class="catalog">
           <button hidden data-show-all="" type="button" class="pill green" id="show-all-sections">
             Show all sections

@@ -4,23 +4,59 @@
    Customer carts are separated by the profile currently signed in. */
 const PetalStore = (function () {
   const memory = {};
+  const storageMessage = "Could not save your changes. Browser storage is full or unavailable. Free some space and try again.";
+  function validProfile(user) {
+    return user && typeof user.id === "string" && typeof user.name === "string" &&
+      !!user.name.trim() && typeof user.email === "string";
+  }
+  function checkedData(key, value, fallback) {
+    if (Array.isArray(fallback) && !Array.isArray(value)) return fallback;
+    if (fallback && !Array.isArray(fallback) && typeof fallback === "object" &&
+        (!value || typeof value !== "object" || Array.isArray(value))) return fallback;
+    if (key === "petal-profiles") return value.filter(validProfile);
+    if (key === "petal-orders") return value.filter(order => order && typeof order.reference === "string" &&
+      typeof order.owner === "string" && order.customer && typeof order.customer === "object" &&
+      Array.isArray(order.items) && order.items.every(item => item && typeof item.name === "string" &&
+        Number.isFinite(item.unitPrice) && Number.isInteger(item.quantity)) &&
+      order.payment && Number.isFinite(order.total) && typeof order.status === "string");
+    if (key === "petal-reviews") return value.filter(review => review && typeof review.owner === "string" &&
+      typeof review.reference === "string" && typeof review.name === "string" &&
+      typeof review.message === "string" && Number.isInteger(review.rating) && review.rating >= 1 && review.rating <= 5);
+    if (key === "petal-notifications" || key === "petal-inquiries")
+      return value.filter(item => item && typeof item.owner === "string" && typeof item.message === "string");
+    return value;
+  }
   function read(key, fallback) {
     try {
       const value = localStorage.getItem(key);
-      return value ? JSON.parse(value) : fallback;
+      return value ? checkedData(key, JSON.parse(value), fallback) : fallback;
     } catch (error) {
       return Object.prototype.hasOwnProperty.call(memory, key)
-        ? memory[key]
-        : fallback;
+        ? checkedData(key, JSON.parse(JSON.stringify(memory[key])), fallback) : fallback;
     }
   }
   function write(key, value) {
-    memory[key] = value;
+    writeMany({ [key]: value });
+  }
+  function writeMany(changes) {
+    const previous = {};
+    const written = [];
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      for (const key of Object.keys(changes)) previous[key] = localStorage.getItem(key);
+      for (const [key, value] of Object.entries(changes)) {
+        localStorage.setItem(key, JSON.stringify(value));
+        written.push(key);
+      }
     } catch (error) {
-      /* Keep this page working in memory. */
+      for (const key of written.reverse()) {
+        try {
+          if (previous[key] === null) localStorage.removeItem(key);
+          else localStorage.setItem(key, previous[key]);
+        } catch {}
+      }
+      throw new Error(storageMessage);
     }
+    for (const [key, value] of Object.entries(changes)) memory[key] = JSON.parse(JSON.stringify(value));
   }
   function makeId(prefix) {
     const random =
@@ -31,62 +67,44 @@ const PetalStore = (function () {
   }
   function session() {
     const user = read("petal-session", null);
-    return user &&
-      typeof user.id === "string" &&
-      typeof user.name === "string" &&
-      typeof user.email === "string"
-      ? user
-      : null;
+    return validProfile(user) ? user : null;
   }
   function owner() {
     const user = session();
-    if (user && user.id) return user.id;
-    let guest = read("petal-guest", null);
-    if (!guest) {
-      guest = makeId("GUEST");
-      write("petal-guest", guest);
-    }
-    return guest;
+    if (user) return user.id;
+    const guest = read("petal-guest", null);
+    return typeof guest === "string" && guest
+      ? guest : memory["petal-guest"] ||= makeId("GUEST");
   }
-  function signIn(name, email) {
+  function signIn(name, email, updates = {}) {
     const profiles = read("petal-profiles", []);
-    let profile = profiles.find(function (item) {
-      return item.email === email.toLowerCase();
-    });
-    if (!profile) {
-      profile = { id: makeId("USER"), name: name, email: email.toLowerCase(), createdAt: new Date().toISOString() };
-      profiles.push(profile);
-      write("petal-profiles", profiles);
-    }
-    // Move a guest's shopping selections to their profile at sign-in.
-    const guestId = owner();
+    const saved = profiles.find(item => item.email === email.toLowerCase());
+    const profile = { ...(saved || {
+      id: makeId("USER"), name, email: email.toLowerCase(), createdAt: new Date().toISOString(),
+    }), ...updates };
+    const index = profiles.findIndex(item => item.id === profile.id);
+    if (index >= 0) profiles[index] = profile;
+    else profiles.push(profile);
     const wasGuest = !session();
+    const guestId = owner();
     const guestCart = wasGuest ? getCart() : [];
-    write("petal-session", profile);
-    const existing = getCart();
-    for (const item of guestCart) {
-      if (
-        !existing.some(function (line) {
-          return line.lineId === item.lineId;
-        })
-      )
-        existing.push(item);
-    }
-    write("petal-cart:" + owner(), existing);
-    if (guestCart.length) write("petal-cart:" + guestId, []);
+    const existing = read("petal-cart:" + profile.id, []).map(normalizeLine).filter(Boolean);
+    for (const item of guestCart)
+      if (!existing.some(line => line.lineId === item.lineId)) existing.push(item);
+    const changes = {
+      "petal-profiles": profiles, "petal-session": profile,
+      ["petal-cart:" + profile.id]: existing, "petal-haus-cart": [],
+    };
     if (wasGuest) {
-      for (const key of [
-        "petal-orders",
-        "petal-inquiries",
-        "petal-notifications",
-        "petal-reviews",
-      ]) {
+      changes["petal-guest"] = guestId;
+      changes["petal-cart:" + guestId] = [];
+      for (const key of ["petal-orders", "petal-inquiries", "petal-notifications", "petal-reviews"]) {
         const records = read(key, []);
-        for (const record of records)
-          if (record.owner === guestId) record.owner = profile.id;
-        write(key, records);
+        for (const record of records) if (record.owner === guestId) record.owner = profile.id;
+        changes[key] = records;
       }
     }
+    writeMany(changes);
     return profile;
   }
   function logout() {
@@ -106,79 +124,135 @@ const PetalStore = (function () {
       ? Math.max(1, Math.min(99, Math.round(number)))
       : 1;
   }
-  function validLine(item) {
-    return (
-      item &&
-      typeof item.lineId === "string" &&
-      typeof item.name === "string" &&
-      typeof item.productId === "string" &&
-      item.options &&
-      typeof item.options === "object" &&
-      typeof item.image === "string" &&
-      item.image.startsWith("assets/") &&
-      Number.isFinite(item.unitPrice) &&
-      item.unitPrice > 0 &&
-      Number.isInteger(item.quantity) &&
-      item.quantity > 0 &&
-      item.quantity <= 99
-    );
+  function productPrice(product, options = {}) {
+    if (product.name.toLowerCase().includes("ferrero")) {
+      const pieces = options.pieces || 5;
+      if (![3, 5, 8, 12].includes(pieces)) return NaN;
+      return product.group === "addon" ? ferreroPrices[pieces] : round(product.price * pieces / 5);
+    }
+    return product.price;
+  }
+  function productOptions(product, values) {
+    if (!values || typeof values !== "object" || Array.isArray(values)) return null;
+    const name = product.name.toLowerCase();
+    const options = {};
+    const choice = (key, choices, defaultValue = choices[0]) => {
+      if (values[key] !== undefined && !choices.includes(values[key])) return false;
+      options[key] = values[key] || defaultValue;
+      return true;
+    };
+    if (name.includes("ferrero")) {
+      if (!choice("flavor", SHOP_SETTINGS.chocolateFlavors) || !choice("pieces", [3, 5, 8, 12], 5)) return null;
+    } else if (name.includes("pepero")) {
+      if (!choice("flavor", SHOP_SETTINGS.peperoFlavors)) return null;
+    } else if (name.includes("candle")) {
+      if (!choice("scent", SHOP_SETTINGS.candleScents)) return null;
+    } else if (name.includes("letter")) {
+      if (typeof values.letter !== "string" || !values.letter.trim() || values.letter.length > 500) return null;
+      options.letter = values.letter.trim();
+    } else if (product.group !== "addon" && product.group !== "gifts" && product.section !== "gifts" &&
+               product.section !== "potted-flowers") {
+      if (!choice("color", colors.map(color => color[0]))) return null;
+    }
+    return options;
+  }
+  function optionDetails(options) {
+    return [
+      options.color && options.color + " wrapper",
+      options.flavor && "Flavor: " + options.flavor,
+      options.pieces && options.pieces + " pieces per pack",
+      options.scent && "Scent: " + options.scent,
+      options.letter && "Letter: " + options.letter,
+    ].filter(Boolean).join(" · ");
+  }
+  function normalizeProduct(item, isAddon = false) {
+    if (!item || typeof item.productId !== "string" || !Number.isInteger(item.quantity) ||
+        item.quantity < 1 || item.quantity > 99) return null;
+    const addonIndex = /^addon-([0-5])$/.exec(item.productId);
+    const product = isAddon && addonIndex
+      ? { ...addons[Number(addonIndex[1])], id: item.productId, group: "addon" }
+      : !isAddon && allProducts.find(product => product.id === item.productId);
+    if (!product) return null;
+    const options = productOptions(product, item.options);
+    if (!options) return null;
+    return {
+      productId: product.id, name: product.name, image: product.image,
+      unitPrice: productPrice(product, options), quantity: item.quantity,
+      options, details: optionDetails(options),
+    };
+  }
+  function normalizeLine(item) {
+    if (!item || typeof item.productId !== "string" || !Number.isInteger(item.quantity) ||
+        item.quantity < 1 || item.quantity > 99 || !item.options ||
+        typeof item.options !== "object" || Array.isArray(item.options)) return null;
+    let line;
+    if (item.productId === "custom-bouquet") {
+      const values = item.options;
+      if (!Array.isArray(values.flowers) || !values.flowers.length || values.flowers.length > customFlowers.length ||
+          !values.flowers.every(flower => flower && Number.isInteger(flower.index) &&
+            flower.index >= 0 && flower.index < customFlowers.length && Number.isInteger(flower.quantity) &&
+            flower.quantity >= 1 && flower.quantity <= 99) ||
+          new Set(values.flowers.map(flower => flower.index)).size !== values.flowers.length) return null;
+      const flowers = values.flowers.map(flower => ({
+        index: flower.index, name: customFlowers[flower.index].name,
+        quantity: flower.quantity, unitPrice: customFlowers[flower.index].price,
+      })).sort((a, b) => a.index - b.index);
+      const mode = values.wrappingMode || "style";
+      const wrapperName = values.wrapping?.name;
+      let wrapping;
+      if (mode === "style") {
+        const style = wrapperName === undefined ? wrappings[0] : wrappings.find(wrapper => wrapper.name === wrapperName);
+        if (style) wrapping = { name: style.name, price: style.price };
+      } else if (mode === "color" && colors.some(color => color[0] + " plain wrapping" === wrapperName)) {
+        wrapping = { name: wrapperName, price: SHOP_SETTINGS.plainWrappingPrice };
+      }
+      if (!wrapping || (values.addons !== undefined && !Array.isArray(values.addons))) return null;
+      const extras = (values.addons || []).map(addon => normalizeProduct(addon, true));
+      if (extras.some(addon => !addon) || new Set(extras.map(addon => addon.productId)).size !== extras.length) return null;
+      const unitPrice = round(flowers.reduce((sum, flower) => sum + flower.quantity * flower.unitPrice, 0) +
+        wrapping.price + extras.reduce((sum, addon) => sum + addon.quantity * addon.unitPrice, 0));
+      line = {
+        productId: "custom-bouquet", name: "Customize Flowers", image: customFlowers[flowers[0].index].image,
+        unitPrice, quantity: item.quantity, options: { flowers, wrappingMode: mode, wrapping, addons: extras },
+        details: flowers.map(flower => flower.quantity + " " + flower.name + " stems").join(" · ") +
+          " · " + wrapping.name + extras.map(addon => " · " + addon.quantity + " " + addon.name + " (" + addon.details + ")").join(""),
+      };
+    } else line = normalizeProduct(item);
+    return line ? { ...line, ...(typeof item.lineId === "string" && item.lineId ? { lineId: item.lineId } : {}) } : null;
   }
   function getCart() {
     const key = "petal-cart:" + owner();
-    let items = read(key, null);
-    if (!items) {
-      // Preserve the cart from the earlier version of the website once.
-      const old = read("petal-haus-cart", []);
-      items = Array.isArray(old)
-        ? old
-            .filter(function (item) {
-              return item && item.price > 0 && typeof item.name === "string";
-            })
-            .map(function (item) {
-              return {
-                lineId: makeId("LINE"),
-                productId: item.id,
-                name: item.name,
-                image: item.image,
-                unitPrice: round(item.price),
-                quantity: quantity(item.quantity),
-                options: {},
-                details: item.details || "",
-              };
-            })
-        : [];
-      write(key, items);
-      write("petal-haus-cart", []);
-    }
-    return Array.isArray(items) ? items.filter(validLine).map(function (item) {
-      return item.productId.startsWith("custom-")
-        ? { ...item, name: "Customize Flowers" }
-        : item;
-    }) : [];
+    const saved = read(key, null);
+    if (saved !== null) return Array.isArray(saved)
+      ? saved.filter(item => item && typeof item.lineId === "string").map(normalizeLine).filter(Boolean) : [];
+    const old = read("petal-haus-cart", []);
+    if (!old.length) return [];
+    const cacheKey = "legacy:" + key;
+    memory[cacheKey] ||= old.map(item => item && ({
+      lineId: makeId("LINE"), productId: item.id, quantity: quantity(item.quantity), options: item.options || {},
+    })).map(normalizeLine).filter(Boolean);
+    return JSON.parse(JSON.stringify(memory[cacheKey]));
   }
   function saveCart(items) {
-    write("petal-cart:" + owner(), items.filter(validLine));
+    const lines = items.map(normalizeLine);
+    if (lines.some(line => !line || !line.lineId)) throw new Error("Some cart items are invalid. Please select them again.");
+    const changes = { ["petal-cart:" + owner()]: lines, "petal-haus-cart": [] };
+    if (!session()) changes["petal-guest"] = owner();
+    writeMany(changes);
   }
   function addLine(item, replaceId) {
-    const lines = getCart().filter(function (line) {
-      return line.lineId !== replaceId;
-    });
-    const matching = lines.find(function (line) {
-      return (
-        line.productId === item.productId &&
-        line.unitPrice === item.unitPrice &&
-        JSON.stringify(line.options) === JSON.stringify(item.options) &&
-        line.details === item.details
-      );
-    });
-    if (matching)
-      matching.quantity = quantity(matching.quantity + item.quantity);
-    else
-      lines.push({
-        ...item,
-        lineId: replaceId || makeId("LINE"),
-        quantity: quantity(item.quantity),
-      });
+    const normalized = normalizeLine(item);
+    if (!normalized) throw new Error("Complete the item options before adding it to your cart.");
+    const lines = getCart().filter(line => line.lineId !== replaceId);
+    let remaining = normalized.quantity;
+    for (const line of lines) {
+      if (line.productId === normalized.productId && JSON.stringify(line.options) === JSON.stringify(normalized.options)) {
+        const added = Math.min(99 - line.quantity, remaining);
+        line.quantity += added;
+        remaining -= added;
+      }
+    }
+    if (remaining) lines.push({ ...normalized, quantity: remaining, lineId: replaceId || makeId("LINE") });
     saveCart(lines);
     return lines;
   }
@@ -208,25 +282,24 @@ const PetalStore = (function () {
   }
   function available(productId) {
     const stock = read("petal-stock", {});
-    if (Object.prototype.hasOwnProperty.call(stock, productId))
-      return stock[productId];
-    const product = allProducts.find(function (item) {
-      return item.id === productId;
-    });
-    return product
-      ? product.available !== false
-      : productId.startsWith("custom-");
+    if (Object.prototype.hasOwnProperty.call(stock, productId)) return stock[productId] === true;
+    const product = allProducts.find(item => item.id === productId);
+    const flowerIndex = /^flower-([1-8])$/.exec(productId);
+    return product ? product.available !== false
+      : /^addon-[0-5]$/.test(productId) || !!flowerIndex || productId === "custom-bouquet";
+  }
+  function addonAvailable(productId) {
+    const counterparts = ["gifts-2", "gifts-1", "gifts-5", "gifts-6", "gifts-4", "gifts-3"];
+    const match = /^addon-([0-5])$/.exec(productId);
+    return !!match && available(productId) && available(counterparts[Number(match[1])]);
   }
   function lineAvailable(line) {
-    if (line.productId.startsWith("custom-")) {
-      return (
-        !line.options.flowers ||
-        line.options.flowers.every(function (flower) {
-          return available("flower-" + (flower.index + 1)) || flower.index >= 6;
-        })
-      );
-    }
-    return available(line.productId);
+    const checked = normalizeLine(line);
+    if (!checked) return false;
+    if (checked.productId === "custom-bouquet") return available(checked.productId) &&
+      checked.options.flowers.every(flower => available("flower-" + (flower.index + 1))) &&
+      checked.options.addons.every(addon => addonAvailable(addon.productId));
+    return available(checked.productId);
   }
   function notify(message, kind, reference, recipient, uniqueId) {
     const list = read("petal-notifications", []);
@@ -247,7 +320,7 @@ const PetalStore = (function () {
       date: new Date().toISOString(),
       read: false,
     });
-    write("petal-notifications", list);
+    writeMany({ "petal-notifications": list, ...(!session() ? { "petal-guest": owner() } : {}) });
   }
   function notifications() {
     return read("petal-notifications", []).filter(function (item) {
@@ -323,9 +396,11 @@ const PetalStore = (function () {
       if (typeof customer[field] !== "string" || !customer[field].trim())
         throw new Error("Complete all delivery details.");
     }
+    if (!/[\p{L}\p{N}]/u.test(customer.address))
+      throw new Error("Enter a valid delivery address.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email))
       throw new Error("Enter a valid email address.");
-    if (!/^[+0-9() -]{7,20}$/.test(customer.phone))
+    if (!isValidPhone(customer.phone))
       throw new Error("Enter a valid phone number.");
     if (!/^[0-9]{4,10}$/.test(customer.postalCode))
       throw new Error("Enter a valid postal code.");
@@ -370,9 +445,8 @@ const PetalStore = (function () {
       total: total(items),
     };
     list.unshift(order);
-    write("petal-orders", list);
-    saveCart([]);
-    notify("Your order " + reference + " has been placed.", "order", reference);
+    writeMany({ "petal-orders": list, ["petal-cart:" + owner()]: [], "petal-haus-cart": [] });
+    try { notify("Your order " + reference + " has been placed.", "order", reference); } catch {}
     return order;
   }
   function setOrderStatus(reference, status) {
@@ -387,7 +461,7 @@ const PetalStore = (function () {
     const order = list.find(function (item) {
       return item.reference === reference;
     });
-    if (!order || !nextStatus[order.status].includes(status))
+    if (!order || !nextStatus[order.status]?.includes(status))
       throw new Error("That order status change is not allowed.");
     order.status = status;
     write("petal-orders", list);
@@ -447,7 +521,7 @@ const PetalStore = (function () {
       date: new Date().toISOString(),
     });
     write("petal-reviews", list);
-    notify("Thank you! Your review was published.", "review", reference);
+    try { notify("Thank you! Your review was published.", "review", reference); } catch {}
   }
   function inquiries() {
     return read("petal-inquiries", []);
@@ -468,6 +542,9 @@ const PetalStore = (function () {
   return {
     read,
     write,
+    writeMany,
+    productPrice,
+    addonAvailable,
     makeId,
     session,
     owner,
@@ -516,7 +593,7 @@ async function makeAccountPassword(password, existingSalt) {
     const key = await crypto.subtle.importKey("raw", passwordBytes, "PBKDF2", false, ["deriveBits"]);
     digest = new Uint8Array(await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" }, key, 256));
   } else {
-    // HTTP demo addresses such as [::] and local IPs do not expose crypto.subtle.
+    // HTTP addresses such as [::] and local IPs do not expose crypto.subtle.
     // These local browser modules produce the same PBKDF2-SHA256 password record.
     accountPasswordModules ||= Promise.all([
       import("./assets/vendor/noble-hashes/pbkdf2.js"),
@@ -531,4 +608,13 @@ async function makeAccountPassword(password, existingSalt) {
 async function verifyAccountPassword(password, record) {
   if (!record || !/^[a-f0-9]{32}$/i.test(record.salt) || !/^[a-f0-9]{64}$/i.test(record.digest)) return false;
   return (await makeAccountPassword(password, record.salt)).digest === record.digest;
+}
+
+// Shared account and delivery validation.
+function isValidPhone(value) {
+  const digits = typeof value === "string" ? value.replace(/[^0-9]/g, "") : "";
+  return digits.length >= 7 && digits.length <= 15 && /^\+?[0-9() -]{7,20}$/.test(value);
+}
+function isStrongAccountPassword(value) {
+  return typeof value === "string" && /^(?=.*\p{Lu})(?=.*[^\p{L}\p{N}\s]).{8,128}$/u.test(value);
 }

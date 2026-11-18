@@ -12,12 +12,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   const passwordInput = form.elements.namedItem("password");
   const confirmationInput = form.elements.namedItem("confirmPassword");
-  const signupPasswordPattern = /^(?=.*\p{Lu})(?=.*[^\p{L}\p{N}\s]).{8,128}$/u;
   function validateSignupPasswords() {
     if (!isSignup) return true;
     const password = passwordInput.value;
     const confirmation = confirmationInput.value;
-    const strongPassword = signupPasswordPattern.test(password);
+    const strongPassword = isStrongAccountPassword(password);
     passwordInput.setCustomValidity(password && !strongPassword
       ? "Use at least 8 characters, one uppercase letter, and one special character."
       : "");
@@ -48,6 +47,11 @@ document.addEventListener("DOMContentLoaded", function () {
       status.textContent = "Enter your first and last name.";
       return;
     }
+    const mobile = form.elements.namedItem("mobile")?.value.trim();
+    if (isSignup && !isValidPhone(mobile)) {
+      status.textContent = "Enter a valid phone number with 7 to 15 digits.";
+      return;
+    }
     const name = firstName ? firstName + " " + lastName : email.split("@")[0];
     const profiles = PetalStore.read("petal-profiles", []);
     const existing = profiles.find(profile => profile.email === email);
@@ -58,25 +62,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const submit = form.querySelector('[type="submit"]');
     submit.disabled = true;
     try {
-      if (existing?.passwordRecord && !(await verifyAccountPassword(password, existing.passwordRecord))) {
+      if (existing && !existing.passwordRecord) {
+        status.textContent = "This account needs a password reset. Please contact us for help accessing your account.";
+        return;
+      }
+      if (existing && !(await verifyAccountPassword(password, existing.passwordRecord))) {
         status.textContent = "The password is incorrect.";
         return;
       }
       const record = existing?.passwordRecord || await makeAccountPassword(password);
-      const user = PetalStore.signIn(name.trim(), email);
-      user.passwordRecord = record;
-      const mobile = form.elements.namedItem("mobile")?.value.trim();
-      if (mobile) user.phone = mobile;
-      const saved = PetalStore.read("petal-profiles", []);
-      const index = saved.findIndex(profile => profile.id === user.id);
-      if (index >= 0) saved[index] = user;
-      else saved.push(user);
-      PetalStore.write("petal-profiles", saved);
-      PetalStore.write("petal-session", user);
+      PetalStore.signIn(name.trim(), email, {
+        passwordRecord: record, ...(isSignup ? { phone: mobile } : {}),
+      });
       location.href = returnToCheckout ? "../checkout.html" : "../index.html";
     } catch (error) {
       console.error("Account " + (isSignup ? "creation" : "sign-in") + " failed:", error);
-      status.textContent = "Could not " + (isSignup ? "create your account" : "sign in") + ". Please refresh the page and try again.";
+      status.textContent = error.message || "Could not save your account. Please try again.";
     } finally {
       submitting = false;
       submit.disabled = false;

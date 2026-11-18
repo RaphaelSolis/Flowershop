@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="style.css?v=20261118-password-confirmation" />
     <script src="../settings.js?v=20261118-order-options" defer></script>
     <script src="../products.js" defer></script>
-    <script src="../store.js?v=20261118-order-options" defer></script>
-    <script src="../account.js?v=20261118-password-confirmation" defer></script>
+    <script src="../store.js?v=20261118-audit-fixes" defer></script>
+    <script src="../account.js?v=20261118-audit-fixes" defer></script>
   </head>
 
   <body>
@@ -101,6 +101,8 @@
             class="field"
             type="tel"
             name="mobile"
+            pattern="(?=(?:[^0-9]*[0-9]){7,15}[^0-9]*$)\+?[0-9\(\) \-]{7,20}"
+            title="Enter a phone number with 7 to 15 digits."
             required
           />
           <input class="button" type="submit" value="CREATE ACCOUNT" />
