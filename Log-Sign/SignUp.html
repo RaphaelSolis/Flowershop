@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Petal Haus | Sign Up</title>
-    <link rel="stylesheet" href="style.css?v=4-account" />
+    <link rel="stylesheet" href="style.css?v=20261118-password-confirmation" />
     <script src="../settings.js?v=20261118-order-options" defer></script>
     <script src="../products.js" defer></script>
     <script src="../store.js?v=20261118-order-options" defer></script>
-    <script src="../account.js?v=20261118-order-options" defer></script>
+    <script src="../account.js?v=20261118-password-confirmation" defer></script>
   </head>
 
   <body>
@@ -74,8 +74,27 @@
             name="password"
             minlength="8"
             maxlength="128"
+            pattern="(?=.*\p{Lu})(?=.*[^\p{L}\p{N}\s]).{8,128}"
+            aria-describedby="password-requirements"
+            title="Use at least 8 characters, one uppercase letter, and one special character."
             required
           />
+          <p id="password-requirements" class="password-help">
+            Use at least 8 characters, one uppercase letter, and one special character (for example, !, @, or #).
+          </p>
+          <label for="account-confirm-password">Confirm your password:</label>
+          <input
+            autocomplete="new-password"
+            id="account-confirm-password"
+            class="field"
+            type="password"
+            name="confirmPassword"
+            minlength="8"
+            maxlength="128"
+            aria-describedby="password-confirm-error"
+            required
+          />
+          <p id="password-confirm-error" class="field-error" role="status"></p>
           <label for="account-mobile">Enter your mobile number:</label>
           <input
             id="account-mobile"

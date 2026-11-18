@@ -10,10 +10,35 @@ document.addEventListener("DOMContentLoaded", function () {
     for (const link of document.querySelectorAll(".signup a, .account-switch a"))
       link.href = link.getAttribute("href") + "?next=checkout";
   }
+  const passwordInput = form.elements.namedItem("password");
+  const confirmationInput = form.elements.namedItem("confirmPassword");
+  const signupPasswordPattern = /^(?=.*\p{Lu})(?=.*[^\p{L}\p{N}\s]).{8,128}$/u;
+  function validateSignupPasswords() {
+    if (!isSignup) return true;
+    const password = passwordInput.value;
+    const confirmation = confirmationInput.value;
+    const strongPassword = signupPasswordPattern.test(password);
+    passwordInput.setCustomValidity(password && !strongPassword
+      ? "Use at least 8 characters, one uppercase letter, and one special character."
+      : "");
+    const confirmationError = confirmation && confirmation !== password
+      ? "Passwords do not match. Enter the same password in both fields."
+      : "";
+    confirmationInput.setCustomValidity(confirmationError);
+    confirmationInput.setAttribute("aria-invalid", String(!!confirmationError));
+    document.getElementById("password-confirm-error").textContent = confirmationError;
+    return strongPassword && !!confirmation && confirmation === password;
+  }
+  if (isSignup) {
+    passwordInput.addEventListener("input", validateSignupPasswords);
+    confirmationInput.addEventListener("input", validateSignupPasswords);
+  }
   let submitting = false;
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
-    if (submitting || !form.reportValidity()) return;
+    if (submitting) return;
+    const passwordsValid = validateSignupPasswords();
+    if (!form.reportValidity() || !passwordsValid) return;
     const status = document.getElementById("account-status");
     const email = form.elements.namedItem("email").value.trim().toLowerCase();
     const password = form.elements.namedItem("password").value;
