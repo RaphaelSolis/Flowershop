@@ -11,19 +11,19 @@ const customer = {name:'Garden Shopper',email:'garden@example.com',phone:'+63912
 const payment = {method:'e-wallet',provider:'GCash'};
 const registered = 'PetalStore.signIn("Garden Shopper", "garden@example.com");';
 const placed = registered + `PetalStore.addLine({productId:'flower-1',quantity:1,options:{}}); const testOrder=PetalStore.placeOrder(${JSON.stringify(customer)},${JSON.stringify(payment)});`;
-async function loadPage(name, seed = '', search = '') {
+async function loadPage(name, seed = '', search = '', queueFrames = false) {
   const window = new Window({url:'https://flowers.test/'+name+'.html'+search,settings:{disableJavaScriptFileLoading:true,disableCSSFileLoading:true}});
   const document=window.document;
   document.write(fs.readFileSync(path.join(root,name+'.html'),'utf8'));
   await window.happyDOM.waitUntilComplete();
   const records=new Map(), timers=new Map(), errors=[];
   window.addEventListener('error',event=>errors.push(event.error || event.message));
-  let timerId=0;
+  let timerId=0; let frames=[];
   const location={href:'https://flowers.test/'+name+'.html'+search,search,hash:''};
   const history={replaceState(_state,_title,url){location.href=new URL(url,location.href).href;location.search=new URL(location.href).search;}};
   const context=vm.createContext({document,window,location,history,Event:window.Event,KeyboardEvent:window.KeyboardEvent,
     URL,URLSearchParams,TextEncoder,crypto:webcrypto,console,
-    requestAnimationFrame:cb=>{cb();return 1;},
+    requestAnimationFrame:cb=>{if(queueFrames)frames.push(cb);else cb();return 1;},
     setTimeout:cb=>{timers.set(++timerId,cb);return timerId;}, clearTimeout:id=>timers.delete(id),
     setInterval:()=>++timerId,clearInterval:()=>{},
     localStorage:{getItem:key=>records.get(key)??null,setItem:(key,value)=>records.set(key,value),removeItem:key=>records.delete(key)}});
@@ -37,7 +37,7 @@ async function loadPage(name, seed = '', search = '') {
   const click=selector=>{const el=typeof selector==='string'?document.querySelector(selector):selector;assert.ok(el,'Missing '+selector);el.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true}));};
   const change=(input,value)=>{input.value=value;input.dispatchEvent(new window.Event('input',{bubbles:true}));input.dispatchEvent(new window.Event('change',{bubbles:true}));};
   const close=async()=>{assert.deepEqual(errors,[],'Uncaught page errors');await window.happyDOM.close();};
-  return {window,document,run,click,change,close,records,timers,location};
+  return {window,document,run,click,change,close,records,timers,location,frame(){const next=frames;frames=[];next.forEach(cb=>cb());}};
 }
 
 {
@@ -206,3 +206,13 @@ console.log('PASS FAQs start closed, contact links and inquiry placement, active
  await p.close();
 }
 console.log('PASS Old single-letter records migrate without loss; blank additional messages and invalid ribbon colors are rejected.');
+
+{
+ const p=await loadPage('cart',`window.sessionStorage.setItem('petal-nav-position',JSON.stringify({left:20,width:80,top:94}));Object.defineProperty(document,'fonts',{value:{ready:Promise.resolve()},configurable:true});`,'',true);
+ const line=p.document.querySelector('.nav-active-indicator');
+ assert.match(line.style.transform,/20px/);
+ p.frame();assert.match(line.style.transform,/20px/);
+ p.frame();assert.match(line.style.transform,/720px/);
+ await p.close();
+}
+console.log('PASS Cached fonts preserve the starting underline position for a paint before it slides to the active tab.');

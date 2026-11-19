@@ -444,7 +444,7 @@ function initializeNavigation() {
   }
   window.addEventListener("resize", reposition);
   header.querySelector("[data-mobile-menu]")?.addEventListener("click", () => requestAnimationFrame(reposition));
-  document.fonts?.ready.then(reposition);
+  document.fonts?.ready.then(() => requestAnimationFrame(() => requestAnimationFrame(reposition)));
 }
 function celebrateOrder() {
   if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
