@@ -906,3 +906,20 @@ body[data-page="checkout"] #success-dialog { inset: 0; margin: auto; }
 .delivery-section output { color: var(--deep-pink); font-weight: 700; }
 @media (max-width: 900px) { .footer-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; } }
 @media (prefers-reduced-motion: reduce) { .social-links a { transition: none; } .social-links a:is(:hover, :focus-visible) { transform: none; } }
+
+
+/* Preserve the original Canva story artwork and its clickable action. */
+.story-reference > picture { display: block; min-width: 0; }
+.story-reference > picture > img { display: block; width: 100%; height: 405rem; min-height: 360rem; object-fit: cover; object-position: left center; border-radius: 27rem; }
+@media (min-width: 601px) {
+  .story.story-reference { display: block; }
+  .story-reference > picture > img { height: auto; min-height: 0; max-height: none; object-fit: contain; border-radius: 0; }
+  .story-reference .story-copy { position: absolute; inset: 0; display: block; margin: 0; padding: 0; background: transparent; border-radius: 0; }
+  /* The artwork includes these words; keep the real copy for screen readers. */
+  .story-reference .story-copy :is(h2, p) { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+  .story-reference .story-copy .pill { position: absolute; right: 3.4%; bottom: 10.9%; width: 17.4%; height: 8.4%; min-height: 32px; margin: 0; padding: 0; gap: 6px; background: var(--deep-pink); color: var(--cream); border-radius: 64.4rem; }
+  .story-reference .story-copy .pill img { width: 18rem; height: 18rem; }
+}
+@media (max-width: 600px) {
+  .story-reference > picture > img { height: 260rem; min-height: 240rem; max-height: 280rem; }
+}

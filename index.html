@@ -12,7 +12,7 @@
     <title>The Petal Haus | Home</title>
     <!-- styles.css?v=20261118-audit-fixes controls colors, fonts, spacing, and phone layouts. -->
     <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
-    <link rel="stylesheet" href="design-spec.css?v=20261119-account-delivery" />
+    <link rel="stylesheet" href="design-spec.css?v=20261119-canva-story" />
     <!-- defer means: finish reading this HTML before running app.js?v=20261118-audit-fixes. -->
     <!-- products.js loads the price list first; app.js?v=20261118-audit-fixes then makes buttons work. -->
     <script src="settings.js?v=20261119-account-delivery" defer></script>
@@ -188,8 +188,11 @@
           </div>
           <div data-public-reviews="" class="public-review-grid"></div>
         </section>
-        <section class="story" id="story" aria-labelledby="story-heading">
-          <img src="assets/home/story-florist.png" alt="A florist carefully arranging a bouquet" loading="lazy" />
+        <section class="story story-reference" id="story" aria-labelledby="story-heading">
+          <picture>
+            <source media="(min-width: 601px)" srcset="assets/home/banner-2.png" width="1300" height="554" />
+            <img src="assets/home/story-florist.png" width="937" height="799" alt="A florist carefully arranging a bouquet" loading="lazy" decoding="async" />
+          </picture>
           <div class="story-copy">
             <h2 id="story-heading" data-animate="shift">FLOWERS THAT SPEAK FROM THE HEART</h2>
             <p data-animate="rise">We believe flowers speak a language of their own. That's why every bouquet is carefully arranged to convey heartfelt emotions and celebrate the moments that matter most.</p>
