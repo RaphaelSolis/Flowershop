@@ -29,7 +29,7 @@ async function loadPage(name, seed = '', search = '', queueFrames = false) {
     localStorage:{getItem:key=>records.get(key)??null,setItem:(key,value)=>records.set(key,value),removeItem:key=>records.delete(key)}});
   const run=code=>vm.runInContext(code,context);
   for(const script of ['settings','products','store','app','shop','customize','pages']) run(fs.readFileSync(path.join(root,script+'.js'),'utf8'));
-  for(const sheet of ['styles.css','design-spec.css']){const style=document.createElement('style');style.textContent=fs.readFileSync(path.join(root,sheet),'utf8');document.head.append(style);}
+  for(const sheet of ['styles.css','design-spec.css','layout.css']){const style=document.createElement('style');style.textContent=fs.readFileSync(path.join(root,sheet),'utf8');document.head.append(style);}
   if(seed) run(seed);
   const header=document.querySelector('.site-header');header.getBoundingClientRect=()=>({left:0,top:0});
   Array.from(header.querySelectorAll('.nav-link,[data-cart]')).forEach((tab,index)=>tab.getBoundingClientRect=()=>({left:20+index*100,bottom:90,width:80}));

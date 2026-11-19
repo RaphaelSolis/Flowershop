@@ -13,12 +13,13 @@
     <!-- styles.css?v=20261118-audit-fixes controls colors, fonts, spacing, and phone layouts. -->
     <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
     <link rel="stylesheet" href="design-spec.css?v=20261119-account-delivery" />
+    <link rel="stylesheet" href="layout.css?v=20261119-responsive-layout" />
     <!-- defer means: finish reading this HTML before running app.js?v=20261118-audit-fixes. -->
     <!-- products.js loads the price list first; app.js?v=20261118-audit-fixes then makes buttons work. -->
     <script src="settings.js?v=20261119-account-delivery" defer></script>
     <script src="products.js?v=20261119-account-delivery" defer></script>
     <script src="store.js?v=20261119-account-delivery" defer></script>
-    <script src="app.js?v=20261119-account-delivery" defer></script>
+    <script src="app.js?v=20261119-responsive-layout" defer></script>
     <script src="shop.js?v=20261119-ui-updates" defer></script>
     <script src="customize.js?v=20261119-ui-updates" defer></script>
     <script src="pages.js?v=20261119-account-delivery" defer></script>
@@ -29,6 +30,7 @@
     <div id="site">
       <!-- 1. TOP MENU: logo, page links, search, cart, and phone menu. -->
       <header class="site-header">
+        <div class="header-layout">
         <a href="index.html" class="brand" aria-label="The Petal Haus home">
           <img src="assets/logo.png" alt="The Petal Haus" />
         </a>
@@ -116,11 +118,13 @@
         >
           ☰
         </button>
+        </div>
       </header>
       <!-- 2. MAIN PAGE: each HTML file has its own content here. -->
       <main id="main">
         <!-- FLOWER BANNER: edit the greeting, heading, tagline, and photo here. -->
         <section class="hero hero-occasions" aria-labelledby="hero-title">
+          <div class="hero-layout">
           <img
             class="hero-image"
             src="assets/banners/shop occ.png"
@@ -139,6 +143,7 @@
             <p class="hero-tagline">
               Thoughtfully arranged blooms for celebrations, surprises, and heartfelt gestures.
             </p>
+          </div>
           </div>
         </section>
         <section class="category-selector" aria-labelledby="occasions-heading">
@@ -1413,6 +1418,7 @@
       <!-- 3. FOOTER: menu, address, phone, social links, and FAQs.
 This footer is copied into each storefront page. Edit each copy for a site-wide change. -->
       <footer class="site-footer">
+        <div class="footer-layout">
         <div class="footer-left">
           <div class="footer-brand">
             <a href="index.html">
@@ -1491,6 +1497,7 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
               </p>
             </details>
           </div>
+        </div>
         </div>
       </footer>
       <!-- 4. POP-UP WINDOWS: hidden until Search, Cart, or another button opens them. -->

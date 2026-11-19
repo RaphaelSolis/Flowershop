@@ -7,10 +7,11 @@
     <title>The Petal Haus | About Us</title>
     <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
     <link rel="stylesheet" href="design-spec.css?v=20261119-account-delivery" />
+    <link rel="stylesheet" href="layout.css?v=20261119-responsive-layout" />
     <script src="settings.js?v=20261119-account-delivery" defer></script>
     <script src="products.js?v=20261119-account-delivery" defer></script>
     <script src="store.js?v=20261119-account-delivery" defer></script>
-    <script src="app.js?v=20261119-account-delivery" defer></script>
+    <script src="app.js?v=20261119-responsive-layout" defer></script>
     <script src="shop.js?v=20261119-ui-updates" defer></script>
     <script src="customize.js?v=20261119-ui-updates" defer></script>
     <script src="pages.js?v=20261119-account-delivery" defer></script>
@@ -19,6 +20,7 @@
     <a class="skip-link" href="#main">Skip to content</a>
     <div id="site">
       <header class="site-header">
+        <div class="header-layout">
         <a href="index.html" class="brand" aria-label="The Petal Haus home">
           <img src="assets/logo.png" alt="The Petal Haus" />
         </a>
@@ -106,15 +108,18 @@
         >
           ☰
         </button>
+        </div>
       </header>
       <main id="main">
         <section class="hero hero-reference " aria-label="ABOUT">
+          <div class="hero-layout">
           <img class="hero-image" src="assets/banners/about.png" alt="" fetchpriority="high" />
           <div class="hero-copy">
             
             <h1 class="hero-title">ABOUT</h1>
             <h2 class="hero-heading">Trusted by thousands,<br />cherished by many.</h2>
             <p class="hero-tagline">More than a flower shop, we’re here to help you create memories that bloom forever.</p>
+          </div>
           </div>
         </section>
         <div class="service-badges"><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M5 8h22l-4 15H8m19-12h8l6 7v5H23M3 13h9M1 18h8"/><circle cx="14" cy="26" r="4"/><circle cx="33" cy="26" r="4"/></svg><span>Fast and Reliable Delivery</span></div><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 35 7 21C-4 10 12 0 22 12 32 0 48 10 37 21Z"/></svg><span>Handpicked with Care</span></div><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18"/><path d="M11 15q4-5 8 0m6 0q4-5 8 0M11 25h22c-2 13-20 13-22 0Z"/></svg><span>Customer Satisfaction Guaranteed</span></div><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="6"/><path d="M22 16c-15-20-25 0-6 6-20 15 0 25 6 6 15 20 25 0 6-6 20-15 0-25-6-6Z"/></svg><span>Crafted by Expert Florists</span></div></div>
@@ -140,6 +145,7 @@
         </section>
       </main>
       <footer class="site-footer">
+        <div class="footer-layout">
         <div class="footer-left">
           <div class="footer-brand">
             <a href="index.html">
@@ -218,6 +224,7 @@
               </p>
             </details>
           </div>
+        </div>
         </div>
       </footer>
       <dialog class="site-dialog" id="search-dialog" aria-labelledby="search-title">

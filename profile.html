@@ -7,10 +7,11 @@
     <title>The Petal Haus | My Profile</title>
     <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
     <link rel="stylesheet" href="design-spec.css?v=20261119-account-delivery" />
+    <link rel="stylesheet" href="layout.css?v=20261119-responsive-layout" />
     <script src="settings.js?v=20261119-account-delivery" defer></script>
     <script src="products.js?v=20261119-account-delivery" defer></script>
     <script src="store.js?v=20261119-account-delivery" defer></script>
-    <script src="app.js?v=20261119-account-delivery" defer></script>
+    <script src="app.js?v=20261119-responsive-layout" defer></script>
     <script src="shop.js?v=20261119-ui-updates" defer></script>
     <script src="customize.js?v=20261119-ui-updates" defer></script>
     <script src="pages.js?v=20261119-account-delivery" defer></script>
@@ -19,6 +20,7 @@
     <a class="skip-link" href="#main">Skip to content</a>
     <div id="site">
       <header class="site-header">
+        <div class="header-layout">
         <a href="index.html" class="brand" aria-label="The Petal Haus home">
           <img src="assets/logo.png" alt="The Petal Haus" />
         </a>
@@ -106,15 +108,18 @@
         >
           ☰
         </button>
+        </div>
       </header>
       <main id="main">
         <section class="hero hero-reference hero-welcome" aria-label="Welcome">
+          <div class="hero-layout">
           <img class="hero-image" src="assets/banners/notif.png" alt="" fetchpriority="high" />
           <div class="hero-copy">
             <p class="hero-greeting">Hey there, visitor!</p>
             
             <h1 class="hero-heading">TIMELESS BLOOMS,<br />LASTING<br />MEMORIES</h1>
             <p class="hero-tagline">Elegant flowers that make every moment unforgettable.</p>
+          </div>
           </div>
         </section>
         <section class="content-page profile-page">
@@ -161,6 +166,7 @@
         </section>
       </main>
       <footer class="site-footer">
+        <div class="footer-layout">
         <div class="footer-left">
           <div class="footer-brand">
             <a href="index.html">
@@ -239,6 +245,7 @@
               </p>
             </details>
           </div>
+        </div>
         </div>
       </footer>
       <dialog class="site-dialog" id="search-dialog" aria-labelledby="search-title">

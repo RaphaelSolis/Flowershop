@@ -13,12 +13,13 @@
     <!-- styles.css?v=20261118-audit-fixes controls colors, fonts, spacing, and phone layouts. -->
     <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
     <link rel="stylesheet" href="design-spec.css?v=20261119-canva-story" />
+    <link rel="stylesheet" href="layout.css?v=20261119-responsive-layout" />
     <!-- defer means: finish reading this HTML before running app.js?v=20261118-audit-fixes. -->
     <!-- products.js loads the price list first; app.js?v=20261118-audit-fixes then makes buttons work. -->
     <script src="settings.js?v=20261119-account-delivery" defer></script>
     <script src="products.js?v=20261119-account-delivery" defer></script>
     <script src="store.js?v=20261119-account-delivery" defer></script>
-    <script src="app.js?v=20261119-account-delivery" defer></script>
+    <script src="app.js?v=20261119-responsive-layout" defer></script>
     <script src="shop.js?v=20261119-ui-updates" defer></script>
     <script src="customize.js?v=20261119-ui-updates" defer></script>
     <script src="pages.js?v=20261119-account-delivery" defer></script>
@@ -29,6 +30,7 @@
     <div id="site">
       <!-- 1. TOP MENU: logo, page links, search, cart, and phone menu. -->
       <header class="site-header">
+        <div class="header-layout">
         <a href="index.html" class="brand" aria-label="The Petal Haus home">
           <img src="assets/logo.png" alt="The Petal Haus" />
         </a>
@@ -116,11 +118,13 @@
         >
           ☰
         </button>
+        </div>
       </header>
       <!-- 2. MAIN PAGE: each HTML file has its own content here. -->
       <main id="main">
         <!-- FLOWER BANNER: edit the greeting, heading, tagline, and photo here. -->
         <section class="hero hero-home" aria-labelledby="hero-heading">
+          <div class="hero-layout">
           <img
             class="hero-image"
             src="assets/banners/home.png"
@@ -141,6 +145,7 @@
               SHOP NOW
               <img src="assets/home/arrow.png" alt="" />
             </a>
+          </div>
           </div>
         </section>
         <!-- HOME: the four service promises. -->
@@ -190,7 +195,7 @@
         </section>
         <section class="story story-reference" id="story" aria-labelledby="story-heading">
           <picture>
-            <source media="(min-width: 601px)" srcset="assets/home/banner-2.png" width="1300" height="554" />
+            <source media="(min-width: 768px)" srcset="assets/home/banner-2.png" width="1300" height="554" />
             <img src="assets/home/story-florist.png" width="937" height="799" alt="A florist carefully arranging a bouquet" loading="lazy" decoding="async" />
           </picture>
           <div class="story-copy">
@@ -311,6 +316,7 @@
         </div>
         <!-- ONE-PHOTO SLIDESHOW: replace each image src to change the photos. -->
         <section class="gallery" id="gallery">
+          <div class="gallery-layout">
           <h2 data-animate="shift">CAPTURING BEAUTY IN EVERY BLOOM</h2>
           <div class="gallery-slideshow" role="region" aria-roledescription="carousel" aria-label="Flower gallery">
             <div class="gallery-viewport" tabindex="0" aria-label="Gallery photos: use left and right arrow keys to browse">
@@ -341,11 +347,13 @@
             VIEW GALLERY
             <img src="assets/home/arrow.png" alt="" />
           </a>
+          </div>
         </section>
       </main>
       <!-- 3. FOOTER: menu, address, phone, social links, and FAQs.
 This footer is copied into each storefront page. Edit each copy for a site-wide change. -->
       <footer class="site-footer">
+        <div class="footer-layout">
         <div class="footer-left">
           <div class="footer-brand">
             <a href="index.html">
@@ -424,6 +432,7 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
               </p>
             </details>
           </div>
+        </div>
         </div>
       </footer>
       <!-- 4. POP-UP WINDOWS: hidden until Search, Cart, or another button opens them. -->
