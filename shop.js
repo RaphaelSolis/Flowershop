@@ -39,6 +39,7 @@ function optionSelect(label, name, choices, selected) {
 function openProductOptions(product, context, existing) {
   const kind = productKind(product);
   const options = existing?.options || {};
+  const presentation = flowerPresentation(product);
   productSelection = {
     product,
     context: context || "shop",
@@ -47,7 +48,7 @@ function openProductOptions(product, context, existing) {
   };
   const form = document.getElementById("product-options-form");
   let fields = "";
-  if (kind === "flower" && product.section !== "potted-flowers")
+  if (kind === "flower" && presentation === "wrapped")
     fields += optionSelect(
       "Wrapper color",
       "color",
@@ -56,7 +57,7 @@ function openProductOptions(product, context, existing) {
       }),
       options.color || "Pink",
     );
-  if (kind === "flower" && product.section !== "potted-flowers")
+  if (kind === "flower" && presentation === "wrapped")
     fields +=
       '<div class="option-color-row" role="group" aria-label="Wrapper color swatches">' +
       colors
@@ -75,6 +76,8 @@ function openProductOptions(product, context, existing) {
         })
         .join("") +
       "</div>";
+  if (kind === "flower" && ["wrapped", "basket"].includes(presentation))
+    fields += optionSelect("Ribbon color", "ribbon", colors.map(color => color[0]), options.ribbon || "Pink");
   if (kind === "chocolate" || kind === "pepero") {
     fields += optionSelect(
       "Flavor",
@@ -93,11 +96,13 @@ function openProductOptions(product, context, existing) {
   }
   if (kind === "candle")
     fields += optionSelect("Candle scent", "scent", SHOP_SETTINGS.candleScents, options.scent);
-  if (kind === "letter")
-    fields +=
-      '<label>Personal letter / message<textarea name="letter" maxlength="500" required>' +
-      escapeHTML(options.letter || "") +
-      "</textarea></label>";
+  if (kind === "letter") {
+    const letters = options.letters || [options.letter || ""];
+    fields += '<p class="letter-price-note">PHP ' + money(product.price) +
+      ' per letter. Quantity applies to each letter.</p><div id="letter-fields">' +
+      letters.map((letter, index) => letterField(letter, index)).join("") +
+      '</div><button type="button" class="text-button" data-add-letter>ADD ANOTHER LETTER</button>';
+  }
   document.getElementById("product-options-dialog").dataset.kind = kind === "flower" ? "flower" : "gift";
   document.getElementById("product-options-title").textContent = product.name;
   form.innerHTML =
@@ -116,6 +121,7 @@ function openProductOptions(product, context, existing) {
     '<button class="pill" type="submit">' +
     (context === "addon" ? "Select add-on" : existing ? "Save changes" : "Add to Cart") +
     "</button></div></div>";
+  if (kind === "letter") updateLetterFields();
   updateProductOptionPrice();
   openDialog("product-options-dialog");
 }
@@ -125,9 +131,11 @@ function readProductOptionForm() {
     return form.querySelector('[name="' + name + '"]')?.value || "";
   };
   const options = {};
-  for (const name of ["color", "flavor", "scent", "letter"])
+  for (const name of ["color", "ribbon", "flavor", "scent"])
     if (value(name)) options[name] = value(name).trim();
   if (value("pieces")) options.pieces = Number(value("pieces"));
+  const letterInputs = form.querySelectorAll('[name="letters"]');
+  if (letterInputs.length) options.letters = Array.from(letterInputs, input => input.value.trim());
   return { options: options, quantity: boundedQuantity(value("quantity"), 1, 99) };
 }
 function productUnitPrice(product, options) {
@@ -136,10 +144,12 @@ function productUnitPrice(product, options) {
 function optionDetails(options) {
   const parts = [];
   if (options.color) parts.push(options.color + " wrapper");
+  if (options.ribbon) parts.push(options.ribbon + " ribbon");
   if (options.flavor) parts.push("Flavor: " + options.flavor);
   if (options.pieces) parts.push(options.pieces + " pieces per pack");
   if (options.scent) parts.push("Scent: " + options.scent);
-  if (options.letter) parts.push("Letter: " + options.letter);
+  if (options.letters) options.letters.forEach((letter, index) => parts.push("Letter " + (index + 1) + ": " + letter));
+  else if (options.letter) parts.push("Letter: " + options.letter);
   return parts.join(" · ");
 }
 function updateProductOptionPrice() {
@@ -168,7 +178,7 @@ function submitProductOptions(event) {
   if (
     !Number.isFinite(unitPrice) ||
     unitPrice <= 0 ||
-    (selection.kind === "letter" && !values.options.letter)
+    (selection.kind === "letter" && (!values.options.letters?.length || values.options.letters.some(letter => !letter)))
   ) {
     document.getElementById("product-options-error").textContent =
       "Complete the item options before continuing.";
@@ -209,11 +219,17 @@ function filterShopSection(sectionId) {
   if (typeof history !== "undefined")
     history.replaceState(null, "", url.pathname + url.search + url.hash);
 }
-function scrollProductsRight(sectionId) {
+function scrollProductsRight(sectionId, direction = 1) {
   const row = document.querySelector("#" + sectionId + " .product-grid");
-  const distance = row.firstElementChild?.getBoundingClientRect().width || 160;
-  if (typeof row.scrollBy === "function") row.scrollBy({ left: distance + 16, behavior: "smooth" });
-  else row.scrollLeft += distance + 16;
+  if (!row) return;
+  const distance = (row.firstElementChild?.getBoundingClientRect().width || 160) + 16;
+  const end = Math.max(0, row.scrollWidth - row.clientWidth);
+  let left = row.scrollLeft + distance * direction;
+  if (direction > 0 && row.scrollLeft >= end - 2) left = 0;
+  else if (direction < 0 && row.scrollLeft <= 2) left = end;
+  left = Math.max(0, Math.min(end, left));
+  if (typeof row.scrollTo === "function") row.scrollTo({ left, behavior: "smooth" });
+  else row.scrollLeft = left;
 }
 function searchProducts(inputId = "search-input", resultsId = "search-results") {
   const query = document.getElementById(inputId).value.trim();
@@ -222,8 +238,13 @@ function searchProducts(inputId = "search-input", resultsId = "search-results") 
     results.innerHTML = "<p>Search for a flower, gift, or occasion.</p>";
     return;
   }
+  const seen = new Set();
   const matches = allProducts.filter(function (product) {
-    return (product.name + " " + product.section).toLowerCase().includes(query.toLowerCase());
+    if (!(product.name + " " + product.section).toLowerCase().includes(query.toLowerCase())) return false;
+    const key = product.name.trim().toLowerCase().replace(/\s+/g, " ");
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
   });
   results.innerHTML = matches
     .map(function (product) {
@@ -249,14 +270,6 @@ function initializeShop() {
   const section = parameters.get("section");
   if (section && document.getElementById(section)?.classList.contains("product-section"))
     filterShopSection(section);
-  for (const row of document.querySelectorAll(".product-grid")) {
-    const next = row.parentElement.querySelector("[data-next]");
-    if (next)
-      row.addEventListener("scroll", function () {
-        if (row.clientWidth > 0)
-          next.disabled = row.scrollLeft + row.clientWidth >= row.scrollWidth - 2;
-      });
-  }
   for (const card of document.querySelectorAll("[data-product]")) {
     const product = findProduct(card.dataset.product);
     const title = card.querySelector(".photo-caption h3");
@@ -272,7 +285,31 @@ function initializeShop() {
 document.addEventListener("click", function (event) {
   const button = event.target.closest("button,a");
   if (!button) return;
-  if (button.hasAttribute("data-product-adjust")) {
+  if (button.hasAttribute("data-add-letter")) {
+    const container = document.getElementById("letter-fields");
+    if (container.children.length >= 10) return;
+    container.insertAdjacentHTML("beforeend", letterField("", container.children.length));
+    updateLetterFields();
+    container.lastElementChild.querySelector("textarea").focus();
+    updateProductOptionPrice();
+  } else if (button.hasAttribute("data-remove-letter")) {
+    const container = document.getElementById("letter-fields");
+    if (container.children.length <= 1) return;
+    button.closest(".letter-field").remove();
+    updateLetterFields();
+    updateProductOptionPrice();
+  } else if (button.hasAttribute("data-clear-search")) {
+    const form = button.closest("form");
+    const input = form.querySelector('input[type="search"]');
+    input.value = "";
+    if (input.id === "page-search-input") {
+      searchProducts("page-search-input", "page-search-results");
+      const url = new URL(location.href);
+      url.searchParams.delete("q");
+      history.replaceState(null, "", url.pathname + url.search + url.hash);
+    } else searchProducts();
+    input.focus();
+  } else if (button.hasAttribute("data-product-adjust")) {
     const input = document.getElementById("product-option-quantity");
     input.value = boundedQuantity(Number(input.value) + Number(button.dataset.productAdjust), 1, 99);
     input.dispatchEvent(new Event("input", { bubbles: true }));
@@ -288,17 +325,26 @@ document.addEventListener("click", function (event) {
     if (product) {
       const searchDialog = document.getElementById("search-dialog");
       if (searchDialog?.open) closeDialog(searchDialog);
-      openProductOptions(product);
+      if (button.dataset.add && productKind(product) !== "letter") {
+        try {
+          PetalStore.addLine({ productId: product.id, quantity: 1, options: {} });
+          refreshCartUI();
+          showSuccess("Successfully added to cart!", "cart.html", "MY CART");
+        } catch (error) { toast(error.message); }
+      } else openProductOptions(product);
     }
   } else if (button.dataset.section) filterShopSection(button.dataset.section);
   else if (button.hasAttribute("data-show-all")) filterShopSection("");
   else if (button.dataset.next) scrollProductsRight(button.dataset.next);
+  else if (button.dataset.previous) scrollProductsRight(button.dataset.previous, -1);
   else if (button.dataset.editOptions) {
     const line = PetalStore.getCart().find(function (item) {
       return item.lineId === button.dataset.editOptions;
     });
     const product = line && findProduct(line.productId);
     if (product) openProductOptions(product, "cart", line);
+    else if (line?.productId === "custom-bouquet")
+      location.href = "customize.html?edit=" + encodeURIComponent(line.lineId);
   }
 });
 document.addEventListener("input", function (event) {
@@ -327,3 +373,18 @@ document.addEventListener("submit", function (event) {
     history.replaceState(null, "", url.pathname + url.search);
   }
 });
+
+function letterField(message, index) {
+  return '<div class="letter-field"><label><span class="letter-label">Letter ' + (index + 1) +
+    '</span><textarea name="letters" maxlength="500" required>' + escapeHTML(message) +
+    '</textarea></label><button class="text-button" type="button" data-remove-letter' +
+    (index === 0 ? ' hidden' : '') + '>REMOVE LETTER</button></div>';
+}
+function updateLetterFields() {
+  const fields = document.querySelectorAll(".letter-field");
+  fields.forEach((field, index) => {
+    field.querySelector(".letter-label").textContent = "Letter " + (index + 1);
+    field.querySelector("[data-remove-letter]").hidden = fields.length <= 1;
+  });
+  document.querySelector("[data-add-letter]").disabled = fields.length >= 10;
+}

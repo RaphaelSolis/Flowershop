@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#577438" />
     <title>The Petal Haus | About Us</title>
-    <link rel="stylesheet" href="styles.css?v=20261118-audit-fixes" />
-    <link rel="stylesheet" href="design-spec.css?v=20261118-feedback-controls" />
+    <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
+    <link rel="stylesheet" href="design-spec.css?v=20261119-ui-updates" />
     <script src="settings.js?v=20261118-order-options" defer></script>
-    <script src="products.js?v=20261118-3" defer></script>
-    <script src="store.js?v=20261118-audit-fixes" defer></script>
-    <script src="app.js?v=20261118-audit-fixes" defer></script>
-    <script src="shop.js?v=20261118-audit-fixes" defer></script>
-    <script src="customize.js?v=20261118-audit-fixes" defer></script>
-    <script src="pages.js?v=20261118-audit-fixes" defer></script>
+    <script src="products.js?v=20261119-ui-updates" defer></script>
+    <script src="store.js?v=20261119-ui-updates" defer></script>
+    <script src="app.js?v=20261119-ui-updates" defer></script>
+    <script src="shop.js?v=20261119-ui-updates" defer></script>
+    <script src="customize.js?v=20261119-ui-updates" defer></script>
+    <script src="pages.js?v=20261119-ui-updates" defer></script>
   </head>
   <body data-page="about">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -40,7 +40,7 @@
               data-shop-menu=""
             >
               <img src="assets/home/flower.png" alt="" />
-              Shop
+              SHOP
             </button>
             <div class="shop-dropdown" id="shop-dropdown">
               <a href="collections.html">
@@ -53,7 +53,7 @@
               </a>
               <a href="customize.html">
                 <img src="assets/home/petal-green.png" alt="" />
-                Customized Yours
+                Customize Yours
               </a>
             </div>
           </div>
@@ -128,7 +128,7 @@
           <p>We are committed to delivering creativity, care, and excellent service in every bouquet we create, making every customer feel special and every occasion more memorable.</p>
           <h2>OUR VISION</h2>
           <p>To be the most trusted and beloved flower shop, inspiring meaningful connections through the beauty of flowers and becoming the preferred choice for celebrating life's special moments with creativity, elegance, and heartfelt service.</p>
-          <h2>MEET THE TEAM</h2>
+          <h2 id="meet-the-team">MEET THE TEAM</h2>
           <p>Behind every beautiful arrangement at The Petal Haus is a team dedicated to bringing floral beauty and exceptional customer service to life. Each member plays an important role in making sure every flower, order, and customer experience is handled with care.</p>
           <div class="team-grid">
             <figure class="team-member"><img src="assets/team/mariel.png" alt="Mariel Anne D. Arcositas — Project Manager" loading="lazy" /></figure>
@@ -196,21 +196,21 @@
           </nav>
           <h2 class="footer-heading">FAQS</h2>
           <div class="faq-list">
-            <details class="faq" open>
+            <details class="faq">
               <summary>How long do your flowers stay fresh?</summary>
               <p>
                 Our flowers are carefully selected and arranged using fresh blooms. With proper
                 care, most bouquets can remain fresh and beautiful for 5–10 days.
               </p>
             </details>
-            <details class="faq" open>
+            <details class="faq">
               <summary>Can I customize my bouquet?</summary>
               <p>
                 Absolutely! We can create custom arrangements based on your preferred flowers,
                 colors, budget, and occasion.
               </p>
             </details>
-            <details class="faq" open>
+            <details class="faq">
               <summary>Do you offer same-day flower delivery?</summary>
               <p>
                 Yes! We offer same-day delivery for orders placed before our daily cut-off time.
@@ -234,9 +234,9 @@
             placeholder="Search for Flowers"
             aria-label="Search products"
           />
-          <button class="pill" type="submit">Search</button>
-        </form>
-        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">Rose</button><button type="button" data-search-query="Sunflower">Sunflower</button><button type="button" data-search-query="Bouquet">Bouquet</button><button type="button" data-search-query="Birthday">Birthday</button></div><a href="search.html">Open search page</a>
+          <button class="pill" type="submit">SEARCH</button>
+        <button class="text-button clear-search" type="button" data-clear-search>CLEAR SEARCH</button></form>
+        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">ROSE</button><button type="button" data-search-query="Sunflower">SUNFLOWER</button><button type="button" data-search-query="Bouquet">BOUQUET</button><button type="button" data-search-query="Birthday">BIRTHDAY</button></div><a href="search.html">Open search page</a>
         <div class="search-results" id="search-results" aria-live="polite"></div>
       </dialog>
       <!-- PRODUCT OPTIONS: shop products, gift variants, and customization add-ons. -->
@@ -262,15 +262,14 @@
       <dialog class="site-dialog" id="success-dialog" aria-labelledby="success-title">
         <div class="success-check" aria-hidden="true">✓</div>
         <div class="dialog-heading">
-          <h2 id="success-title">The Petal Haus</h2>
           <button class="dialog-close" type="button" data-close="" aria-label="Close message">
             ×
           </button>
         </div>
-        <p data-success-message="" role="status"></p>
+        <p id="success-title" data-success-message="" role="status"></p>
         <div class="dialog-actions">
           <a class="pill" href="cart.html" data-success-link="">MY CART</a>
-          <button class="pill green" type="button" data-close="">Continue</button>
+          <button class="pill green" type="button" data-close="">CONTINUE</button>
         </div>
       </dialog>
       <dialog class="site-dialog gallery-dialog" id="photo-dialog" aria-label="Gallery photo">

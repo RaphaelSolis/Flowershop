@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#577438" />
     <title>The Petal Haus | My Profile</title>
-    <link rel="stylesheet" href="styles.css?v=20261118-audit-fixes" />
-    <link rel="stylesheet" href="design-spec.css?v=20261118-feedback-controls" />
+    <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
+    <link rel="stylesheet" href="design-spec.css?v=20261119-ui-updates" />
     <script src="settings.js?v=20261118-order-options" defer></script>
-    <script src="products.js?v=20261118-3" defer></script>
-    <script src="store.js?v=20261118-audit-fixes" defer></script>
-    <script src="app.js?v=20261118-audit-fixes" defer></script>
-    <script src="shop.js?v=20261118-audit-fixes" defer></script>
-    <script src="customize.js?v=20261118-audit-fixes" defer></script>
-    <script src="pages.js?v=20261118-audit-fixes" defer></script>
+    <script src="products.js?v=20261119-ui-updates" defer></script>
+    <script src="store.js?v=20261119-ui-updates" defer></script>
+    <script src="app.js?v=20261119-ui-updates" defer></script>
+    <script src="shop.js?v=20261119-ui-updates" defer></script>
+    <script src="customize.js?v=20261119-ui-updates" defer></script>
+    <script src="pages.js?v=20261119-ui-updates" defer></script>
   </head>
   <body data-page="profile">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -40,7 +40,7 @@
               data-shop-menu=""
             >
               <img src="assets/home/flower.png" alt="" />
-              Shop
+              SHOP
             </button>
             <div class="shop-dropdown" id="shop-dropdown">
               <a href="collections.html">
@@ -53,7 +53,7 @@
               </a>
               <a href="customize.html">
                 <img src="assets/home/petal-green.png" alt="" />
-                Customized Yours
+                Customize Yours
               </a>
             </div>
           </div>
@@ -118,15 +118,15 @@
           </div>
         </section>
         <section class="content-page profile-page">
-          <div id="profile-signin-note" hidden><h1>MY PROFILE</h1><p>Sign in to view your profile and order activity.</p><a class="pill" href="Log-Sign/LoginPage.html">Sign in</a></div>
+          <div id="profile-signin-note" hidden><h1>MY PROFILE</h1><p>Sign in to view your profile and order activity.</p><a class="pill" href="Log-Sign/LoginPage.html">SIGN IN</a></div>
           <div class="profile-layout" id="profile-layout">
             <aside class="profile-sidebar"><div class="profile-avatar" data-profile-avatar role="img" aria-label="No profile photo"><span data-profile-initials aria-hidden="true">?</span><img data-profile-photo hidden alt="" /></div><h2 data-profile-name="">NAME</h2><p data-profile-email="">email@gmail.com</p><nav class="profile-nav" aria-label="Account"><button class="active" type="button" data-profile-tab="profile">PROFILE</button><button type="button" id="password-help">CHANGE PASSWORD</button><button type="button" data-profile-tab="logout">LOG OUT</button></nav><p id="password-help-note" hidden>For help changing your password, <a href="contact.html">contact us</a>.</p></aside>
             <article class="profile-card profile-panel" data-profile-panel="profile">
-              <div class="profile-card-header"><h2>MY PROFILE</h2><button class="pill" type="button" id="edit-profile" aria-expanded="false" aria-controls="profile-edit-form">Edit Profile</button></div>
+              <div class="profile-card-header"><h2>MY PROFILE</h2><button class="pill" type="button" id="edit-profile" aria-expanded="false" aria-controls="profile-edit-form">EDIT PROFILE</button></div>
               <div class="profile-identity"><div class="profile-avatar" data-profile-avatar role="img" aria-label="No profile photo"><span data-profile-initials aria-hidden="true">?</span><img data-profile-photo hidden alt="" /></div><div><h3 data-profile-name="">NAME</h3><p data-profile-email="">email@gmail.com</p><p id="profile-bio">Your Bio</p></div></div>
               <div class="profile-photo-controls">
-                <button class="pill" type="button" id="change-profile-photo">Add photo</button>
-                <button class="text-button" type="button" id="remove-profile-photo" hidden>Remove photo</button>
+                <button class="pill" type="button" id="change-profile-photo">ADD PHOTO</button>
+                <button class="text-button" type="button" id="remove-profile-photo" hidden>REMOVE PHOTO</button>
                 <input id="profile-photo-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Choose your profile photo" hidden />
                 <p class="profile-photo-help">JPG, PNG, WebP, or GIF, up to 10 MB.</p>
                 <p id="profile-photo-status" role="status"></p>
@@ -136,7 +136,7 @@
                 <label>Barangay<input name="barangay" maxlength="100" /></label>
                 <div class="two-fields"><label>City<input name="city" autocomplete="address-level2" maxlength="100" /></label><label>Province<input name="province" autocomplete="address-level1" maxlength="100" /></label></div>
                 <label>Postal Code<input name="postalCode" autocomplete="postal-code" pattern="[0-9]{4,10}" /></label>
-              </fieldset><button class="pill" type="submit">Save Profile</button></form>
+              </fieldset><button class="pill" type="submit">SAVE PROFILE</button></form>
               <p id="profile-status" role="status"></p>
               <h2>ACCOUNT DETAILS</h2><dl class="profile-details"><dt>Member Since</dt><dd id="profile-member-since">—</dd><dt>Phone Number</dt><dd id="profile-phone">—</dd><dt>Default Address</dt><dd id="profile-address">—</dd></dl>
               <h2>YOUR ACTIVITY</h2><div class="profile-activity"><span><img class="heading-flower" src="assets/home/petal-green.png" alt="" /> Flowers Saved: <span id="profile-flowers">0</span></span><span><span aria-hidden="true">♧</span> Total Orders: <span id="profile-orders">0</span></span></div>
@@ -148,7 +148,7 @@
                 <label id="current-password-field">Current Password<input type="password" name="currentPassword" autocomplete="current-password" required /></label>
                 <label>New Password<input type="password" name="newPassword" autocomplete="new-password" pattern="(?=.*\p{Lu})(?=.*[^\p{L}\p{N}\s]).{8,128}" title="Use at least 8 characters, one uppercase letter, and one special character." minlength="8" maxlength="128" required /></label>
                 <label>Confirm New Password<input type="password" name="confirmPassword" autocomplete="new-password" minlength="8" maxlength="128" required /></label>
-                <p>Use at least 8 characters, one uppercase letter, and one special character.</p><button class="pill" type="submit">Save Password</button>
+                <p>Use at least 8 characters, one uppercase letter, and one special character.</p><button class="pill" type="submit">SAVE PASSWORD</button>
                 <p id="password-status" role="status"></p>
               </form>
             </article>
@@ -217,21 +217,21 @@
           </nav>
           <h2 class="footer-heading">FAQS</h2>
           <div class="faq-list">
-            <details class="faq" open>
+            <details class="faq">
               <summary>How long do your flowers stay fresh?</summary>
               <p>
                 Our flowers are carefully selected and arranged using fresh blooms. With proper
                 care, most bouquets can remain fresh and beautiful for 5–10 days.
               </p>
             </details>
-            <details class="faq" open>
+            <details class="faq">
               <summary>Can I customize my bouquet?</summary>
               <p>
                 Absolutely! We can create custom arrangements based on your preferred flowers,
                 colors, budget, and occasion.
               </p>
             </details>
-            <details class="faq" open>
+            <details class="faq">
               <summary>Do you offer same-day flower delivery?</summary>
               <p>
                 Yes! We offer same-day delivery for orders placed before our daily cut-off time.
@@ -255,9 +255,9 @@
             placeholder="Search for Flowers"
             aria-label="Search products"
           />
-          <button class="pill" type="submit">Search</button>
-        </form>
-        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">Rose</button><button type="button" data-search-query="Sunflower">Sunflower</button><button type="button" data-search-query="Bouquet">Bouquet</button><button type="button" data-search-query="Birthday">Birthday</button></div><a href="search.html">Open search page</a>
+          <button class="pill" type="submit">SEARCH</button>
+        <button class="text-button clear-search" type="button" data-clear-search>CLEAR SEARCH</button></form>
+        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">ROSE</button><button type="button" data-search-query="Sunflower">SUNFLOWER</button><button type="button" data-search-query="Bouquet">BOUQUET</button><button type="button" data-search-query="Birthday">BIRTHDAY</button></div><a href="search.html">Open search page</a>
         <div class="search-results" id="search-results" aria-live="polite"></div>
       </dialog>
       <!-- PRODUCT OPTIONS: shop products, gift variants, and customization add-ons. -->
@@ -283,15 +283,14 @@
       <dialog class="site-dialog" id="success-dialog" aria-labelledby="success-title">
         <div class="success-check" aria-hidden="true">✓</div>
         <div class="dialog-heading">
-          <h2 id="success-title">The Petal Haus</h2>
           <button class="dialog-close" type="button" data-close="" aria-label="Close message">
             ×
           </button>
         </div>
-        <p data-success-message="" role="status"></p>
+        <p id="success-title" data-success-message="" role="status"></p>
         <div class="dialog-actions">
           <a class="pill" href="cart.html" data-success-link="">MY CART</a>
-          <button class="pill green" type="button" data-close="">Continue</button>
+          <button class="pill green" type="button" data-close="">CONTINUE</button>
         </div>
       </dialog>
       <dialog class="site-dialog gallery-dialog" id="photo-dialog" aria-label="Gallery photo">

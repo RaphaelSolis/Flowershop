@@ -11,17 +11,17 @@
     />
     <title>The Petal Haus | Home</title>
     <!-- styles.css?v=20261118-audit-fixes controls colors, fonts, spacing, and phone layouts. -->
-    <link rel="stylesheet" href="styles.css?v=20261118-audit-fixes" />
-    <link rel="stylesheet" href="design-spec.css?v=20261118-feedback-controls" />
+    <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
+    <link rel="stylesheet" href="design-spec.css?v=20261119-ui-updates" />
     <!-- defer means: finish reading this HTML before running app.js?v=20261118-audit-fixes. -->
     <!-- products.js loads the price list first; app.js?v=20261118-audit-fixes then makes buttons work. -->
     <script src="settings.js?v=20261118-order-options" defer></script>
-    <script src="products.js?v=20261118-3" defer></script>
-    <script src="store.js?v=20261118-audit-fixes" defer></script>
-    <script src="app.js?v=20261118-audit-fixes" defer></script>
-    <script src="shop.js?v=20261118-audit-fixes" defer></script>
-    <script src="customize.js?v=20261118-audit-fixes" defer></script>
-    <script src="pages.js?v=20261118-audit-fixes" defer></script>
+    <script src="products.js?v=20261119-ui-updates" defer></script>
+    <script src="store.js?v=20261119-ui-updates" defer></script>
+    <script src="app.js?v=20261119-ui-updates" defer></script>
+    <script src="shop.js?v=20261119-ui-updates" defer></script>
+    <script src="customize.js?v=20261119-ui-updates" defer></script>
+    <script src="pages.js?v=20261119-ui-updates" defer></script>
   </head>
   <body data-page="home">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -50,7 +50,7 @@
               data-shop-menu=""
             >
               <img src="assets/home/flower.png" alt="" />
-              Shop
+              SHOP
             </button>
             <div class="shop-dropdown" id="shop-dropdown">
               <a href="collections.html">
@@ -63,7 +63,7 @@
               </a>
               <a href="customize.html">
                 <img src="assets/home/petal-green.png" alt="" />
-                Customized Yours
+                Customize Yours
               </a>
             </div>
           </div>
@@ -256,7 +256,7 @@
                 <img src="assets/home/coll-6.png" alt="" loading="lazy" />
               </a>
               <a data-animate="shift" class="category-link" href="customize.html">
-                <span class="category-label">Customized Yours</span>
+                <span class="category-label">Customize Yours</span>
                 <img src="assets/home/coll-7.png" alt="" loading="lazy" />
               </a>
             </div>
@@ -312,10 +312,10 @@
           <div class="gallery-slideshow" role="region" aria-roledescription="carousel" aria-label="Flower gallery">
             <div class="gallery-viewport" tabindex="0" aria-label="Gallery photos: use left and right arrow keys to browse">
               <div class="gallery-track" aria-live="off">
-                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="1 of 4" aria-hidden="false"><img src="assets/home/feat-pic-1.png" alt="Flower shop displays" loading="eager" /></div>
-                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="2 of 4" aria-hidden="true"><img src="assets/home/feat-pic-2.png" alt="A florist arranging flowers" loading="eager" /></div>
-                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="3 of 4" aria-hidden="true"><img src="assets/home/feat-pic-3.png" alt="Flowers being prepared in the studio" loading="eager" /></div>
-                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="4 of 4" aria-hidden="true"><img src="assets/home/feat-pic-4.png" alt="The flower-filled storefront" loading="eager" /></div>
+                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="1 of 4" aria-hidden="false"><img src="assets/home/feat-pic-1.webp" width="630" height="900" decoding="async" alt="Flower shop displays" loading="eager" /></div>
+                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="2 of 4" aria-hidden="true"><img src="assets/home/feat-pic-2.webp" width="723" height="900" decoding="async" alt="A florist arranging flowers" loading="eager" /></div>
+                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="3 of 4" aria-hidden="true"><img src="assets/home/feat-pic-3.webp" width="702" height="900" decoding="async" alt="Flowers being prepared in the studio" loading="eager" /></div>
+                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="4 of 4" aria-hidden="true"><img src="assets/home/feat-pic-4.webp" width="835" height="900" decoding="async" alt="The flower-filled storefront" loading="eager" /></div>
               </div>
             </div>
             <div class="gallery-controls">
@@ -327,7 +327,7 @@
                 <button type="button" class="gallery-dot" data-gallery-slide="3" aria-label="Show photo 4: The flower-filled storefront" aria-current="false"></button>
               </div>
               <button class="gallery-arrow gallery-next" type="button" data-gallery-direction="1" aria-label="Next photo">›</button>
-              <button class="gallery-playback" type="button" data-gallery-playback="" aria-label="Pause slideshow">Pause</button>
+              <button class="gallery-playback" type="button" data-gallery-playback="" aria-label="Pause slideshow">PAUSE</button>
             </div>
           </div>
           <p data-animate="rise">
@@ -399,21 +399,21 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
           </nav>
           <h2 class="footer-heading">FAQS</h2>
           <div class="faq-list">
-            <details class="faq" open>
+            <details class="faq">
               <summary>How long do your flowers stay fresh?</summary>
               <p>
                 Our flowers are carefully selected and arranged using fresh blooms. With proper
                 care, most bouquets can remain fresh and beautiful for 5–10 days.
               </p>
             </details>
-            <details class="faq" open>
+            <details class="faq">
               <summary>Can I customize my bouquet?</summary>
               <p>
                 Absolutely! We can create custom arrangements based on your preferred flowers,
                 colors, budget, and occasion.
               </p>
             </details>
-            <details class="faq" open>
+            <details class="faq">
               <summary>Do you offer same-day flower delivery?</summary>
               <p>
                 Yes! We offer same-day delivery for orders placed before our daily cut-off time.
@@ -439,9 +439,9 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
             placeholder="Search for Flowers"
             aria-label="Search products"
           />
-          <button class="pill" type="submit">Search</button>
-        </form>
-        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">Rose</button><button type="button" data-search-query="Sunflower">Sunflower</button><button type="button" data-search-query="Bouquet">Bouquet</button><button type="button" data-search-query="Birthday">Birthday</button></div><a href="search.html">Open search page</a>
+          <button class="pill" type="submit">SEARCH</button>
+        <button class="text-button clear-search" type="button" data-clear-search>CLEAR SEARCH</button></form>
+        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">ROSE</button><button type="button" data-search-query="Sunflower">SUNFLOWER</button><button type="button" data-search-query="Bouquet">BOUQUET</button><button type="button" data-search-query="Birthday">BIRTHDAY</button></div><a href="search.html">Open search page</a>
         <div class="search-results" id="search-results" aria-live="polite"></div>
       </dialog>
 
@@ -470,15 +470,14 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
       <dialog class="site-dialog" id="success-dialog" aria-labelledby="success-title">
         <div class="success-check" aria-hidden="true">✓</div>
         <div class="dialog-heading">
-          <h2 id="success-title">The Petal Haus</h2>
           <button class="dialog-close" type="button" data-close="" aria-label="Close message">
             ×
           </button>
         </div>
-        <p data-success-message="" role="status"></p>
+        <p id="success-title" data-success-message="" role="status"></p>
         <div class="dialog-actions">
           <a class="pill" href="cart.html" data-success-link="">MY CART</a>
-          <button class="pill green" type="button" data-close="">Continue</button>
+          <button class="pill green" type="button" data-close="">CONTINUE</button>
         </div>
       </dialog>
       <dialog class="site-dialog gallery-dialog" id="photo-dialog" aria-label="Gallery photo">

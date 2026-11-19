@@ -11,17 +11,17 @@
     />
     <title>The Petal Haus | Shop by Occasions</title>
     <!-- styles.css?v=20261118-audit-fixes controls colors, fonts, spacing, and phone layouts. -->
-    <link rel="stylesheet" href="styles.css?v=20261118-audit-fixes" />
-    <link rel="stylesheet" href="design-spec.css?v=20261118-feedback-controls" />
+    <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
+    <link rel="stylesheet" href="design-spec.css?v=20261119-ui-updates" />
     <!-- defer means: finish reading this HTML before running app.js?v=20261118-audit-fixes. -->
     <!-- products.js loads the price list first; app.js?v=20261118-audit-fixes then makes buttons work. -->
     <script src="settings.js?v=20261118-order-options" defer></script>
-    <script src="products.js?v=20261118-3" defer></script>
-    <script src="store.js?v=20261118-audit-fixes" defer></script>
-    <script src="app.js?v=20261118-audit-fixes" defer></script>
-    <script src="shop.js?v=20261118-audit-fixes" defer></script>
-    <script src="customize.js?v=20261118-audit-fixes" defer></script>
-    <script src="pages.js?v=20261118-audit-fixes" defer></script>
+    <script src="products.js?v=20261119-ui-updates" defer></script>
+    <script src="store.js?v=20261119-ui-updates" defer></script>
+    <script src="app.js?v=20261119-ui-updates" defer></script>
+    <script src="shop.js?v=20261119-ui-updates" defer></script>
+    <script src="customize.js?v=20261119-ui-updates" defer></script>
+    <script src="pages.js?v=20261119-ui-updates" defer></script>
   </head>
   <body data-page="occasions">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -50,7 +50,7 @@
               data-shop-menu=""
             >
               <img src="assets/home/flower.png" alt="" />
-              Shop
+              SHOP
             </button>
             <div class="shop-dropdown" id="shop-dropdown">
               <a href="collections.html">
@@ -63,7 +63,7 @@
               </a>
               <a href="customize.html">
                 <img src="assets/home/petal-green.png" alt="" />
-                Customized Yours
+                Customize Yours
               </a>
             </div>
           </div>
@@ -180,7 +180,7 @@
         <!-- PRODUCT LISTS: photos and Add to Cart buttons. app.js?v=20261118-audit-fixes stores cart prices. -->
         <div class="catalog">
           <button hidden data-show-all="" type="button" class="pill green" id="show-all-sections">
-            Show all sections
+            SHOW ALL SECTIONS
           </button>
           <section class="product-section" id="birthday" aria-labelledby="birthday-title">
             <div class="product-section-heading">
@@ -207,7 +207,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Blushing Romance</h3>
+                        <h3>BLUSHING ROMANCE</h3>
                         <p>1,499 PHP</p>
                       </div>
                     </div>
@@ -218,7 +218,7 @@
                     data-add="birthday-1"
                     aria-label="Add Blushing Romance to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -238,7 +238,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Sweet Serenity</h3>
+                        <h3>SWEET SERENITY</h3>
                         <p>1,799 PHP</p>
                       </div>
                     </div>
@@ -249,7 +249,7 @@
                     data-add="birthday-2"
                     aria-label="Add Sweet Serenity to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -269,7 +269,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Garden Whisper</h3>
+                        <h3>GARDEN WHISPER</h3>
                         <p>2,339 PHP</p>
                       </div>
                     </div>
@@ -280,7 +280,7 @@
                     data-add="birthday-3"
                     aria-label="Add Garden Whisper to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -300,7 +300,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Peony Dreams</h3>
+                        <h3>PEONY DREAMS</h3>
                         <p>2,299 PHP</p>
                       </div>
                     </div>
@@ -311,7 +311,7 @@
                     data-add="birthday-4"
                     aria-label="Add Peony Dreams to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -331,7 +331,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Stargazer Elegance</h3>
+                        <h3>STARGAZER ELEGANCE</h3>
                         <p>2,499 PHP</p>
                       </div>
                     </div>
@@ -342,7 +342,7 @@
                     data-add="birthday-5"
                     aria-label="Add Stargazer Elegance to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -362,7 +362,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Pink Paradise</h3>
+                        <h3>PINK PARADISE</h3>
                         <p>3,299 PHP</p>
                       </div>
                     </div>
@@ -373,12 +373,13 @@
                     data-add="birthday-6"
                     aria-label="Add Pink Paradise to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
               </div>
-              <button
+              <button class="carousel-previous" type="button" data-previous="birthday" aria-label="Previous birthday products">‹</button>
+<button
                 type="button"
                 class="carousel-next"
                 data-next="birthday"
@@ -409,7 +410,7 @@
                         <img src="assets/occasions/wedding-1.png" alt="Pure Grace" loading="lazy" />
                       </div>
                       <div class="photo-caption">
-                        <h3>Pure Grace</h3>
+                        <h3>PURE GRACE</h3>
                         <p>1,299 PHP</p>
                       </div>
                     </div>
@@ -420,7 +421,7 @@
                     data-add="wedding-1"
                     aria-label="Add Pure Grace to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -436,7 +437,7 @@
                         <img src="assets/occasions/wedding-2.png" alt="Ivory Luxe" loading="lazy" />
                       </div>
                       <div class="photo-caption">
-                        <h3>Ivory Luxe</h3>
+                        <h3>IVORY LUXE</h3>
                         <p>2,499 PHP</p>
                       </div>
                     </div>
@@ -447,7 +448,7 @@
                     data-add="wedding-2"
                     aria-label="Add Ivory Luxe to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -467,7 +468,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Lavender Blush</h3>
+                        <h3>LAVENDER BLUSH</h3>
                         <p>2,199 PHP</p>
                       </div>
                     </div>
@@ -478,7 +479,7 @@
                     data-add="wedding-3"
                     aria-label="Add Lavender Blush to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -498,7 +499,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Heavenly Vows</h3>
+                        <h3>HEAVENLY VOWS</h3>
                         <p>2,799 PHP</p>
                       </div>
                     </div>
@@ -509,7 +510,7 @@
                     data-add="wedding-4"
                     aria-label="Add Heavenly Vows to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -529,7 +530,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Champagne Kiss</h3>
+                        <h3>CHAMPAGNE KISS</h3>
                         <p>2,399 PHP</p>
                       </div>
                     </div>
@@ -540,7 +541,7 @@
                     data-add="wedding-5"
                     aria-label="Add Champagne Kiss to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -556,7 +557,7 @@
                         <img src="assets/occasions/wedding-6.png" alt="Snow Pearl" loading="lazy" />
                       </div>
                       <div class="photo-caption">
-                        <h3>Snow Pearl</h3>
+                        <h3>SNOW PEARL</h3>
                         <p>1,999 PHP</p>
                       </div>
                     </div>
@@ -567,12 +568,13 @@
                     data-add="wedding-6"
                     aria-label="Add Snow Pearl to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
               </div>
-              <button
+              <button class="carousel-previous" type="button" data-previous="wedding" aria-label="Previous wedding products">‹</button>
+<button
                 type="button"
                 class="carousel-next"
                 data-next="wedding"
@@ -607,7 +609,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Bright sunflowers</h3>
+                        <h3>BRIGHT SUNFLOWERS</h3>
                         <p>1,299 PHP</p>
                       </div>
                     </div>
@@ -618,7 +620,7 @@
                     data-add="anniversary-1"
                     aria-label="Add Bright sunflowers to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -638,7 +640,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Classic red roses</h3>
+                        <h3>CLASSIC RED ROSES</h3>
                         <p>1,999 PHP</p>
                       </div>
                     </div>
@@ -649,7 +651,7 @@
                     data-add="anniversary-2"
                     aria-label="Add Classic red roses to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -669,7 +671,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Sweet Pink Blooms</h3>
+                        <h3>SWEET PINK BLOOMS</h3>
                         <p>1,499 PHP</p>
                       </div>
                     </div>
@@ -680,7 +682,7 @@
                     data-add="anniversary-3"
                     aria-label="Add Sweet Pink Blooms to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -700,7 +702,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Soft pink flowers</h3>
+                        <h3>SOFT PINK FLOWERS</h3>
                         <p>1,799 PHP</p>
                       </div>
                     </div>
@@ -711,7 +713,7 @@
                     data-add="anniversary-4"
                     aria-label="Add Soft pink flowers to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -731,7 +733,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Rosy Romance</h3>
+                        <h3>ROSY ROMANCE</h3>
                         <p>2,499 PHP</p>
                       </div>
                     </div>
@@ -742,7 +744,7 @@
                     data-add="anniversary-5"
                     aria-label="Add Rosy Romance to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -762,7 +764,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Eternal Love</h3>
+                        <h3>ETERNAL LOVE</h3>
                         <p>2,299 PHP</p>
                       </div>
                     </div>
@@ -773,12 +775,13 @@
                     data-add="anniversary-6"
                     aria-label="Add Eternal Love to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
               </div>
-              <button
+              <button class="carousel-previous" type="button" data-previous="anniversary" aria-label="Previous anniversary products">‹</button>
+<button
                 type="button"
                 class="carousel-next"
                 data-next="anniversary"
@@ -813,7 +816,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Blossom of Success</h3>
+                        <h3>BLOSSOM OF SUCCESS</h3>
                         <p>1,399 PHP</p>
                       </div>
                     </div>
@@ -824,7 +827,7 @@
                     data-add="achievement-1"
                     aria-label="Add Blossom of Success to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -844,7 +847,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>New Beginnings</h3>
+                        <h3>NEW BEGINNINGS</h3>
                         <p>1,299 PHP</p>
                       </div>
                     </div>
@@ -855,7 +858,7 @@
                     data-add="achievement-2"
                     aria-label="Add New Beginnings to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -875,7 +878,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Dream Chaser</h3>
+                        <h3>DREAM CHASER</h3>
                         <p>1,899 PHP</p>
                       </div>
                     </div>
@@ -886,7 +889,7 @@
                     data-add="achievement-3"
                     aria-label="Add Dream Chaser to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -906,7 +909,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Milestone Moments</h3>
+                        <h3>MILESTONE MOMENTS</h3>
                         <p>2,099 PHP</p>
                       </div>
                     </div>
@@ -917,7 +920,7 @@
                     data-add="achievement-4"
                     aria-label="Add Milestone Moments to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -937,7 +940,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Triumph Bloom</h3>
+                        <h3>TRIUMPH BLOOM</h3>
                         <p>1,799 PHP</p>
                       </div>
                     </div>
@@ -948,7 +951,7 @@
                     data-add="achievement-5"
                     aria-label="Add Triumph Bloom to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -968,7 +971,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Blue Horizon</h3>
+                        <h3>BLUE HORIZON</h3>
                         <p>1,999 PHP</p>
                       </div>
                     </div>
@@ -979,12 +982,13 @@
                     data-add="achievement-6"
                     aria-label="Add Blue Horizon to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
               </div>
-              <button
+              <button class="carousel-previous" type="button" data-previous="achievement" aria-label="Previous achievement products">‹</button>
+<button
                 type="button"
                 class="carousel-next"
                 data-next="achievement"
@@ -1019,7 +1023,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Eternal Remembrance Wreath</h3>
+                        <h3>ETERNAL REMEMBRANCE WREATH</h3>
                         <p>3,999 PHP</p>
                       </div>
                     </div>
@@ -1030,7 +1034,7 @@
                     data-add="sympathy-1"
                     aria-label="Add Eternal Remembrance Wreath to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -1050,7 +1054,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Peaceful Tribute Stand</h3>
+                        <h3>PEACEFUL TRIBUTE STAND</h3>
                         <p>3,499 PHP</p>
                       </div>
                     </div>
@@ -1061,7 +1065,7 @@
                     data-add="sympathy-2"
                     aria-label="Add Peaceful Tribute Stand to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -1081,7 +1085,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Sacred Memories Stand</h3>
+                        <h3>SACRED MEMORIES STAND</h3>
                         <p>4,299 PHP</p>
                       </div>
                     </div>
@@ -1092,7 +1096,7 @@
                     data-add="sympathy-3"
                     aria-label="Add Sacred Memories Stand to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -1108,7 +1112,7 @@
                         <img src="assets/occasions/sympathy-4.png" alt="Serenity" loading="lazy" />
                       </div>
                       <div class="photo-caption">
-                        <h3>Serenity</h3>
+                        <h3>SERENITY</h3>
                         <p>2,999 PHP</p>
                       </div>
                     </div>
@@ -1119,7 +1123,7 @@
                     data-add="sympathy-4"
                     aria-label="Add Serenity to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -1139,7 +1143,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Heavenly Grace</h3>
+                        <h3>HEAVENLY GRACE</h3>
                         <p>3,499 PHP</p>
                       </div>
                     </div>
@@ -1150,7 +1154,7 @@
                     data-add="sympathy-5"
                     aria-label="Add Heavenly Grace to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -1170,7 +1174,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Forever in Our Hearts</h3>
+                        <h3>FOREVER IN OUR HEARTS</h3>
                         <p>3,799 PHP</p>
                       </div>
                     </div>
@@ -1181,12 +1185,13 @@
                     data-add="sympathy-6"
                     aria-label="Add Forever in Our Hearts to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
               </div>
-              <button
+              <button class="carousel-previous" type="button" data-previous="sympathy" aria-label="Previous sympathy products">‹</button>
+<button
                 type="button"
                 class="carousel-next"
                 data-next="sympathy"
@@ -1221,7 +1226,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Grateful Heart Basket</h3>
+                        <h3>GRATEFUL HEART BASKET</h3>
                         <p>1,499 PHP</p>
                       </div>
                     </div>
@@ -1232,7 +1237,7 @@
                     data-add="thank-you-1"
                     aria-label="Add Grateful Heart Basket to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -1252,7 +1257,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Appreciation Blooms Basket</h3>
+                        <h3>APPRECIATION BLOOMS BASKET</h3>
                         <p>1,899 PHP</p>
                       </div>
                     </div>
@@ -1263,7 +1268,7 @@
                     data-add="thank-you-2"
                     aria-label="Add Appreciation Blooms Basket to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -1283,7 +1288,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Sweet Gratitude Basket</h3>
+                        <h3>SWEET GRATITUDE BASKET</h3>
                         <p>1,699 PHP</p>
                       </div>
                     </div>
@@ -1294,7 +1299,7 @@
                     data-add="thank-you-3"
                     aria-label="Add Sweet Gratitude Basket to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -1314,7 +1319,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Thankful Wishes Basket</h3>
+                        <h3>THANKFUL WISHES BASKET</h3>
                         <p>1,799 PHP</p>
                       </div>
                     </div>
@@ -1325,7 +1330,7 @@
                     data-add="thank-you-4"
                     aria-label="Add Thankful Wishes Basket to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -1345,7 +1350,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Endless Appreciation Basket</h3>
+                        <h3>ENDLESS APPRECIATION BASKET</h3>
                         <p>2,099 PHP</p>
                       </div>
                     </div>
@@ -1356,7 +1361,7 @@
                     data-add="thank-you-5"
                     aria-label="Add Endless Appreciation Basket to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
@@ -1376,7 +1381,7 @@
                         />
                       </div>
                       <div class="photo-caption">
-                        <h3>Blooming Thanks Basket</h3>
+                        <h3>BLOOMING THANKS BASKET</h3>
                         <p>1,999 PHP</p>
                       </div>
                     </div>
@@ -1387,12 +1392,13 @@
                     data-add="thank-you-6"
                     aria-label="Add Blooming Thanks Basket to cart"
                   >
-                    Add to Cart
+                    ADD TO CART
                     <img src="assets/home/cart.png" alt="" />
                   </button>
                 </article>
               </div>
-              <button
+              <button class="carousel-previous" type="button" data-previous="thank-you" aria-label="Previous thank-you products">‹</button>
+<button
                 type="button"
                 class="carousel-next"
                 data-next="thank-you"
@@ -1463,21 +1469,21 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
           </nav>
           <h2 class="footer-heading">FAQS</h2>
           <div class="faq-list">
-            <details class="faq" open>
+            <details class="faq">
               <summary>How long do your flowers stay fresh?</summary>
               <p>
                 Our flowers are carefully selected and arranged using fresh blooms. With proper
                 care, most bouquets can remain fresh and beautiful for 5–10 days.
               </p>
             </details>
-            <details class="faq" open>
+            <details class="faq">
               <summary>Can I customize my bouquet?</summary>
               <p>
                 Absolutely! We can create custom arrangements based on your preferred flowers,
                 colors, budget, and occasion.
               </p>
             </details>
-            <details class="faq" open>
+            <details class="faq">
               <summary>Do you offer same-day flower delivery?</summary>
               <p>
                 Yes! We offer same-day delivery for orders placed before our daily cut-off time.
@@ -1503,9 +1509,9 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
             placeholder="Search for Flowers"
             aria-label="Search products"
           />
-          <button class="pill" type="submit">Search</button>
-        </form>
-        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">Rose</button><button type="button" data-search-query="Sunflower">Sunflower</button><button type="button" data-search-query="Bouquet">Bouquet</button><button type="button" data-search-query="Birthday">Birthday</button></div><a href="search.html">Open search page</a>
+          <button class="pill" type="submit">SEARCH</button>
+        <button class="text-button clear-search" type="button" data-clear-search>CLEAR SEARCH</button></form>
+        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">ROSE</button><button type="button" data-search-query="Sunflower">SUNFLOWER</button><button type="button" data-search-query="Bouquet">BOUQUET</button><button type="button" data-search-query="Birthday">BIRTHDAY</button></div><a href="search.html">Open search page</a>
         <div class="search-results" id="search-results" aria-live="polite"></div>
       </dialog>
 
@@ -1534,15 +1540,14 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
       <dialog class="site-dialog" id="success-dialog" aria-labelledby="success-title">
         <div class="success-check" aria-hidden="true">✓</div>
         <div class="dialog-heading">
-          <h2 id="success-title">The Petal Haus</h2>
           <button class="dialog-close" type="button" data-close="" aria-label="Close message">
             ×
           </button>
         </div>
-        <p data-success-message="" role="status"></p>
+        <p id="success-title" data-success-message="" role="status"></p>
         <div class="dialog-actions">
           <a class="pill" href="cart.html" data-success-link="">MY CART</a>
-          <button class="pill green" type="button" data-close="">Continue</button>
+          <button class="pill green" type="button" data-close="">CONTINUE</button>
         </div>
       </dialog>
       <dialog class="site-dialog gallery-dialog" id="photo-dialog" aria-label="Gallery photo">

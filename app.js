@@ -54,16 +54,15 @@ function toast(message) {
 }
 function showSuccess(message, link, linkText) {
   const dialog = document.getElementById("success-dialog");
-  dialog.querySelector("[data-success-message]").textContent = message;
+  const text = String(message).trim().replace(/[.!]+$/, "");
+  dialog.querySelector("[data-success-message]").textContent = text.charAt(0).toUpperCase() + text.slice(1) + "!";
   const action = dialog.querySelector("[data-success-link]");
   action.href = link || "cart.html";
-  action.textContent = linkText || "MY CART";
+  action.textContent = (linkText || "MY CART").toUpperCase();
   openDialog("success-dialog");
 }
 function refreshCartUI() {
-  const quantity = PetalStore.getCart().reduce(function (sum, line) {
-    return sum + line.quantity;
-  }, 0);
+  const quantity = new Set(PetalStore.getCart().map(line => line.productId)).size;
   for (const counter of document.querySelectorAll("[data-cart-count]"))
     counter.textContent = quantity || "";
   try { PetalStore.syncNotifications(); } catch {}
@@ -119,7 +118,7 @@ function renderPublicReviews() {
           escapeHTML(review.message) +
           "</p><strong>" +
           escapeHTML(review.name) +
-          "</strong><small>Verified delivered order · " +
+          "</strong><small>Verified order · " +
           escapeHTML(review.reference) +
           "</small></article>"
         );
@@ -240,6 +239,7 @@ function startWebsite() {
   initializeCustomization();
   initializePages();
   refreshAccountUI();
+  initializeNavigation();
   if (location.hash)
     document.getElementById(location.hash.slice(1))?.scrollIntoView();
 }
@@ -391,4 +391,76 @@ function initializeGallerySlideshow() {
   }
   showSlide(0);
   updatePlayback();
+}
+
+// A shared indicator slides to the selected navigation tab, including the cart.
+function initializeNavigation() {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+  const tabs = Array.from(header.querySelectorAll(".nav-link,[data-cart]"));
+  const shopPages = ["collections", "occasions", "customize"];
+  for (const tab of tabs) {
+    const isActive = tab.hasAttribute("data-cart") ? ["cart", "checkout", "receipt"].includes(page)
+      : tab.hasAttribute("data-shop-menu") ? shopPages.includes(page)
+      : tab.getAttribute("href") === (page === "home" ? "index" : page) + ".html";
+    tab.classList.toggle("active", isActive);
+    if (isActive) tab.setAttribute("aria-current", "page");
+    else tab.removeAttribute("aria-current");
+  }
+  const indicator = document.createElement("span");
+  indicator.className = "nav-active-indicator";
+  indicator.setAttribute("aria-hidden", "true");
+  header.appendChild(indicator);
+  function geometry(tab) {
+    const base = header.getBoundingClientRect();
+    const box = tab.getBoundingClientRect();
+    return { left: box.left - base.left, width: box.width, top: box.bottom - base.top + 4 };
+  }
+  function move(position) {
+    indicator.hidden = position.width <= 0;
+    indicator.style.width = position.width + "px";
+    indicator.style.transform = "translate(" + position.left + "px," + position.top + "px)";
+  }
+  const active = tabs.find(tab => tab.classList.contains("active"));
+  if (active) {
+    let previous;
+    try { previous = JSON.parse(window.sessionStorage.getItem("petal-nav-position")); } catch {}
+    const current = geometry(active);
+    if (previous && [previous.left, previous.width, previous.top].every(Number.isFinite)) {
+      move(previous);
+      requestAnimationFrame(() => requestAnimationFrame(() => move(current)));
+    } else move(current);
+  } else indicator.hidden = true;
+  for (const tab of tabs) tab.addEventListener("click", () => {
+    const previous = tabs.find(item => item.classList.contains("active"));
+    try { if (previous) window.sessionStorage.setItem("petal-nav-position", JSON.stringify(geometry(previous))); } catch {}
+    indicator.hidden = false;
+    tabs.forEach(item => item.classList.toggle("active", item === tab));
+    move(geometry(tab));
+  });
+  function reposition() {
+    const tab = tabs.find(item => item.classList.contains("active"));
+    if (tab) move(geometry(tab));
+  }
+  window.addEventListener("resize", reposition);
+  header.querySelector("[data-mobile-menu]")?.addEventListener("click", () => requestAnimationFrame(reposition));
+  document.fonts?.ready.then(reposition);
+}
+function celebrateOrder() {
+  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+  document.querySelector(".petal-confetti")?.remove();
+  const shower = document.createElement("div");
+  shower.className = "petal-confetti";
+  shower.setAttribute("aria-hidden", "true");
+  const palette = ["#ef6e99", "#f4aac3", "#fff8b8", "#e780a3"];
+  for (let index = 0; index < 42; index++) {
+    const petal = document.createElement("i");
+    petal.className = "falling-petal";
+    petal.style.cssText = "left:" + Math.random() * 100 + "%;background:" + palette[index % palette.length] +
+      ";--drift:" + (Math.random() * 240 - 120) + "px;--spin:" + (Math.random() * 720 + 180) +
+      "deg;--delay:" + Math.random() * 1.2 + "s;--duration:" + (3 + Math.random() * 2) + "s";
+    shower.appendChild(petal);
+  }
+  document.body.appendChild(shower);
+  setTimeout(() => shower.remove(), 6500);
 }

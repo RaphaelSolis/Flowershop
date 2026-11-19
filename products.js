@@ -661,22 +661,22 @@ const wrappings = [
   {
     name: "Kraft Paper Wrapping",
     price: 60,
-    image: "assets/customize/wrap-1.png",
+    image: "assets/customize/wrap-1.webp",
   },
   {
     name: "Newspaper",
     price: 60,
-    image: "assets/customize/wrap-2.png",
+    image: "assets/customize/wrap-2.webp",
   },
   {
     name: "Fabric",
     price: 60,
-    image: "assets/customize/wrap-3.png",
+    image: "assets/customize/wrap-3.webp",
   },
   {
     name: "Cellophane",
     price: 60,
-    image: "assets/customize/wrap-4.png",
+    image: "assets/customize/wrap-4.webp",
   },
 ];
 
@@ -735,3 +735,11 @@ const ferreroPrices = {
   8: 400,
   12: 600,
 };
+
+// Presentation controls follow the arrangement shown in each product photo.
+function flowerPresentation(product) {
+  if (product.section === "potted-flowers" || product.id === "best-sellers-5") return "potted";
+  if (product.section === "sympathy") return "sympathy";
+  if (product.section === "thank-you" || ["bouquet-5", "best-sellers-3"].includes(product.id)) return "basket";
+  return "wrapped";
+}

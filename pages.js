@@ -1,7 +1,7 @@
 "use strict";
 /* DEDICATED PAGES
    Cart → checkout → saved receipt.
-   Feedback checks the saved order's Delivered status before allowing a review. */
+   Feedback checks for a placed order belonging to the signed-in customer. */
 function formValue(form, name) {
   return form.elements.namedItem(name)?.value?.trim() || "";
 }
@@ -50,7 +50,7 @@ function renderCartPage() {
       '<strong class="cart-product-name">' + escapeHTML(line.name) + '</strong>' +
       '<p class="cart-product-details">' + escapeHTML(line.details || "") + '</p>' +
       (!PetalStore.lineAvailable(line) ? '<p class="form-error">Currently unavailable. Remove this item before checkout.</p>' : '') +
-      (findProduct(line.productId) ? '<button type="button" class="text-button" data-edit-options="' + escapeHTML(line.lineId) + '">Edit options</button>' : '') + '</div>' +
+      (findProduct(line.productId) || line.productId === "custom-bouquet" ? '<button type="button" class="text-button" data-edit-options="' + escapeHTML(line.lineId) + '">Edit options</button>' : '') + '</div>' +
       '<div class="cart-quantity"><button type="button" data-cart-adjust="-1" aria-label="Remove one ' + escapeHTML(line.name) + '">−</button>' +
       '<input type="number" min="1" max="99" step="1" value="' + line.quantity + '" data-line-quantity aria-label="Quantity for ' + escapeHTML(line.name) + '">' +
       '<button type="button" data-cart-adjust="1" aria-label="Add one ' + escapeHTML(line.name) + '">+</button></div>' +
@@ -183,10 +183,11 @@ function submitCheckout(event) {
     const receiptLink =
       "receipt.html?reference=" + encodeURIComponent(order.reference);
     showSuccess(
-      "Your order has been successfully placed, thank you!",
+      "Successfully placed your order!",
       receiptLink,
       "View receipt",
     );
+    celebrateOrder();
     // Keep the confirmation visible until the customer chooses View receipt.
   } catch (error) {
     checkoutInProgress = false;
@@ -363,7 +364,7 @@ function submitInquiry(event) {
     status.textContent = "Your inquiry " + inquiry.id + " has been saved.";
     form.reset();
     renderCustomerInquiries();
-    showSuccess("Feedback successfully submitted, thank you!", "contact.html", "Contact details");
+    showSuccess("Successfully submitted your inquiry!", "contact.html", "Contact details");
   } catch (error) { status.textContent = error.message; }
 }
 function updateReviewEligibility() {
@@ -371,7 +372,7 @@ function updateReviewEligibility() {
   const orderSelect = document.getElementById("review-order");
   const selectedReference = orderSelect.value;
   orderSelect.innerHTML =
-    '<option value="">Choose a delivered order</option>' +
+    '<option value="">Choose an order</option>' +
     eligible.map(function (order) {
       return '<option value="' + escapeHTML(order.reference) + '">' +
         escapeHTML(order.reference) + " — " +
@@ -388,12 +389,12 @@ function updateReviewEligibility() {
   const hasProfile = PetalStore.hasProfile();
   document.getElementById("review-account-actions").hidden = hasProfile;
   document.getElementById("review-eligibility").textContent = !hasProfile
-    ? "Sign in or create a profile to submit a review for a delivered order."
+    ? "Log in or create a profile, then place an order to submit feedback."
     : eligible.length
-      ? (eligible.length === 1 ? "Your delivered order is selected." : "Choose a delivered order.") + " One review per order."
-      : PetalStore.orders().some(function (order) { return order.status === "Delivered"; })
-        ? "You have already reviewed your delivered orders. Each order can be reviewed once."
-        : "You can submit a review after your order is delivered. You can choose a rating and write your review now.";
+      ? (eligible.length === 1 ? "Your order is selected." : "Choose an order.") + " One review per order."
+      : PetalStore.orders().some(function (order) { return order.status !== "Cancelled"; })
+        ? "You have already reviewed your orders. Each order can be reviewed once."
+        : "Place an order before submitting feedback. You can choose a rating and write your review now.";
   return eligible;
 }
 function submitBuyerReview(event) {
@@ -432,7 +433,7 @@ function submitBuyerReview(event) {
     updateReviewPresentation();
     renderPublicReviews();
     refreshCartUI();
-    showSuccess("Thank you! Your review has been submitted.", "feedback.html#published-reviews", "View reviews");
+    showSuccess("Successfully submitted your review!", "feedback.html#published-reviews", "View reviews");
   } catch (error) {
     status.textContent = error.message;
   }

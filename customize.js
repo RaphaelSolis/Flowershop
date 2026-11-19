@@ -3,10 +3,13 @@
    Exactly one wrapping mode is selected: a style OR a plain color.
    Add-ons keep their own quantity, pack size, flavor, scent, or letter. */
 const customization = {
+  replaceId: "",
+  quantity: 1,
   flowers: { 2: 6 },
   wrappingMode: "style",
   wrapping: 0,
   color: 0,
+  ribbon: "Pink",
   addons: {
     0: {
       productId: "addon-0",
@@ -51,6 +54,7 @@ function setCustomizationAddon(index, line) {
 }
 function updateCustomization() {
   if (page !== "customize") return;
+  document.getElementById("builder-ribbon").value = customization.ribbon;
   for (const button of document.querySelectorAll('[data-choice="flower"]'))
     button.setAttribute("aria-pressed", Object.hasOwn(customization.flowers, button.dataset.index));
   for (const button of document.querySelectorAll('[data-choice="wrapping"]'))
@@ -111,9 +115,10 @@ function updateCustomization() {
           escapeHTML(addon.details) +
           "</p></div><span>PHP " +
           money(addon.unitPrice * addon.quantity) +
-          '</span><button type="button" data-remove-addon="' +
+          '</span><div class="selected-addon-actions"><button type="button" data-edit-addon="' +
+          index + '">EDIT</button><button type="button" data-remove-addon="' +
           index +
-          '">Remove</button></div>'
+          '">REMOVE</button></div></div>'
         );
       })
       .join("") || "<p>No add-ons selected.</p>";
@@ -139,6 +144,7 @@ function updateCustomization() {
     "</td><td>PHP " +
     money(wrapping.price) +
     "</td></tr>";
+  rows += "<tr><td>Ribbon</td><td>" + customization.ribbon + "</td><td>Included</td></tr>";
   for (const addon of Object.values(customization.addons))
     rows +=
       "<tr><td>" +
@@ -166,6 +172,7 @@ function addCustomizedBouquet() {
     flowers: flowers,
     wrappingMode: customization.wrappingMode,
     wrapping: wrapping,
+    ribbon: customization.ribbon,
     addons: extras,
   };
   const details =
@@ -175,7 +182,7 @@ function addCustomizedBouquet() {
       })
       .join(" · ") +
     " · " +
-    wrapping.name +
+    wrapping.name + " · " + customization.ribbon + " ribbon" +
     extras
       .map(function (addon) {
         return " · " + addon.quantity + " " + addon.name + " (" + addon.details + ")";
@@ -186,7 +193,7 @@ function addCustomizedBouquet() {
     name: "Customize Flowers",
     image: customFlowers[flowers[0].index].image,
     unitPrice: customBouquetTotal(),
-    quantity: 1,
+    quantity: customization.quantity,
     options: options,
     details: details,
   };
@@ -194,13 +201,31 @@ function addCustomizedBouquet() {
     toast("One of your selected flowers or add-ons is unavailable.");
     return;
   }
-  try { PetalStore.addLine(line); }
+  try { PetalStore.addLine(line, customization.replaceId); }
   catch (error) { toast(error.message); return; }
   refreshCartUI();
-  showSuccess("successfully added to cart", "cart.html", "MY CART");
+  showSuccess(customization.replaceId ? "Successfully updated your flowers!" : "Successfully added to cart!", "cart.html", "MY CART");
+  customization.replaceId = "";
+  customization.quantity = 1;
+  document.querySelector("[data-add-custom]").textContent = "ADD TO CART";
+  history.replaceState(null, "", "customize.html");
 }
 function initializeCustomization() {
-  if (page === "customize") updateCustomization();
+  if (page !== "customize") return;
+  const editId = new URLSearchParams(location.search).get("edit");
+  const line = editId && PetalStore.getCart().find(item => item.lineId === editId && item.productId === "custom-bouquet");
+  if (line) {
+    customization.replaceId = line.lineId;
+    customization.quantity = line.quantity;
+    customization.flowers = Object.fromEntries(line.options.flowers.map(flower => [flower.index, flower.quantity]));
+    customization.wrappingMode = line.options.wrappingMode;
+    customization.ribbon = line.options.ribbon || "Pink";
+    if (customization.wrappingMode === "style") customization.wrapping = wrappings.findIndex(wrapper => wrapper.name === line.options.wrapping.name);
+    else customization.color = colors.findIndex(color => color[0] + " plain wrapping" === line.options.wrapping.name);
+    customization.addons = Object.fromEntries(line.options.addons.map(addon => [Number(addon.productId.split("-")[1]), addon]));
+    document.querySelector("[data-add-custom]").textContent = "SAVE CHANGES";
+  }
+  updateCustomization();
 }
 document.addEventListener("click", function (event) {
   if (page !== "customize") return;
@@ -231,6 +256,9 @@ document.addEventListener("click", function (event) {
     );
     if (!customization.flowers[flowerIndex]) delete customization.flowers[flowerIndex];
     updateCustomization();
+  } else if (button.hasAttribute("data-edit-addon")) {
+    const addonIndex = Number(button.dataset.editAddon);
+    openProductOptions({ ...addons[addonIndex], id: "addon-" + addonIndex, addonIndex, group: "addon" }, "addon", customization.addons[addonIndex]);
   } else if (button.hasAttribute("data-remove-addon")) {
     delete customization.addons[button.dataset.removeAddon];
     updateCustomization();
@@ -238,7 +266,10 @@ document.addEventListener("click", function (event) {
 });
 document.addEventListener("change", function (event) {
   if (page !== "customize") return;
-  if (event.target.hasAttribute("data-flower-quantity")) {
+  if (event.target.id === "builder-ribbon") {
+    customization.ribbon = event.target.value;
+    updateCustomization();
+  } else if (event.target.hasAttribute("data-flower-quantity")) {
     customization.flowers[event.target.dataset.flowerQuantity] = boundedQuantity(
       event.target.value,
       0,

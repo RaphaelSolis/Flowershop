@@ -130,6 +130,11 @@ const PetalStore = (function () {
       if (![3, 5, 8, 12].includes(pieces)) return NaN;
       return product.group === "addon" ? ferreroPrices[pieces] : round(product.price * pieces / 5);
     }
+    if (product.name.toLowerCase().includes("letter")) {
+      const count = Array.isArray(options.letters) ? options.letters.length : 1;
+      if (count < 1 || count > 10) return NaN;
+      return round(product.price * count);
+    }
     return product.price;
   }
   function productOptions(product, values) {
@@ -148,21 +153,27 @@ const PetalStore = (function () {
     } else if (name.includes("candle")) {
       if (!choice("scent", SHOP_SETTINGS.candleScents)) return null;
     } else if (name.includes("letter")) {
-      if (typeof values.letter !== "string" || !values.letter.trim() || values.letter.length > 500) return null;
-      options.letter = values.letter.trim();
-    } else if (product.group !== "addon" && product.group !== "gifts" && product.section !== "gifts" &&
-               product.section !== "potted-flowers") {
-      if (!choice("color", colors.map(color => color[0]))) return null;
+      // Retain messages saved before multiple letters were supported.
+      const letters = values.letters === undefined ? [values.letter] : values.letters;
+      if (!Array.isArray(letters) || letters.length < 1 || letters.length > 10 ||
+          letters.some(letter => typeof letter !== "string" || !letter.trim() || letter.length > 500)) return null;
+      options.letters = letters.map(letter => letter.trim());
+    } else if (product.group !== "addon" && product.group !== "gifts" && product.section !== "gifts") {
+      const presentation = flowerPresentation(product);
+      const colorNames = colors.map(color => color[0]);
+      if (presentation === "wrapped" && !choice("color", colorNames)) return null;
+      if (["wrapped", "basket"].includes(presentation) && !choice("ribbon", colorNames)) return null;
     }
     return options;
   }
   function optionDetails(options) {
     return [
       options.color && options.color + " wrapper",
+      options.ribbon && options.ribbon + " ribbon",
       options.flavor && "Flavor: " + options.flavor,
       options.pieces && options.pieces + " pieces per pack",
       options.scent && "Scent: " + options.scent,
-      options.letter && "Letter: " + options.letter,
+      options.letters && options.letters.map((letter, index) => "Letter " + (index + 1) + ": " + letter).join(" · "),
     ].filter(Boolean).join(" · ");
   }
   function normalizeProduct(item, isAddon = false) {
@@ -206,16 +217,18 @@ const PetalStore = (function () {
       } else if (mode === "color" && colors.some(color => color[0] + " plain wrapping" === wrapperName)) {
         wrapping = { name: wrapperName, price: SHOP_SETTINGS.plainWrappingPrice };
       }
-      if (!wrapping || (values.addons !== undefined && !Array.isArray(values.addons))) return null;
+      const ribbon = values.ribbon || "Pink";
+      if (!colors.some(color => color[0] === ribbon) || !wrapping ||
+          (values.addons !== undefined && !Array.isArray(values.addons))) return null;
       const extras = (values.addons || []).map(addon => normalizeProduct(addon, true));
       if (extras.some(addon => !addon) || new Set(extras.map(addon => addon.productId)).size !== extras.length) return null;
       const unitPrice = round(flowers.reduce((sum, flower) => sum + flower.quantity * flower.unitPrice, 0) +
         wrapping.price + extras.reduce((sum, addon) => sum + addon.quantity * addon.unitPrice, 0));
       line = {
         productId: "custom-bouquet", name: "Customize Flowers", image: customFlowers[flowers[0].index].image,
-        unitPrice, quantity: item.quantity, options: { flowers, wrappingMode: mode, wrapping, addons: extras },
+        unitPrice, quantity: item.quantity, options: { flowers, wrappingMode: mode, wrapping, ribbon, addons: extras },
         details: flowers.map(flower => flower.quantity + " " + flower.name + " stems").join(" · ") +
-          " · " + wrapping.name + extras.map(addon => " · " + addon.quantity + " " + addon.name + " (" + addon.details + ")").join(""),
+          " · " + wrapping.name + " · " + ribbon + " ribbon" + extras.map(addon => " · " + addon.quantity + " " + addon.name + " (" + addon.details + ")").join(""),
       };
     } else line = normalizeProduct(item);
     return line ? { ...line, ...(typeof item.lineId === "string" && item.lineId ? { lineId: item.lineId } : {}) } : null;
@@ -479,7 +492,7 @@ const PetalStore = (function () {
         return item.reference === review.reference;
       });
       return (
-        order && order.status === "Delivered" && order.owner === review.owner
+        order && order.status !== "Cancelled" && order.owner === review.owner
       );
     });
   }
@@ -487,7 +500,7 @@ const PetalStore = (function () {
     const existing = reviews();
     return orders().filter(function (order) {
       return (
-        order.status === "Delivered" &&
+        hasProfile() && order.status !== "Cancelled" &&
         !existing.some(function (review) {
           return review.reference === order.reference;
         })
@@ -500,7 +513,7 @@ const PetalStore = (function () {
     });
     if (!order)
       throw new Error(
-        "You can review an order only after delivery, once per order.",
+        "Place an order before submitting feedback. Each order can be reviewed once.",
       );
     if (
       !Number.isInteger(rating) ||

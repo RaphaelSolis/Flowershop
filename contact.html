@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#577438" />
     <title>The Petal Haus | Contact Us</title>
-    <link rel="stylesheet" href="styles.css?v=20261118-audit-fixes" />
-    <link rel="stylesheet" href="design-spec.css?v=20261118-feedback-controls" />
+    <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
+    <link rel="stylesheet" href="design-spec.css?v=20261119-ui-updates" />
     <script src="settings.js?v=20261118-order-options" defer></script>
-    <script src="products.js?v=20261118-3" defer></script>
-    <script src="store.js?v=20261118-audit-fixes" defer></script>
-    <script src="app.js?v=20261118-audit-fixes" defer></script>
-    <script src="shop.js?v=20261118-audit-fixes" defer></script>
-    <script src="customize.js?v=20261118-audit-fixes" defer></script>
-    <script src="pages.js?v=20261118-audit-fixes" defer></script>
+    <script src="products.js?v=20261119-ui-updates" defer></script>
+    <script src="store.js?v=20261119-ui-updates" defer></script>
+    <script src="app.js?v=20261119-ui-updates" defer></script>
+    <script src="shop.js?v=20261119-ui-updates" defer></script>
+    <script src="customize.js?v=20261119-ui-updates" defer></script>
+    <script src="pages.js?v=20261119-ui-updates" defer></script>
   </head>
   <body data-page="contact">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -44,7 +44,7 @@
               data-shop-menu=""
             >
               <img src="assets/home/flower.png" alt="" />
-              Shop
+              SHOP
             </button>
             <div class="shop-dropdown" id="shop-dropdown">
               <a href="collections.html">
@@ -57,7 +57,7 @@
               </a>
               <a href="customize.html">
                 <img src="assets/home/petal-green.png" alt="" />
-                Customized Yours
+                Customize Yours
               </a>
             </div>
           </div>
@@ -127,7 +127,7 @@
       </header>
       <main id="main">
         <section class="hero hero-reference hero-contact" aria-label="GET IN TOUCH<br />WITH US! ✿">
-          <img class="hero-image" src="assets/banners/contact.png" alt="" fetchpriority="high" />
+          <img class="hero-image" src="assets/banners/contact.webp" width="1000" height="740" decoding="async" alt="White flowers in bloom" fetchpriority="high" />
           <div class="hero-copy">
             
             <h1 class="hero-title">GET IN TOUCH<br />WITH US! ✿</h1>
@@ -151,13 +151,13 @@
             <button class="pill" type="submit">SUBMIT</button>
             <p id="contact-status" role="status"></p>
           </form>
+          <details class="saved-inquiries" hidden><summary>Your inquiries</summary><h2>Your inquiries</h2><div id="customer-inquiries"></div></details>
           <h2 class="contact-heading floral-heading">CONTACT DETAILS <img class="heading-flower" src="assets/home/petal-green.png" alt="" /></h2>
           <div class="contact-cards">
             <article><span class="contact-icon" aria-hidden="true">☎</span><h2>Phone</h2><a data-store-phone=""></a></article>
             <article><span class="contact-icon" aria-hidden="true">✉</span><h2>Email</h2><a data-store-email=""></a></article>
             <article><span class="contact-icon" aria-hidden="true">⌖</span><h2>Location</h2><a data-store-map="" target="_blank" rel="noopener noreferrer">Golden Gate Basketball Court, Topland Ave, Las Piñas, 1747 Metro Manila</a></article>
           </div>
-          <details class="saved-inquiries" hidden><summary>Your inquiries</summary><h2>Your inquiries</h2><div id="customer-inquiries"></div></details>
         </section>
       </main>
       <footer class="site-footer">
@@ -228,7 +228,7 @@
           </nav>
           <h2 class="footer-heading">FAQS</h2>
           <div class="faq-list">
-            <details class="faq" open>
+            <details class="faq">
               <summary>How long do your flowers stay fresh?</summary>
               <p>
                 Our flowers are carefully selected and arranged using fresh
@@ -236,14 +236,14 @@
                 beautiful for 5–10 days.
               </p>
             </details>
-            <details class="faq" open>
+            <details class="faq">
               <summary>Can I customize my bouquet?</summary>
               <p>
                 Absolutely! We can create custom arrangements based on your
                 preferred flowers, colors, budget, and occasion.
               </p>
             </details>
-            <details class="faq" open>
+            <details class="faq">
               <summary>Do you offer same-day flower delivery?</summary>
               <p>
                 Yes! We offer same-day delivery for orders placed before our
@@ -277,9 +277,9 @@
             placeholder="Search for Flowers"
             aria-label="Search products"
           />
-          <button class="pill" type="submit">Search</button>
-        </form>
-        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">Rose</button><button type="button" data-search-query="Sunflower">Sunflower</button><button type="button" data-search-query="Bouquet">Bouquet</button><button type="button" data-search-query="Birthday">Birthday</button></div><a href="search.html">Open search page</a>
+          <button class="pill" type="submit">SEARCH</button>
+        <button class="text-button clear-search" type="button" data-clear-search>CLEAR SEARCH</button></form>
+        <h2>RECENT SEARCHES</h2><div class="search-tags" data-recent-searches=""></div><h2>SUGGESTIONS</h2><div class="search-tags"><button type="button" data-search-query="Rose">ROSE</button><button type="button" data-search-query="Sunflower">SUNFLOWER</button><button type="button" data-search-query="Bouquet">BOUQUET</button><button type="button" data-search-query="Birthday">BIRTHDAY</button></div><a href="search.html">Open search page</a>
         <div
           class="search-results"
           id="search-results"
@@ -313,7 +313,6 @@
       >
         <div class="success-check" aria-hidden="true">✓</div>
         <div class="dialog-heading">
-          <h2 id="success-title">The Petal Haus</h2>
           <button
             class="dialog-close"
             type="button"
@@ -323,11 +322,11 @@
             ×
           </button>
         </div>
-        <p data-success-message="" role="status"></p>
+        <p id="success-title" data-success-message="" role="status"></p>
         <div class="dialog-actions">
           <a class="pill" href="cart.html" data-success-link="">MY CART</a>
           <button class="pill green" type="button" data-close="">
-            Continue
+            CONTINUE
           </button>
         </div>
       </dialog>
