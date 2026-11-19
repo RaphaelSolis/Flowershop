@@ -12,6 +12,17 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   const passwordInput = form.elements.namedItem("password");
   const confirmationInput = form.elements.namedItem("confirmPassword");
+  for (const button of form.querySelectorAll("[data-password-toggle]")) {
+    button.addEventListener("click", function () {
+      const input = document.getElementById(button.dataset.passwordToggle);
+      const reveal = input.type === "password";
+      input.type = reveal ? "text" : "password";
+      button.setAttribute("aria-pressed", String(reveal));
+      const label = reveal ? "Hide password" : "Show password";
+      button.setAttribute("aria-label", label);
+      button.title = label;
+    });
+  }
   function validateSignupPasswords() {
     if (!isSignup) return true;
     const password = passwordInput.value;

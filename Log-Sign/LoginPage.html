@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Petal Haus | Log In</title>
-    <link rel="stylesheet" href="style.css?v=20261119-ui-updates" />
-    <script src="../settings.js?v=20261118-order-options" defer></script>
-    <script src="../products.js?v=20261119-ui-updates" defer></script>
-    <script src="../store.js?v=20261119-ui-updates" defer></script>
-    <script src="../account.js?v=20261118-audit-fixes" defer></script>
+    <link rel="stylesheet" href="style.css?v=20261119-account-delivery" />
+    <script src="../settings.js?v=20261119-account-delivery" defer></script>
+    <script src="../products.js?v=20261119-account-delivery" defer></script>
+    <script src="../store.js?v=20261119-account-delivery" defer></script>
+    <script src="../account.js?v=20261119-account-delivery" defer></script>
   </head>
 
   <body>
@@ -44,14 +44,14 @@
             required
           />
           <label for="account-password">Password:</label>
-          <input
+          <div class="password-field"><input
             autocomplete="current-password"
             id="account-password"
             class="field"
             type="password"
             name="password"
             required
-          />
+          /><button class="password-toggle" type="button" data-password-toggle="account-password" aria-controls="account-password" aria-label="Show password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="m3 3 18 18"/></svg></button></div>
           <a class="forgot" href="#">Forgotten Password?</a>
           <input class="button" type="submit" value="LOG IN" />
         </form>

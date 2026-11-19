@@ -103,13 +103,16 @@ function initializeContactLinks() {
     }
   }
 }
+const publicReviewTemplates = new WeakMap();
 function renderPublicReviews() {
   const reviews = PetalStore.reviews();
   for (const container of document.querySelectorAll("[data-public-reviews]")) {
+    if (!publicReviewTemplates.has(container)) publicReviewTemplates.set(container, container.innerHTML);
     container.innerHTML = reviews
       .map(function (review) {
         return (
-          '<article class="review-card"><div class="review-stars" aria-label="' +
+          '<article class="review-card" data-review-id="' + escapeHTML(review.id || review.reference) +
+          '"><div class="review-stars" aria-label="' +
           review.rating +
           ' out of 5 stars">' +
           "★".repeat(review.rating) +
@@ -123,8 +126,7 @@ function renderPublicReviews() {
           "</small></article>"
         );
       })
-      .join("");
-
+      .join("") + publicReviewTemplates.get(container);
   }
 }
 function initializeAnimations() {
@@ -180,6 +182,8 @@ function handleCommonClick(event) {
       button.setAttribute("aria-expanded", "true");
       popover.querySelector("button").focus();
     }
+  } else if (button.hasAttribute("data-success-link") && button.getAttribute("href")?.startsWith("#")) {
+    closeDialog(button.closest("dialog"));
   } else if (button.hasAttribute("data-close"))
     closeDialog(button.closest("dialog"));
   else if (button.hasAttribute("data-search")) {
@@ -395,6 +399,14 @@ function initializeGallerySlideshow() {
 
 // A shared indicator slides to the selected navigation tab, including the cart.
 function initializeNavigation() {
+  for (const link of document.querySelectorAll(".footer-menu a")) {
+    const current = (page === "home" ? "index" : page) + ".html";
+    const active = link.getAttribute("href") === current ||
+      (link.getAttribute("href") === "collections.html" && ["occasions", "customize"].includes(page));
+    link.classList.toggle("active", active);
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  }
   const header = document.querySelector(".site-header");
   if (!header) return;
   const tabs = Array.from(header.querySelectorAll(".nav-link,[data-cart]"));

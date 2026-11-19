@@ -15,4 +15,5 @@ const SHOP_SETTINGS = {
   peperoFlavors: ["Chocolate", "Almond", "Strawberry", "Cookies and Cream"],
   candleScents: ["Vanilla", "Lavender", "Rose", "Citrus"],
   plainWrappingPrice: 60,
+  deliveryFee: 100, // Flat same-day delivery fee in Philippine pesos.
 };

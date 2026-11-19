@@ -630,9 +630,10 @@ const customFlowers = [
     image: "assets/customize/cost-3.png",
   },
   {
-    name: "Jasmine",
-    price: 70,
-    image: "assets/customize/cost-4.png",
+    name: "Blue Chrysanthemum",
+    price: 80,
+    image: "assets/customize/blue-chrysanthemum.webp",
+    stockId: "new-arrival-3",
   },
   {
     name: "Hibiscus",

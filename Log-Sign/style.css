@@ -287,3 +287,13 @@ a {
 .logo-link .logo { pointer-events: auto; }
 .logo-link:focus-visible { outline: 0; }
 .logo-link:focus-visible .logo { outline: 3px solid #ef6e99; outline-offset: 4px; border-radius: 50%; }
+
+/* Independent show/hide controls preserve the value of each password field. */
+.password-field { position: relative; }
+.password-field .field { padding-right: 52px; }
+.password-toggle { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: #4b7733; cursor: pointer; }
+.password-toggle svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.password-toggle .eye-slash { display: none; }
+.password-toggle[aria-pressed="true"] .eye-slash { display: block; }
+.password-toggle:is(:hover, :focus-visible) { background: #ef6e9933; }
+.password-toggle:focus-visible { outline: 2px solid #4b7733; outline-offset: 2px; }

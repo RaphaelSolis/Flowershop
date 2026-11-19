@@ -310,7 +310,7 @@ const PetalStore = (function () {
     const checked = normalizeLine(line);
     if (!checked) return false;
     if (checked.productId === "custom-bouquet") return available(checked.productId) &&
-      checked.options.flowers.every(flower => available("flower-" + (flower.index + 1))) &&
+      checked.options.flowers.every(flower => available(customFlowers[flower.index].stockId || "flower-" + (flower.index + 1))) &&
       checked.options.addons.every(addon => addonAvailable(addon.productId));
     return available(checked.productId);
   }
@@ -394,6 +394,14 @@ const PetalStore = (function () {
       return order.reference === reference;
     });
   }
+  function checkoutCharges(items = getCart()) {
+    const subtotal = total(items);
+    const configuredFee = SHOP_SETTINGS.deliveryFee;
+    if (!Number.isFinite(configuredFee) || configuredFee < 0)
+      throw new Error("The delivery fee is unavailable. Please contact us before ordering.");
+    const deliveryFee = items.length ? round(configuredFee) : 0;
+    return { subtotal, deliveryFee, total: round(subtotal + deliveryFee) };
+  }
   function placeOrder(customer, payment) {
     if (!hasProfile())
       throw new Error("Create a profile or sign in before placing an order.");
@@ -443,6 +451,7 @@ const PetalStore = (function () {
         return order.reference === reference;
       })
     );
+    const charges = checkoutCharges(items);
     const order = {
       reference: reference,
       owner: owner(),
@@ -455,7 +464,9 @@ const PetalStore = (function () {
         status: "Selected",
       },
       items: JSON.parse(JSON.stringify(items)),
-      total: total(items),
+      subtotal: charges.subtotal,
+      delivery: { type: "Same-day delivery", fee: charges.deliveryFee },
+      total: charges.total,
     };
     list.unshift(order);
     writeMany({ "petal-orders": list, ["petal-cart:" + owner()]: [], "petal-haus-cart": [] });
@@ -583,6 +594,7 @@ const PetalStore = (function () {
     orders,
     getOrder,
     placeOrder,
+    checkoutCharges,
     setOrderStatus,
     reviews,
     eligibleOrders,

@@ -161,11 +161,15 @@ console.log('PASS Feedback stars and green typed text, Anonymous placement, plac
  p.document.querySelector('[name=payment][value="e-wallet"]').click();
  form.dispatchEvent(new p.window.Event('submit',{bubbles:true,cancelable:true}));
  assert.equal(p.run('PetalStore.orders().length'),1);
- assert.equal(p.document.querySelectorAll('.falling-petal').length,42);
- assert.equal(p.document.querySelector('[data-success-message]').textContent,'Successfully placed your order!');
+ assert.equal(p.document.querySelector('.petal-confetti'),null);
+ assert.match(p.location.href,/receipt\.html\?reference=.+&placed=1$/);
+ assert.equal(p.run('PetalStore.orders()[0].total'),220);
+ assert.equal(p.document.getElementById('checkout-delivery-fee').textContent,'₱100');
+ assert.equal(p.document.getElementById('delivery-option-fee').textContent,'₱100');
+ assert.equal(p.document.getElementById('checkout-total').textContent,'₱220');
  await p.close();
 }
-console.log('PASS Saved checkout order triggers falling petals, confirmation links work, animation cleans up, and reduced-motion preferences are respected.');
+console.log('PASS Checkout adds the configured delivery fee and redirects to the saved receipt; reduced-motion preferences and animation cleanup are respected.');
 
 for(const page of ['index','contact','cart','search','about','gallery']){
  const p=await loadPage(page);
@@ -216,3 +220,66 @@ console.log('PASS Old single-letter records migrate without loss; blank addition
  await p.close();
 }
 console.log('PASS Cached fonts preserve the starting underline position for a paint before it slides to the active tab.');
+
+{
+ const p=await loadPage('receipt',placed+`location.href='https://flowers.test/receipt.html?reference='+encodeURIComponent(testOrder.reference)+'&placed=1';location.search=new URL(location.href).search;`);
+ assert.equal(p.document.getElementById('success-dialog').open,true);
+ assert.equal(p.document.querySelector('[data-success-message]').textContent,'Successfully placed your order! Thank you!');
+ assert.equal(p.document.querySelectorAll('.falling-petal').length,42);
+ assert.equal(new URL(p.location.href).searchParams.has('placed'),false);
+ assert.deepEqual(Array.from(p.document.querySelectorAll('.receipt-charges dd'),node=>node.textContent),['₱120','₱100']);
+ assert.equal(p.document.querySelector('.receipt-grand-total').textContent,'Total: ₱220');
+ p.click('[data-success-link]');assert.equal(p.document.getElementById('success-dialog').open,false);
+ const snapshot=Array.from(p.records);const search=new URL(p.location.href).search;
+ await p.close();
+ const q=await loadPage('receipt',`for(const [key,value] of ${JSON.stringify(snapshot)})localStorage.setItem(key,value);`,search);
+ assert.equal(q.document.getElementById('success-dialog').open,false);
+ assert.equal(q.document.querySelector('.petal-confetti'),null);
+ assert.equal(q.document.querySelector('.receipt-grand-total').textContent,'Total: ₱220');
+ await q.close();
+}
+console.log('PASS Receipt shows the saved subtotal/fee/total and order confirmation once, closes from VIEW RECEIPT, and retains totals on reload.');
+
+{
+ const p=await loadPage('profile',registered);
+ assert.equal(p.document.querySelector('#profile-flowers'),null);
+ assert.equal(p.document.querySelector('.profile-activity img'),null);
+ assert.equal(p.document.getElementById('profile-orders').textContent,'0');
+ await p.close();
+ const q=await loadPage('customize');
+ q.click('[data-choice=flower][data-index="3"]');q.click('[data-add-custom]');
+ const flower=JSON.parse(q.run('JSON.stringify(PetalStore.getCart()[0].options.flowers.find(flower=>flower.index===3))'));
+ assert.equal(flower.name,'Blue Chrysanthemum');assert.equal(flower.unitPrice,80);
+ assert.match(q.document.querySelector('[data-choice=flower][data-index="3"] img').src,/blue-chrysanthemum.webp/);
+ q.run(`PetalStore.setStock('new-arrival-3',false);`);
+ assert.equal(q.run('PetalStore.lineAvailable(PetalStore.getCart()[0])'),false);
+ assert.equal(q.run('findProduct("flower-4").name'),'Jasmine');
+ await q.close();
+}
+console.log('PASS Profile activity keeps only orders; Blue Chrysanthemum replaces builder Jasmine and uses its own stock and catalog price.');
+
+{
+ const p=await loadPage('feedback',placed);
+ const form=p.document.getElementById('review-form');
+ form.querySelector('[name=rating][value="5"]').click();p.change(form.querySelector('[name=message]'),'A new review visible immediately');
+ form.querySelector('button[type=submit]').click();
+ const container=p.document.querySelector('[data-public-reviews]');
+ assert.equal(container.firstElementChild.querySelector('p').textContent,'A new review visible immediately');
+ assert.equal(container.querySelectorAll('[data-review-id]').length,1);
+ p.run('renderPublicReviews();renderPublicReviews();');
+ assert.equal(container.querySelectorAll('[data-review-id]').length,1);
+ const snapshot=Array.from(p.records);await p.close();
+ const q=await loadPage('feedback',`for(const [key,value] of ${JSON.stringify(snapshot)})localStorage.setItem(key,value);`);
+ assert.equal(q.document.querySelector('[data-public-reviews]').firstElementChild.querySelector('p').textContent,'A new review visible immediately');
+ assert.equal(q.document.querySelectorAll('[data-review-id]').length,1);
+ await q.close();
+}
+console.log('PASS Submitted reviews appear first immediately and after reload, without duplication.');
+
+{
+ const p=await loadPage('receipt',placed+`delete testOrder.delivery;delete testOrder.subtotal;testOrder.total=120;PetalStore.write('petal-orders',[testOrder]);`);
+ assert.deepEqual(Array.from(p.document.querySelectorAll('.receipt-charges dd'),node=>node.textContent),['₱120','₱0']);
+ assert.equal(p.document.querySelector('.receipt-grand-total').textContent,'Total: ₱120');
+ await p.close();
+}
+console.log('PASS Historical orders preserve their original total and are not charged the new delivery fee.');

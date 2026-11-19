@@ -101,8 +101,11 @@ function renderCheckoutPage(prefill = true) {
       })
       .join("") ||
     '<p>Your cart is empty. <a href="collections.html">Shop now.</a></p>';
-  document.getElementById("checkout-total").textContent =
-    "PHP " + money(PetalStore.total(items));
+  const charges = PetalStore.checkoutCharges(items);
+  document.getElementById("checkout-subtotal").textContent = "₱" + money(charges.subtotal);
+  document.getElementById("checkout-delivery-fee").textContent = "₱" + money(charges.deliveryFee);
+  document.getElementById("delivery-option-fee").textContent = "₱" + money(SHOP_SETTINGS.deliveryFee);
+  document.getElementById("checkout-total").textContent = "₱" + money(charges.total);
   document.getElementById("pay-button").disabled =
     !items.length ||
     items.some(function (line) {
@@ -182,13 +185,7 @@ function submitCheckout(event) {
     refreshCartUI();
     const receiptLink =
       "receipt.html?reference=" + encodeURIComponent(order.reference);
-    showSuccess(
-      "Successfully placed your order!",
-      receiptLink,
-      "View receipt",
-    );
-    celebrateOrder();
-    // Keep the confirmation visible until the customer chooses View receipt.
+    location.href = receiptLink + "&placed=1";
   } catch (error) {
     checkoutInProgress = false;
     document.getElementById("pay-button").disabled = !PetalStore.hasProfile();
@@ -239,7 +236,10 @@ function receiptMarkup(order) {
         );
       })
       .join("") +
-    '</tbody></table><p class="receipt-grand-total">Total: PHP ' +
+    '</tbody></table><dl class="receipt-charges"><div><dt>Subtotal</dt><dd>₱' +
+    money(Number.isFinite(order.subtotal) ? order.subtotal : PetalStore.total(order.items)) +
+    '</dd></div><div><dt>Delivery fee</dt><dd>₱' + money(order.delivery?.fee || 0) +
+    '</dd></div></dl><p class="receipt-grand-total">Total: ₱' +
     money(order.total) +
     "</p></article>"
   );
@@ -258,7 +258,14 @@ function renderReceiptPage() {
   }
   container.innerHTML =
     receiptMarkup(order) +
-    '<div class="receipt-actions"><button class="pill" type="button" data-print-receipt>Print / save as PDF</button><button class="pill green" type="button" data-download-receipt>Download receipt</button><a class="pill" href="feedback.html">Review after delivery</a></div>';
+    '<div class="receipt-actions"><button class="pill" type="button" data-print-receipt>Print / save as PDF</button><button class="pill green" type="button" data-download-receipt>Download receipt</button><a class="pill" href="feedback.html">WRITE A REVIEW</a></div>';
+  const url = new URL(location.href);
+  if (url.searchParams.get("placed") === "1" && url.searchParams.get("reference") === order.reference) {
+    url.searchParams.delete("placed");
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+    showSuccess("Successfully placed your order! Thank you!", "#receipt-content", "VIEW RECEIPT");
+    celebrateOrder();
+  }
 }
 function downloadReceipt() {
   const order = currentReceiptOrder();
@@ -266,7 +273,7 @@ function downloadReceipt() {
   const html =
     '<!DOCTYPE html><html lang="en"><meta charset="UTF-8"><title>' +
     escapeHTML(order.reference) +
-    "</title><style>body{font:16px/1.5 Georgia,serif;max-width:900px;margin:30px auto;padding:20px;color:#344a25}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #ccc;padding:12px;text-align:left}small{display:block}.receipt-grand-total{font-size:24px;font-weight:bold}</style><body>" +
+    "</title><style>body{font:16px/1.5 Georgia,serif;max-width:900px;margin:30px auto;padding:20px;color:#344a25}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #ccc;padding:12px;text-align:left}small{display:block}.receipt-grand-total{font-size:24px;font-weight:bold}.receipt-charges>div{display:flex;justify-content:space-between;gap:16px}.receipt-charges dd{margin:0}</style><body>" +
     receiptMarkup(order) +
     "</body></html>";
   const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
@@ -433,7 +440,7 @@ function submitBuyerReview(event) {
     updateReviewPresentation();
     renderPublicReviews();
     refreshCartUI();
-    showSuccess("Successfully submitted your review!", "feedback.html#published-reviews", "View reviews");
+    showSuccess("Successfully submitted your review!", "#published-reviews", "VIEW REVIEWS");
   } catch (error) {
     status.textContent = error.message;
   }
@@ -581,13 +588,7 @@ function initializeProfile() {
   const joined = user.createdAt || orders.at(-1)?.date;
   document.getElementById("profile-member-since").textContent = joined
     ? new Date(joined).toLocaleDateString("en-PH", { month: "long", year: "numeric" }) : "—";
-  document.getElementById("profile-orders").textContent = orders.length;
-  const flowers = PetalStore.getCart().reduce(function (sum, line) {
-    if (line.options.flowers) return sum + line.options.flowers.reduce((count, flower) => count + flower.quantity, 0) * line.quantity;
-    const product = findProduct(line.productId);
-    return sum + (product && productKind(product) === "flower" ? line.quantity : 0);
-  }, 0);
-  document.getElementById("profile-flowers").textContent = flowers;
+  document.getElementById("profile-orders").textContent = String(orders.length);
   const form = document.getElementById("profile-edit-form");
   for (const field of ["name", "bio", "phone"]) form.elements.namedItem(field).value = user[field] || "";
   const address = defaultAddressFields(user);
@@ -804,6 +805,10 @@ window.addEventListener("storage", function (event) {
   if (page === "cart") renderCartPage();
   refreshAccountUI();
   refreshCartUI();
+  if (event.key === null || ["petal-reviews", "petal-orders"].includes(event.key)) {
+    renderPublicReviews();
+    if (page === "feedback") updateReviewEligibility();
+  }
   if (event.key === "petal-stock") {
     initializeShop();
     if (page === "search") searchProducts("page-search-input", "page-search-results");

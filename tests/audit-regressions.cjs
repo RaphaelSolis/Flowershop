@@ -48,7 +48,9 @@ console.log("PASS Cart merging and adding at the quantity cap preserve all units
   altered[0].name = "Altered product";
   store.write("petal-cart:" + store.owner(), altered);
   const order = store.placeOrder(customer, payment);
-  assert.equal(order.total, 240);
+  assert.equal(order.subtotal, 240);
+  assert.equal(order.delivery.fee, 100);
+  assert.equal(order.total, 340);
   assert.equal(order.items[0].name, "Tulip");
   assert.equal(order.items[0].image, "assets/collections/flo-1.png");
 
@@ -60,7 +62,7 @@ console.log("PASS Cart merging and adding at the quantity cap preserve all units
     },
   });
   assert.equal(store.getCart()[0].unitPrice, 910);
-  assert.equal(store.placeOrder(customer, payment).total, 1820);
+  assert.equal(store.placeOrder(customer, payment).total, 1920);
 }
 console.log("PASS Standalone and custom bouquet prices, names and images come from the catalog.");
 

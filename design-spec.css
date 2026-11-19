@@ -888,3 +888,21 @@ body[data-page="feedback"] .standard-form .anonymous-toggle input { width: 18px;
 #success-dialog .dialog-heading { min-height: 0; margin: 0; }
 #success-dialog .dialog-close { position: absolute; top: 10px; right: 10px; }
 body[data-page="checkout"] #success-dialog { inset: 0; margin: auto; }
+
+/* Footer links use evenly sized cells and the header's cream/pink color states. */
+.footer-menu { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: minmax(44px, auto); gap: 12px 24px; margin: 28px 0; padding: 0; font-size: clamp(16px, 1.7vw, 20px); }
+.footer-menu a { display: flex; align-items: center; min-height: 44px; padding: 6px 0; line-height: 1.3; color: var(--yellow); text-align: left; text-decoration: none; }
+.footer-menu a:is(:hover, :focus-visible, .active) { color: var(--pink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.footer-menu a:focus-visible { outline: 2px solid var(--pink); outline-offset: 4px; border-radius: 4px; }
+.social-links { align-items: center; gap: 18px; }
+.social-links a { width: 48px; height: 48px; border: 2px solid var(--pink); border-radius: 50%; background: #ef6e992b; transition: background-color .2s, border-color .2s, box-shadow .2s, transform .2s; }
+.social-links img { width: 28px; height: 28px; }
+.social-links a:is(:hover, :focus-visible) { opacity: 1; background: var(--pink); border-color: var(--yellow); box-shadow: 0 0 0 3px #fff8b859; transform: translateY(-2px); }
+.social-links a:focus-visible { outline: 2px solid var(--yellow); outline-offset: 4px; }
+.checkout-charges, .receipt-charges { display: grid; gap: 10px; margin: 20px 0; font-size: 18px; }
+:is(.checkout-charges, .receipt-charges) > div { display: flex; justify-content: space-between; gap: 16px; }
+:is(.checkout-charges, .receipt-charges) dd { margin: 0; font-weight: 700; white-space: nowrap; }
+.checkout-total-label { font-size: 16px; margin-bottom: 8px; }
+.delivery-section output { color: var(--deep-pink); font-weight: 700; }
+@media (max-width: 900px) { .footer-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; } }
+@media (prefers-reduced-motion: reduce) { .social-links a { transition: none; } .social-links a:is(:hover, :focus-visible) { transform: none; } }

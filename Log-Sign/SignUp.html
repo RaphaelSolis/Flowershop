@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Petal Haus | Sign Up</title>
-    <link rel="stylesheet" href="style.css?v=20261119-ui-updates" />
-    <script src="../settings.js?v=20261118-order-options" defer></script>
-    <script src="../products.js?v=20261119-ui-updates" defer></script>
-    <script src="../store.js?v=20261119-ui-updates" defer></script>
-    <script src="../account.js?v=20261118-audit-fixes" defer></script>
+    <link rel="stylesheet" href="style.css?v=20261119-account-delivery" />
+    <script src="../settings.js?v=20261119-account-delivery" defer></script>
+    <script src="../products.js?v=20261119-account-delivery" defer></script>
+    <script src="../store.js?v=20261119-account-delivery" defer></script>
+    <script src="../account.js?v=20261119-account-delivery" defer></script>
   </head>
 
   <body>
@@ -66,7 +66,7 @@
             required
           />
           <label for="account-password">Enter your password:</label>
-          <input
+          <div class="password-field"><input
             autocomplete="new-password"
             id="account-password"
             class="field"
@@ -78,12 +78,12 @@
             aria-describedby="password-requirements"
             title="Use at least 8 characters, one uppercase letter, and one special character."
             required
-          />
+          /><button class="password-toggle" type="button" data-password-toggle="account-password" aria-controls="account-password" aria-label="Show password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="m3 3 18 18"/></svg></button></div>
           <p id="password-requirements" class="password-help">
             Use at least 8 characters, one uppercase letter, and one special character (for example, !, @, or #).
           </p>
           <label for="account-confirm-password">Confirm your password:</label>
-          <input
+          <div class="password-field"><input
             autocomplete="new-password"
             id="account-confirm-password"
             class="field"
@@ -93,7 +93,7 @@
             maxlength="128"
             aria-describedby="password-confirm-error"
             required
-          />
+          /><button class="password-toggle" type="button" data-password-toggle="account-confirm-password" aria-controls="account-confirm-password" aria-label="Show password" aria-pressed="false" title="Show password"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="m3 3 18 18"/></svg></button></div>
           <p id="password-confirm-error" class="field-error" role="status"></p>
           <label for="account-mobile">Enter your mobile number:</label>
           <input

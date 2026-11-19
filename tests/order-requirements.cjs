@@ -11,7 +11,7 @@ function shoppingStore() {
       setItem: (key, value) => records.set(key, value),
     },
   });
-  for (const name of ["products", "store"])
+  for (const name of ["settings", "products", "store"])
     vm.runInContext(fs.readFileSync(path.resolve(__dirname, "../" + name + ".js"), "utf8"), context);
   return vm.runInContext("PetalStore", context);
 }
@@ -67,7 +67,9 @@ console.log("PASS Quantity updates preserve the product price and calculate the 
   assert.equal(store.getCart().find(line => line.productId === "flower-1").name, "Tulip");
   const order = store.placeOrder(customer, payment);
   assert.equal(order.owner, profile.id);
-  assert.equal(order.total, 540);
+  assert.equal(order.subtotal, 540);
+  assert.equal(order.delivery.fee, 100);
+  assert.equal(order.total, 640);
   assert.equal(order.items.length, 2);
   assert.equal(order.items[1].name, "Customize Flowers");
   assert.equal(store.getCart().length, 0);
