@@ -429,13 +429,9 @@ function initializeNavigation() {
     return { left: box.left - base.left, width: box.width, top: box.bottom - base.top + 4 };
   }
   function move(position) {
-    // Cached coordinates can belong to a wider viewport before a zoom/resize.
-    const availableWidth = header.clientWidth || window.innerWidth;
-    const width = Math.max(0, Math.min(position.width, availableWidth));
-    const left = Math.max(0, Math.min(position.left, availableWidth - width));
-    indicator.hidden = width <= 0;
-    indicator.style.width = width + "px";
-    indicator.style.transform = "translate(" + left + "px," + position.top + "px)";
+    indicator.hidden = position.width <= 0;
+    indicator.style.width = position.width + "px";
+    indicator.style.transform = "translate(" + position.left + "px," + position.top + "px)";
   }
   const active = tabs.find(tab => tab.classList.contains("active"));
   if (active) {
