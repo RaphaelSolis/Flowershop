@@ -2133,109 +2133,57 @@ They replace selected desktop sizes and stack content to fit a phone.
   }
 }
 
-/* 17. SINGLE-PHOTO SLIDESHOW
-The viewport hides photos outside its edges (overflow: hidden).
-The track holds the photos in one row (display: flex).
-Each slide takes the whole row width (flex: 0 0 100%).
-app.js moves the track sideways; transition makes that movement smooth.
-*/
-.gallery-slideshow {
+/* Home photos retain their portrait scale and loop as one continuous row. */
+.gallery-marquee { width: 100%; }
+.gallery-marquee-viewport {
   width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cream) transparent;
 }
-.gallery-viewport {
-  position: relative;
-  overflow: hidden;
-  touch-action: pan-y;
-  background: var(--page-cream);
-}
-.gallery-track {
+.gallery-marquee-track { display: flex; width: max-content; }
+.gallery-marquee-group {
   display: flex;
-  transition: transform 0.6s ease; /* .6s = a 0.6-second sliding animation. */
+  flex: none;
+  gap: 16px;
+  width: max-content;
+  list-style: none;
+  margin: 0;
+  padding: 0 16px 0 0;
 }
-.gallery-slide {
-  flex: 0 0 100%;
-  min-width: 0;
-}
-.gallery-slide img {
+.gallery-marquee-group li { flex: none; width: clamp(220px, 26vw, 340px); }
+.gallery-marquee-group img {
+  display: block;
   width: 100%;
-  height: clamp(240px, 44vw, 620px);
+  height: clamp(300px, 34vw, 440px);
   object-fit: cover;
   object-position: center;
+  border-radius: 22px;
 }
-.gallery-arrow {
-  position: static;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48rem;
-  height: 48rem;
-  padding: 0 0 5rem;
-  border: 1rem solid var(--cream);
-  border-radius: 50%;
-  background: #577438c9;
-  color: var(--cream);
-  font:
-    46rem/1 "EB Garamond",
-    serif;
+.gallery-marquee.is-ready .gallery-marquee-track {
+  animation: gallery-marquee-scroll 42s linear infinite;
+  animation-play-state: paused;
+  will-change: transform;
 }
-.gallery-controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 10rem;
-  padding: 16rem 12rem 0;
-}
-.gallery-dots {
-  display: flex;
-  gap: 4rem;
-}
-.gallery-dot {
-  position: relative;
-  width: 24rem;
-  height: 28rem;
-  padding: 0;
-  border: 0;
-  background: none;
-}
-.gallery-dot::after {
-  content: "";
-  position: absolute;
-  inset: 8rem;
-  border: 1rem solid var(--cream);
-  border-radius: 50%;
-}
-.gallery-dot[aria-current="true"]::after {
-  background: var(--cream);
-}
+.gallery-marquee.is-ready:not(.is-paused) .gallery-marquee-viewport { overflow-x: hidden; }
+.gallery-marquee.is-playing .gallery-marquee-track { animation-play-state: running; }
+.gallery-marquee-viewport:is(:hover, :focus-visible) .gallery-marquee-track { animation-play-state: paused; }
+.gallery-controls { display: flex; justify-content: center; padding: 16px 12px 0; }
 .gallery-playback {
-  border: 1rem solid var(--cream);
-  border-radius: 30rem;
-  padding: 5rem 15rem;
+  min-height: 44px;
+  padding: 10px 24px;
+  border: 1px solid var(--cream);
+  border-radius: 30px;
   color: var(--cream);
-  background: none;
-  font:
-    16rem/1.2 "EB Garamond",
-    serif;
+  background: transparent;
+  font: 16px/1.2 "EB Garamond", serif;
 }
-.gallery-slideshow button:focus-visible {
-  outline-color: var(--cream);
-}
-@media (max-width: 600px) {
-  .gallery-arrow {
-    width: 42rem;
-    height: 42rem;
-    font-size: 38rem;
-  }
-  .gallery-playback {
-    min-height: 36rem;
-  }
-}
+.gallery-marquee :is(button, .gallery-marquee-viewport):focus-visible { outline: 2px solid var(--cream); outline-offset: 4px; }
+@keyframes gallery-marquee-scroll { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
-  .gallery-track {
-    transition: none;
-  }
+  .gallery-marquee.is-ready .gallery-marquee-track { animation: none; will-change: auto; }
+  .gallery-marquee-group[aria-hidden="true"] { display: none; }
+  .gallery-marquee .gallery-marquee-viewport { overflow-x: auto; }
 }
 
 /* NEW FUNCTIONAL PAGES — cart, checkout, receipt, contact and feedback. */

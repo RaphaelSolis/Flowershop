@@ -1,11 +1,9 @@
 "use strict";
 /* COMMON PAGE BEHAVIOR
-   products.js = prices; store.js = saved records; app.js = menus and slideshow.
+   products.js = prices; store.js = saved records; app.js = menus and the home gallery.
    shop.js handles product options. customize.js handles bouquet choices.
    pages.js handles cart, checkout, receipt, contact, feedback, and notifications. */
 const page = document.body.dataset.page;
-const GALLERY_SLIDE_DELAY = 3000;
-const SWIPE_MIN_DISTANCE = 45;
 
 function money(value) {
   return Number(value).toLocaleString("en-PH", { maximumFractionDigits: 2 });
@@ -238,7 +236,7 @@ function startWebsite() {
   initializeContactLinks();
   renderPublicReviews();
   initializeAnimations();
-  initializeGallerySlideshow();
+  initializeGalleryMarquee();
   initializeShop();
   initializeCustomization();
   initializePages();
@@ -249,151 +247,76 @@ function startWebsite() {
 }
 document.addEventListener("DOMContentLoaded", startWebsite);
 
-// ONE-PHOTO HOME SLIDESHOW
-function initializeGallerySlideshow() {
-  const gallery = document.querySelector(".gallery-slideshow");
-  if (!gallery) {
-    return; // Only the home page contains this slideshow.
-  }
-
-  const track = gallery.querySelector(".gallery-track");
-  const slides = gallery.querySelectorAll(".gallery-slide");
-  const dots = gallery.querySelectorAll(".gallery-dot");
+// HOME PHOTO MARQUEE
+function initializeGalleryMarquee() {
+  const gallery = document.querySelector("[data-gallery-marquee]");
+  if (!gallery || gallery.dataset.initialized) return;
+  gallery.dataset.initialized = "true";
+  const viewport = gallery.querySelector(".gallery-marquee-viewport");
+  const track = gallery.querySelector(".gallery-marquee-track");
+  const group = track.querySelector(".gallery-marquee-group");
   const playbackButton = gallery.querySelector("[data-gallery-playback]");
-  let motionPreference = null;
-  if (typeof window.matchMedia === "function") {
-    motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-  }
+  const motionPreference = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+  const repeatedGroup = group.cloneNode(true);
+  repeatedGroup.setAttribute("aria-hidden", "true");
+  repeatedGroup.setAttribute("inert", "");
+  for (const image of repeatedGroup.querySelectorAll("img")) image.alt = "";
+  track.appendChild(repeatedGroup);
 
-  let currentSlide = 0;
-  let isPlaying = motionPreference ? !motionPreference.matches : true;
-  let slideshowTimer;
-  let touchStartPosition = null;
-
-  function showSlide(slideNumber) {
-    currentSlide = slideNumber;
-    // Going past the last photo returns to the first; going back returns to last.
-    if (currentSlide >= slides.length) {
-      currentSlide = 0;
-    } else if (currentSlide < 0) {
-      currentSlide = slides.length - 1;
-    }
-
-    // Each photo occupies 100% of the viewport's width.
-    // Photo 1: move 0%. Photo 2: move -100%. Photo 3: move -200%.
-    track.style.transform = "translateX(-" + currentSlide * 100 + "%)";
-    for (let number = 0; number < slides.length; number++) {
-      slides[number].setAttribute("aria-hidden", number !== currentSlide);
-      dots[number].setAttribute("aria-current", number === currentSlide);
-    }
-  }
-
+  let paused = false;
+  let visible = true;
+  let loading = false;
+  let ready = false;
   function updatePlayback() {
-    // Clear the previous timer so we never run two slideshow timers at once.
-    clearInterval(slideshowTimer);
-    playbackButton.textContent = isPlaying ? "Pause" : "Play";
-    playbackButton.setAttribute(
-      "aria-label",
-      isPlaying ? "Pause slideshow" : "Play slideshow",
-    );
-    track.setAttribute("aria-live", isPlaying ? "off" : "polite");
-
-    // Pause automatic movement while the browser tab is hidden.
-    if (isPlaying && !document.hidden) {
-      slideshowTimer = setInterval(function () {
-        showSlide(currentSlide + 1);
-      }, GALLERY_SLIDE_DELAY);
-    }
+    const reducedMotion = !!motionPreference?.matches;
+    gallery.classList.toggle("is-playing", ready && visible && !paused && !reducedMotion && !document.hidden);
+    gallery.classList.toggle("is-paused", paused || reducedMotion);
+    playbackButton.hidden = reducedMotion;
+    playbackButton.textContent = paused ? "RESUME" : "PAUSE";
+    playbackButton.setAttribute("aria-label", paused ? "Resume moving gallery" : "Pause moving gallery");
+    playbackButton.setAttribute("aria-pressed", String(paused));
   }
-
-  function pauseSlideshow() {
-    isPlaying = false;
-    updatePlayback();
-  }
-
-  gallery.addEventListener("click", function (event) {
-    const button = event.target.closest("button");
-    if (!button) {
-      return;
-    }
-    if (button.hasAttribute("data-gallery-playback")) {
-      isPlaying = !isPlaying;
+  function prepareImages() {
+    if (loading) return;
+    loading = true;
+    const images = Array.from(gallery.querySelectorAll("img"));
+    for (const image of images) image.loading = "eager";
+    Promise.all(images.map(image => image.decode?.().catch(() => {}))).then(() => {
+      ready = true;
+      gallery.classList.add("is-ready");
       updatePlayback();
-    } else if (button.hasAttribute("data-gallery-direction")) {
-      pauseSlideshow();
-      showSlide(currentSlide + Number(button.dataset.galleryDirection));
-    } else if (button.hasAttribute("data-gallery-slide")) {
-      pauseSlideshow();
-      showSlide(Number(button.dataset.gallerySlide));
-    }
-  });
-
-  gallery.addEventListener("focusin", function (event) {
-    if (event.target !== playbackButton) {
-      pauseSlideshow();
-    }
-  });
-
-  // A visitor using a keyboard can navigate with the left and right arrow keys.
-  gallery.addEventListener("keydown", function (event) {
-    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-      event.preventDefault();
-      pauseSlideshow();
-      if (event.key === "ArrowRight") {
-        showSlide(currentSlide + 1);
-      } else {
-        showSlide(currentSlide - 1);
-      }
-    }
-  });
-
-  // A phone swipe starts with remembering where the finger touched the screen.
-  gallery.addEventListener(
-    "touchstart",
-    function (event) {
-      const touch = event.touches[0];
-      touchStartPosition = { x: touch.clientX, y: touch.clientY };
-    },
-    { passive: true },
-  );
-
-  gallery.addEventListener(
-    "touchend",
-    function (event) {
-      if (!touchStartPosition) {
-        return;
-      }
-      const touch = event.changedTouches[0];
-      const horizontalDistance = touch.clientX - touchStartPosition.x;
-      const verticalDistance = touch.clientY - touchStartPosition.y;
-      // Ignore normal vertical scrolling and very short finger movements.
-      if (
-        Math.abs(horizontalDistance) > SWIPE_MIN_DISTANCE &&
-        Math.abs(horizontalDistance) > Math.abs(verticalDistance)
-      ) {
-        pauseSlideshow();
-        showSlide(currentSlide + (horizontalDistance < 0 ? 1 : -1));
-      }
-      touchStartPosition = null;
-    },
-    { passive: true },
-  );
-
-  gallery.addEventListener("touchcancel", function () {
-    touchStartPosition = null;
-  });
-  document.addEventListener("visibilitychange", updatePlayback);
-  if (
-    motionPreference &&
-    typeof motionPreference.addEventListener === "function"
-  ) {
-    motionPreference.addEventListener("change", function (event) {
-      if (event.matches) {
-        pauseSlideshow();
-      }
     });
   }
-  showSlide(0);
+  function pause() {
+    paused = true;
+    updatePlayback();
+  }
+  playbackButton.addEventListener("click", () => {
+    paused = !paused;
+    if (!paused) viewport.scrollLeft = 0;
+    updatePlayback();
+  });
+  viewport.addEventListener("pointerdown", event => {
+    if (event.pointerType === "touch" || event.pointerType === "pen") pause();
+  });
+  viewport.addEventListener("keydown", event => {
+    if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+    event.preventDefault();
+    pause();
+    const distance = group.querySelector("li").getBoundingClientRect().width + 16;
+    viewport.scrollBy({ left: event.key === "ArrowRight" ? distance : -distance, behavior: "auto" });
+  });
+  document.addEventListener("visibilitychange", updatePlayback);
+  motionPreference?.addEventListener?.("change", updatePlayback);
+  if (typeof window.IntersectionObserver === "function") {
+    visible = false;
+    const observer = new window.IntersectionObserver(entries => {
+      visible = entries.some(entry => entry.isIntersecting);
+      if (visible) prepareImages();
+      updatePlayback();
+    }, { rootMargin: "200px" });
+    observer.observe(gallery);
+  } else prepareImages();
   updatePlayback();
 }
 

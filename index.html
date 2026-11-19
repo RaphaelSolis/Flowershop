@@ -11,7 +11,7 @@
     />
     <title>The Petal Haus | Home</title>
     <!-- styles.css?v=20261118-audit-fixes controls colors, fonts, spacing, and phone layouts. -->
-    <link rel="stylesheet" href="styles.css?v=20261119-ui-updates" />
+    <link rel="stylesheet" href="styles.css?v=20261119-gallery-marquee" />
     <link rel="stylesheet" href="design-spec.css?v=20261119-canva-story" />
     <link rel="stylesheet" href="layout.css?v=20261119-responsive-layout" />
     <!-- defer means: finish reading this HTML before running app.js?v=20261118-audit-fixes. -->
@@ -19,7 +19,7 @@
     <script src="settings.js?v=20261119-account-delivery" defer></script>
     <script src="products.js?v=20261119-account-delivery" defer></script>
     <script src="store.js?v=20261119-account-delivery" defer></script>
-    <script src="app.js?v=20261119-responsive-layout" defer></script>
+    <script src="app.js?v=20261119-gallery-marquee" defer></script>
     <script src="shop.js?v=20261119-ui-updates" defer></script>
     <script src="customize.js?v=20261119-ui-updates" defer></script>
     <script src="pages.js?v=20261119-account-delivery" defer></script>
@@ -314,29 +314,23 @@
             </div>
           </section>
         </div>
-        <!-- ONE-PHOTO SLIDESHOW: replace each image src to change the photos. -->
+        <!-- MOVING PHOTO GALLERY: the original photos repeat for a seamless loop. -->
         <section class="gallery" id="gallery">
           <div class="gallery-layout">
           <h2 data-animate="shift">CAPTURING BEAUTY IN EVERY BLOOM</h2>
-          <div class="gallery-slideshow" role="region" aria-roledescription="carousel" aria-label="Flower gallery">
-            <div class="gallery-viewport" tabindex="0" aria-label="Gallery photos: use left and right arrow keys to browse">
-              <div class="gallery-track" aria-live="off">
-                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="1 of 4" aria-hidden="false"><img src="assets/home/feat-pic-1.webp" width="630" height="900" decoding="async" alt="Flower shop displays" loading="eager" /></div>
-                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="2 of 4" aria-hidden="true"><img src="assets/home/feat-pic-2.webp" width="723" height="900" decoding="async" alt="A florist arranging flowers" loading="eager" /></div>
-                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="3 of 4" aria-hidden="true"><img src="assets/home/feat-pic-3.webp" width="702" height="900" decoding="async" alt="Flowers being prepared in the studio" loading="eager" /></div>
-                <div class="gallery-slide" role="group" aria-roledescription="slide" aria-label="4 of 4" aria-hidden="true"><img src="assets/home/feat-pic-4.webp" width="835" height="900" decoding="async" alt="The flower-filled storefront" loading="eager" /></div>
+          <div class="gallery-marquee" data-gallery-marquee="" role="region" aria-label="Flower gallery">
+            <div class="gallery-marquee-viewport" tabindex="0" aria-label="Gallery photos: pause or use the arrow keys to browse">
+              <div class="gallery-marquee-track" aria-live="off">
+                <ul class="gallery-marquee-group" role="list">
+                  <li><img src="assets/home/feat-pic-1.webp?v=20261119-marquee" width="910" height="1300" decoding="async" alt="Flower shop displays" loading="lazy" /></li>
+                  <li><img src="assets/home/feat-pic-2.webp?v=20261119-marquee" width="1045" height="1300" decoding="async" alt="A florist arranging flowers" loading="lazy" /></li>
+                  <li><img src="assets/home/feat-pic-3.webp?v=20261119-marquee" width="1014" height="1300" decoding="async" alt="Flowers being prepared in the studio" loading="lazy" /></li>
+                  <li><img src="assets/home/feat-pic-4.webp?v=20261119-marquee" width="1206" height="1300" decoding="async" alt="The flower-filled storefront" loading="lazy" /></li>
+                </ul>
               </div>
             </div>
             <div class="gallery-controls">
-              <button class="gallery-arrow gallery-previous" type="button" data-gallery-direction="-1" aria-label="Previous photo">‹</button>
-              <div class="gallery-dots" aria-label="Choose a photo">
-                <button type="button" class="gallery-dot" data-gallery-slide="0" aria-label="Show photo 1: Flower shop displays" aria-current="true"></button>
-                <button type="button" class="gallery-dot" data-gallery-slide="1" aria-label="Show photo 2: A florist arranging flowers" aria-current="false"></button>
-                <button type="button" class="gallery-dot" data-gallery-slide="2" aria-label="Show photo 3: Flowers being prepared in the studio" aria-current="false"></button>
-                <button type="button" class="gallery-dot" data-gallery-slide="3" aria-label="Show photo 4: The flower-filled storefront" aria-current="false"></button>
-              </div>
-              <button class="gallery-arrow gallery-next" type="button" data-gallery-direction="1" aria-label="Next photo">›</button>
-              <button class="gallery-playback" type="button" data-gallery-playback="" aria-label="Pause slideshow">PAUSE</button>
+              <button class="gallery-playback" type="button" data-gallery-playback="" aria-label="Pause moving gallery" aria-pressed="false">PAUSE</button>
             </div>
           </div>
           <p data-animate="rise">
