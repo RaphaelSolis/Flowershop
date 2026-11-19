@@ -57,11 +57,11 @@ The latest page-specific design values are in design-spec.css, loaded after this
 /* 2. MAIN COLORS AND DESIGN SCALE
 The -- names are reusable colors. Change a value here to update its uses.
 At a browser width of 1080px, 1rem in this design equals 1px.
-The root font-size scales the reference layout on larger/smaller computers.
-The phone rules below set 1rem back to 1px for the separate phone layout.
+Keep the reference units stable; responsive.css adapts layouts and text without
+scaling up the entire design on wide screens or when the browser zoom changes.
 */
 :root {
-  font-size: min(0.0925925926vw, 1.3px);
+  font-size: 1px;
   --green: #577438;
   --cream: #fffde9;
   --yellow: #fff8b8;
@@ -92,8 +92,9 @@ body {
     serif;
 }
 #site {
-  max-width: 1404px;
-  margin: auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 }
 a {
   color: inherit;
