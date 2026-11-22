@@ -4,11 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Petal Haus | Sign Up</title>
-    <link rel="stylesheet" href="style.css?v=20261119-responsive-layout" />
+    <link rel="stylesheet" href="style.css?v=20261122-password-recovery" />
     <script src="../settings.js?v=20261122-instructions-final" defer></script>
     <script src="../products.js?v=20261122-instructions-final" defer></script>
-    <script src="../store.js?v=20261122-instructions-final" defer></script>
-    <script src="../account.js?v=20261119-account-delivery" defer></script>
+    <script src="../store.js?v=20261122-password-recovery" defer></script>
+    <script src="../security-questions.js?v=20261122-password-recovery" defer></script>
+    <script src="../account.js?v=20261122-password-recovery" defer></script>
   </head>
 
   <body>
@@ -105,6 +106,31 @@
             title="Enter a phone number with 7 to 15 digits."
             required
           />
+          <fieldset class="security-questions"><legend>Security Questions</legend>
+            <p class="security-help">Choose two different questions or write your own. Use private answers you will remember. Answers ignore capitalization and extra spaces.</p>
+            <div data-security-question>
+              <label for="signup-question-1">Security question 1:</label>
+              <select id="signup-question-1" class="field" name="securityQuestion1" required><option value="">Choose a question</option></select>
+              <div data-custom-question-field hidden>
+                <label for="signup-custom-1">Write your question:</label>
+                <input id="signup-custom-1" class="field" name="customQuestion1" type="text" minlength="10" maxlength="160" disabled />
+              </div>
+              <label for="signup-answer-1">Your answer 1:</label>
+              <input id="signup-answer-1" class="field" name="securityAnswer1" type="password" autocomplete="off" maxlength="128" data-security-answer required />
+            </div>
+            <div data-security-question>
+              <label for="signup-question-2">Security question 2:</label>
+              <select id="signup-question-2" class="field" name="securityQuestion2" required><option value="">Choose a question</option></select>
+              <div data-custom-question-field hidden>
+                <label for="signup-custom-2">Write your question:</label>
+                <input id="signup-custom-2" class="field" name="customQuestion2" type="text" minlength="10" maxlength="160" disabled />
+              </div>
+              <label for="signup-answer-2">Your answer 2:</label>
+              <input id="signup-answer-2" class="field" name="securityAnswer2" type="password" autocomplete="off" maxlength="128" data-security-answer required />
+            </div>
+            <p class="field-error" data-security-error role="status"></p>
+          </fieldset>
+          <p class="security-help">Your account and recovery questions are saved in this browser on this website address.</p>
           <input class="button" type="submit" value="CREATE ACCOUNT" />
         </form>
         <p class="account-switch">

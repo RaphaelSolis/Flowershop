@@ -480,7 +480,11 @@ function initializePages() {
     }
     updateReviewPresentation();
   }
-  if (page === "profile") initializeProfile();
+  if (page === "profile") {
+    initializeProfile();
+    const securityForm = document.getElementById("profile-security-form");
+    initializeSecurityQuestions(securityForm, PetalStore.session()?.recoveryQuestions);
+  }
   if (page === "search") {
     const query = new URLSearchParams(location.search).get("q") || "";
     document.getElementById("page-search-input").value = query;
@@ -774,6 +778,14 @@ function showProfileTab(tab) {
   for (const control of document.querySelectorAll(".profile-nav button")) {
     control.classList.toggle("active", (control.dataset.profileTab || "password") === tab);
   }
+  if (tab === "security") {
+    const user = PetalStore.session();
+    document.getElementById("security-account-note").textContent = !user?.passwordRecord
+      ? "Set a password in Change Password first, then add your recovery questions here."
+      : hasAccountRecovery(user)
+        ? "Security questions are set. Enter your current password and two new answers to replace them. Recovery works in this browser on this website address."
+        : "Add security questions now so you can reset a forgotten password in this browser on this website address.";
+  }
   if (tab === "password") {
     const hasPassword = !!PetalStore.session()?.passwordRecord;
     const field = document.getElementById("current-password-field");
@@ -786,6 +798,7 @@ async function saveProfilePassword(event) {
   event.preventDefault();
   const form = event.target;
   const status = document.getElementById("password-status");
+  if (form.querySelector('[type="submit"]').disabled) return;
   const password = form.elements.namedItem("newPassword").value;
   const confirm = form.elements.namedItem("confirmPassword").value;
   const passwordInput = form.elements.namedItem("newPassword");
@@ -806,13 +819,8 @@ async function saveProfilePassword(event) {
     if (user.passwordRecord && !(await verifyAccountPassword(form.elements.namedItem("currentPassword").value, user.passwordRecord))) {
       status.textContent = "Your current password is incorrect."; return;
     }
-    user.passwordRecord = await makeAccountPassword(password);
-    if (PetalStore.session()?.id !== user.id) throw new Error("Your sign-in changed. Please try again.");
-    const profiles = PetalStore.read("petal-profiles", []);
-    const index = profiles.findIndex(profile => profile.id === user.id);
-    if (index >= 0) profiles[index] = user;
-    else profiles.push(user);
-    PetalStore.writeMany({ "petal-profiles": profiles, "petal-session": user });
+    const passwordRecord = await makeAccountPassword(password);
+    commitAccountSecurity(user, { passwordRecord }, true);
     form.reset();
     status.textContent = "Password saved.";
     showProfileTab("password");
@@ -844,3 +852,27 @@ window.addEventListener("storage", function (event) {
 });
 window.addEventListener("focus", function () { refreshCheckoutSavedData(); });
 window.addEventListener("pageshow", function () { refreshCheckoutSavedData(); });
+
+async function submitProfileSecurity(event) {
+  event.preventDefault();
+  const form = event.target;
+  const submit = form.querySelector('[type="submit"]');
+  if (submit.disabled) return;
+  const questions = readSecurityQuestions(form);
+  if (!form.reportValidity() || !questions) return;
+  const status = document.getElementById("security-status");
+  submit.disabled = true;
+  status.textContent = "Saving your security questions…";
+  try {
+    await saveAccountRecovery(questions, form.elements.namedItem("currentPassword").value);
+    form.elements.namedItem("currentPassword").value = "";
+    for (const answer of form.querySelectorAll("[data-security-answer]")) answer.value = "";
+    status.textContent = "Security questions saved. You can now reset a forgotten password from the login page.";
+    showProfileTab("security");
+  } catch (error) {
+    status.textContent = error.message || "Could not save your security questions. Please try again.";
+  } finally { submit.disabled = false; }
+}
+document.addEventListener("submit", function (event) {
+  if (event.target.id === "profile-security-form") submitProfileSecurity(event);
+});

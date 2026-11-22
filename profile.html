@@ -7,14 +7,15 @@
     <title>The Petal Haus | My Profile</title>
     <link rel="stylesheet" href="styles.css?v=20261122-instructions-final" />
     <link rel="stylesheet" href="design-spec.css?v=20261122-instructions-final" />
-    <link rel="stylesheet" href="layout.css?v=20261122-all-products" />
+    <link rel="stylesheet" href="layout.css?v=20261122-password-recovery" />
     <script src="settings.js?v=20261122-instructions-final" defer></script>
     <script src="products.js?v=20261122-instructions-final" defer></script>
-    <script src="store.js?v=20261122-instructions-final" defer></script>
+    <script src="store.js?v=20261122-password-recovery" defer></script>
     <script src="app.js?v=20261122-all-products" defer></script>
     <script src="shop.js?v=20261122-all-products" defer></script>
     <script src="customize.js?v=20261122-instructions-final" defer></script>
-    <script src="pages.js?v=20261122-instructions-final" defer></script>
+    <script src="security-questions.js?v=20261122-password-recovery" defer></script>
+    <script src="pages.js?v=20261122-password-recovery" defer></script>
   </head>
   <body data-page="profile">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -129,7 +130,7 @@
         <section class="content-page profile-page">
           <div id="profile-signin-note" hidden><h1>MY PROFILE</h1><p>Sign in to view your profile and order activity.</p><a class="pill" href="Log-Sign/LoginPage.html">SIGN IN</a></div>
           <div class="profile-layout" id="profile-layout">
-            <aside class="profile-sidebar"><div class="profile-avatar" data-profile-avatar role="img" aria-label="No profile photo"><span data-profile-initials aria-hidden="true">?</span><img data-profile-photo hidden alt="" /></div><h2 data-profile-name="">NAME</h2><p data-profile-email="">email@gmail.com</p><nav class="profile-nav" aria-label="Account"><button class="active" type="button" data-profile-tab="profile">PROFILE</button><button type="button" id="password-help">CHANGE PASSWORD</button><button type="button" data-profile-tab="logout">LOG OUT</button></nav><p id="password-help-note" hidden>For help changing your password, <a href="contact.html">contact us</a>.</p></aside>
+            <aside class="profile-sidebar"><div class="profile-avatar" data-profile-avatar role="img" aria-label="No profile photo"><span data-profile-initials aria-hidden="true">?</span><img data-profile-photo hidden alt="" /></div><h2 data-profile-name="">NAME</h2><p data-profile-email="">email@gmail.com</p><nav class="profile-nav" aria-label="Account"><button class="active" type="button" data-profile-tab="profile">PROFILE</button><button type="button" id="password-help">CHANGE PASSWORD</button><button type="button" data-profile-tab="security">SECURITY QUESTIONS</button><button type="button" data-profile-tab="logout">LOG OUT</button></nav><p id="password-help-note" hidden>For help changing your password, <a href="contact.html">contact us</a>.</p></aside>
             <article class="profile-card profile-panel" data-profile-panel="profile">
               <div class="profile-card-header"><h2>MY PROFILE</h2><button class="pill" type="button" id="edit-profile" aria-expanded="false" aria-controls="profile-edit-form">EDIT PROFILE</button></div>
               <div class="profile-identity"><div class="profile-avatar" data-profile-avatar role="img" aria-label="No profile photo"><span data-profile-initials aria-hidden="true">?</span><img data-profile-photo hidden alt="" /></div><div><h3 data-profile-name="">NAME</h3><p data-profile-email="">email@gmail.com</p><p id="profile-bio">Your Bio</p></div></div>
@@ -159,6 +160,39 @@
                 <label>Confirm New Password<input type="password" name="confirmPassword" autocomplete="new-password" minlength="8" maxlength="128" required /></label>
                 <p>Use at least 8 characters, one uppercase letter, and one special character.</p><button class="pill" type="submit">SAVE PASSWORD</button>
                 <p id="password-status" role="status"></p>
+              </form>
+            </article>
+            <article class="profile-card profile-panel" data-profile-panel="security" hidden>
+              <div class="profile-card-header"><h2>ACCOUNT RECOVERY</h2></div>
+              <p id="security-account-note"></p>
+              <form id="profile-security-form" class="standard-form">
+                <label>Current Password<input type="password" name="currentPassword" autocomplete="current-password" required /></label>
+                <fieldset class="security-questions"><legend>Security Questions</legend>
+            <p class="security-help">Choose two different questions or write your own. Use private answers you will remember. Answers ignore capitalization and extra spaces.</p>
+            <div data-security-question>
+              <label for="profile-question-1">Security question 1:</label>
+              <select id="profile-question-1" class="field" name="securityQuestion1" required><option value="">Choose a question</option></select>
+              <div data-custom-question-field hidden>
+                <label for="profile-custom-1">Write your question:</label>
+                <input id="profile-custom-1" class="field" name="customQuestion1" type="text" minlength="10" maxlength="160" disabled />
+              </div>
+              <label for="profile-answer-1">Your answer 1:</label>
+              <input id="profile-answer-1" class="field" name="securityAnswer1" type="password" autocomplete="off" maxlength="128" data-security-answer required />
+            </div>
+            <div data-security-question>
+              <label for="profile-question-2">Security question 2:</label>
+              <select id="profile-question-2" class="field" name="securityQuestion2" required><option value="">Choose a question</option></select>
+              <div data-custom-question-field hidden>
+                <label for="profile-custom-2">Write your question:</label>
+                <input id="profile-custom-2" class="field" name="customQuestion2" type="text" minlength="10" maxlength="160" disabled />
+              </div>
+              <label for="profile-answer-2">Your answer 2:</label>
+              <input id="profile-answer-2" class="field" name="securityAnswer2" type="password" autocomplete="off" maxlength="128" data-security-answer required />
+            </div>
+            <p class="field-error" data-security-error role="status"></p>
+          </fieldset>
+                <button class="pill" type="submit">SAVE SECURITY QUESTIONS</button>
+                <p id="security-status" role="status"></p>
               </form>
             </article>
             <article class="profile-card profile-panel profile-logout" data-profile-panel="logout" hidden>

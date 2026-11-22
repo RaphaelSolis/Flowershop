@@ -484,3 +484,13 @@ body[data-page='checkout'] .order-sidebar > #checkout-error:empty { display: non
 @media (max-width: 360px) {
   .all-products-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Security-question setup shares the account form's responsive width. */
+.security-questions { min-width: 0; margin: 16px 0; padding: 16px; border: 1px solid var(--green, #577438); border-radius: 12px; }
+.security-questions legend { padding: 0 8px; font-weight: 700; }
+.security-help { line-height: 1.5; overflow-wrap: anywhere; }
+.security-questions [data-security-question] + [data-security-question] { margin-top: 20px; }
+.security-questions label { display: block; margin: 12px 0 4px; }
+.security-questions .field { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
+.security-questions [data-security-error] { color: #a12c39; }
+.security-questions [data-security-error]:empty { display: none; }

@@ -2,12 +2,14 @@
 /* ACCOUNT FORMS — save the active browser profile and return to the home page. */
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.querySelector("form");
+  if (!form) return;
   const isSignup = !!form.elements.namedItem("fname");
+  const isRecovery = form.id === "password-recovery-form";
   const returnToCheckout = new URLSearchParams(location.search).get("next") === "checkout";
   if (returnToCheckout) {
-    document.getElementById("account-status").textContent =
+    if (!isRecovery) document.getElementById("account-status").textContent =
       "Create a profile or sign in to continue to checkout. Your cart is saved.";
-    for (const link of document.querySelectorAll(".signup a, .account-switch a"))
+    for (const link of document.querySelectorAll(".signup a, .account-switch a, .forgot, #recovery-login"))
       link.href = link.getAttribute("href") + "?next=checkout";
   }
   const passwordInput = form.elements.namedItem("password");
@@ -23,6 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
       button.title = label;
     });
   }
+  if (isRecovery) { initializePasswordRecovery(form); return; }
+  if (isSignup) initializeSecurityQuestions(form);
   function validateSignupPasswords() {
     if (!isSignup) return true;
     const password = passwordInput.value;
@@ -48,7 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
     if (submitting) return;
     const passwordsValid = validateSignupPasswords();
-    if (!form.reportValidity() || !passwordsValid) return;
+    const questions = isSignup ? readSecurityQuestions(form) : null;
+    if (!form.reportValidity() || !passwordsValid || (isSignup && !questions)) return;
     const status = document.getElementById("account-status");
     const email = form.elements.namedItem("email").value.trim().toLowerCase();
     const password = form.elements.namedItem("password").value;
@@ -82,8 +87,13 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
       const record = existing?.passwordRecord || await makeAccountPassword(password);
+      const recoveryQuestions = isSignup ? await makeAccountRecovery(questions) : null;
+      if (isSignup && PetalStore.read("petal-profiles", []).some(profile => profile.email === email))
+        throw new Error("This email already has an account. Please sign in.");
+      if (!isSignup && accountSecuritySnapshot(PetalStore.read("petal-profiles", []).find(profile => profile.id === existing.id)) !== accountSecuritySnapshot(existing))
+        throw new Error("Your account details changed. Please sign in again.");
       PetalStore.signIn(name.trim(), email, {
-        passwordRecord: record, ...(isSignup ? { phone: mobile } : {}),
+        passwordRecord: record, ...(isSignup ? { phone: mobile, recoveryQuestions } : {}),
       });
       location.href = returnToCheckout ? "../checkout.html" : "../index.html";
     } catch (error) {
@@ -93,9 +103,5 @@ document.addEventListener("DOMContentLoaded", function () {
       submitting = false;
       submit.disabled = false;
     }
-  });
-  document.querySelector(".forgot")?.addEventListener("click", function (event) {
-    event.preventDefault();
-    document.getElementById("account-status").textContent = "Please contact us for help accessing your account.";
   });
 });

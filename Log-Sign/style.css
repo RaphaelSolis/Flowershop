@@ -319,3 +319,17 @@ a {
   h1 { font-size: 32px; }
   label { font-size: 18px; }
 }
+
+/* Recovery forms grow with their content on desktop and phones. */
+[hidden] { display: none !important; }
+.security-questions, .recovery-fields { min-width: 0; margin: 24px 0 0; padding: 16px 0 0; border: 0; border-top: 1px solid #4b773355; }
+.security-questions legend, .recovery-fields legend { padding-right: 10px; font-size: 22px; font-weight: bold; }
+.security-help { font-size: 16px; line-height: 1.4; overflow-wrap: anywhere; }
+.security-questions select { font-size: 16px; height: auto; min-height: 44px; padding-right: 26px; }
+.security-questions [data-security-question] + [data-security-question] { margin-top: 22px; }
+.security-questions label, .recovery-fields label { overflow-wrap: anywhere; }
+.text-button { padding: 10px 0; border: 0; background: transparent; color: #4b7733; text-decoration: underline; cursor: pointer; }
+.text-button:focus-visible { outline: 2px solid #4b7733; outline-offset: 3px; }
+.button:disabled, .text-button:disabled { opacity: .65; cursor: wait; }
+a.button { display: flex; align-items: center; justify-content: center; text-decoration: none; }
+.recovery-card h1 { font-size: 32px; overflow-wrap: anywhere; }

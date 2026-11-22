@@ -658,3 +658,80 @@ function isValidPhone(value) {
 function isStrongAccountPassword(value) {
   return typeof value === "string" && /^(?=.*\p{Lu})(?=.*[^\p{L}\p{N}\s]).{8,128}$/u.test(value);
 }
+
+// Security answers use a separate, normalized input and independently salted hashes.
+function normalizeSecurityAnswer(value) {
+  return typeof value === "string" ? value.normalize("NFKC").trim().replace(/\s+/gu, " ").toLowerCase() : "";
+}
+function validateAccountRecovery(entries) {
+  if (!Array.isArray(entries) || entries.length !== 2)
+    throw new Error("Choose two different security questions and answer both.");
+  const questions = entries.map(entry => {
+    const question = typeof entry?.question === "string" ? entry.question.trim() : "";
+    const answer = normalizeSecurityAnswer(entry?.answer);
+    if (question.length < 10 || question.length > 160)
+      throw new Error("Write a security question with 10 to 160 characters.");
+    if (!answer || typeof entry.answer !== "string" || entry.answer.length > 128)
+      throw new Error("Answer both security questions using 1 to 128 characters.");
+    return { question, answer };
+  });
+  if (normalizeSecurityAnswer(questions[0].question) === normalizeSecurityAnswer(questions[1].question))
+    throw new Error("Choose two different security questions.");
+  return questions;
+}
+async function makeAccountRecovery(entries) {
+  const questions = validateAccountRecovery(entries);
+  return Promise.all(questions.map(async ({ question, answer }) => ({
+    question, answerRecord: await makeAccountPassword("petal-security-answer:v1:" + answer),
+  })));
+}
+function hasAccountRecovery(profile) {
+  const questions = profile?.recoveryQuestions;
+  return Array.isArray(questions) && questions.length === 2 && questions.every(item =>
+    typeof item?.question === "string" && item.question.trim().length >= 10 && item.question.length <= 160 &&
+    /^[a-f0-9]{32}$/i.test(item.answerRecord?.salt) && /^[a-f0-9]{64}$/i.test(item.answerRecord?.digest)) &&
+    normalizeSecurityAnswer(questions[0].question) !== normalizeSecurityAnswer(questions[1].question);
+}
+async function verifyAccountRecovery(answers, profile) {
+  if (!hasAccountRecovery(profile) || !Array.isArray(answers) || answers.length !== 2 ||
+      answers.some(answer => typeof answer !== "string" || answer.length > 128 || !normalizeSecurityAnswer(answer))) return false;
+  const results = await Promise.all(profile.recoveryQuestions.map((item, index) =>
+    verifyAccountPassword("petal-security-answer:v1:" + normalizeSecurityAnswer(answers[index]), item.answerRecord)));
+  return results.every(Boolean);
+}
+function accountSecuritySnapshot(profile) {
+  return JSON.stringify([profile?.id, profile?.email, profile?.passwordRecord, profile?.recoveryQuestions]);
+}
+function commitAccountSecurity(original, updates, requireSignIn = false) {
+  const profiles = PetalStore.read("petal-profiles", []);
+  const index = profiles.findIndex(profile => profile.id === original.id);
+  const current = profiles[index];
+  const session = PetalStore.session();
+  if (!current || accountSecuritySnapshot(current) !== accountSecuritySnapshot(original))
+    throw new Error("Your account details changed. Please start again.");
+  if (requireSignIn && session?.id !== original.id)
+    throw new Error("Your sign-in changed. Please sign in and try again.");
+  profiles[index] = { ...current, ...updates };
+  const changes = { "petal-profiles": profiles };
+  if (session?.id === original.id) changes["petal-session"] = { ...session, ...updates };
+  PetalStore.writeMany(changes);
+}
+async function resetAccountPassword(profile, answers, password) {
+  if (!isStrongAccountPassword(password))
+    throw new Error("Use at least 8 characters, one uppercase letter, and one special character.");
+  if (!(await verifyAccountRecovery(answers, profile)))
+    throw new Error("The security answers do not match. Please check both answers and try again.");
+  const passwordRecord = await makeAccountPassword(password);
+  commitAccountSecurity(profile, { passwordRecord });
+}
+async function saveAccountRecovery(entries, currentPassword) {
+  const session = PetalStore.session();
+  const profile = PetalStore.read("petal-profiles", []).find(item => item.id === session?.id);
+  if (!profile) throw new Error("Please sign in to set your security questions.");
+  if (!profile.passwordRecord) throw new Error("Set a password in Change Password before adding security questions.");
+  validateAccountRecovery(entries);
+  if (!(await verifyAccountPassword(currentPassword, profile.passwordRecord)))
+    throw new Error("Your current password is incorrect.");
+  const recoveryQuestions = await makeAccountRecovery(entries);
+  commitAccountSecurity(profile, { recoveryQuestions }, true);
+}

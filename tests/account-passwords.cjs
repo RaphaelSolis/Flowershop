@@ -35,6 +35,15 @@ async function main() {
   assert.match(record.salt, /^[a-f0-9]{32}$/);
   assert.equal(await native.verifyAccountPassword("NewGarden2026!", record), true);
   assert.equal(await fallback.verifyAccountPassword("password", { salt: "invalid", digest: "invalid" }), false);
+  const recoveryQuestions = await fallback.makeAccountRecovery([
+    { question: "What was the name of your first pet?", answer: " Fluffy  Cat " },
+    { question: "What is my private garden phrase?", answer: "Café garden" },
+  ]);
+  const profile = { recoveryQuestions };
+  assert.equal(await native.verifyAccountRecovery(["FLUFFY CAT", " café   garden "], profile), true);
+  assert.equal(await fallback.verifyAccountRecovery(["FLUFFY CAT", "wrong"], profile), false);
+  assert.equal(native.hasAccountRecovery({ recoveryQuestions: [recoveryQuestions[0]] }), false);
+  console.log("PASS Security-question hashes created over HTTP verify over HTTPS and reject incorrect answers or malformed recovery records.");
   console.log("PASS Native and HTTP fallback passwords match PBKDF2-SHA256, verify existing records, and reject incorrect passwords.");
 }
 

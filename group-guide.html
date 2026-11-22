@@ -290,8 +290,8 @@
               <td>Cart availability, new items, and order/inquiry updates.</td>
             </tr>
             <tr>
-              <td>Log-Sign/LoginPage.html, Log-Sign/SignUp.html</td>
-              <td>The supplied account screens, connected to profiles.</td>
+              <td><a href="Log-Sign/LoginPage.html">Log In</a>, <a href="Log-Sign/SignUp.html">Sign Up</a>, <a href="Log-Sign/ForgotPassword.html">Forgot Password</a></td>
+              <td>Account creation, sign-in, and recovery through two security questions.</td>
             </tr>
           </tbody>
         </table>
@@ -329,7 +329,7 @@
               </td>
             </tr>
             <tr>
-              <td><a href="store.js?v=20261122-instructions-final">store.js</a></td>
+              <td><a href="store.js?v=20261122-password-recovery">store.js</a></td>
               <td>
                 Saves and checks carts, profiles, orders, delivery status,
                 reviews, inquiries, stock, and notifications.
@@ -357,17 +357,21 @@
               </td>
             </tr>
             <tr>
-              <td><a href="pages.js?v=20261122-instructions-final">pages.js</a></td>
+              <td><a href="pages.js?v=20261122-password-recovery">pages.js</a></td>
               <td>
                 The cart, checkout, receipt, inquiries, delivery-gated feedback,
                 and notifications.
               </td>
             </tr>
             <tr>
-              <td><a href="account.js?v=20261119-account-delivery">account.js</a></td>
+              <td><a href="account.js?v=20261122-password-recovery">account.js</a></td>
               <td>
-                Sign-in and sign-up forms, profile selection, and navigation.
+                Sign-in and sign-up forms, security-question setup, forgotten-password recovery, and navigation.
               </td>
+            </tr>
+            <tr>
+              <td><a href="security-questions.js?v=20261122-password-recovery">security-questions.js</a></td>
+              <td>Preset and custom question controls shared by signup and Profile, plus the Forgotten Password form.</td>
             </tr>
             <tr>
               <td><a href="styles.css?v=20261122-instructions-final">styles.css</a> and <a href="design-spec.css?v=20261122-instructions-final">design-spec.css</a></td>
@@ -607,6 +611,10 @@
                 account in the same browser and website address. Remove photo
                 restores the initials.
               </td>
+            </tr>
+            <tr>
+              <td>Forgotten password</td>
+              <td>During signup, choose two different preset or custom security questions and answer both. From Login → Forgotten Password, enter the account email, answer both questions, then set and confirm a new password. Answers ignore case and extra spaces and are saved as salted hashes. Existing users can sign in and open Profile → Security Questions to configure recovery; the current password is required. Recovery works only in the same browser and website address as the saved account. Clearing browser data removes the account and its recovery answers.</td>
             </tr>
             <tr>
               <td>Logout</td>

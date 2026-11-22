@@ -15,7 +15,7 @@ for(const filename of ['SignUp.html','LoginPage.html']){
   const context=vm.createContext({document,URLSearchParams,location:{search:'',href:'https://flowers.test/Log-Sign/'+filename},console,
    localStorage:{getItem:key=>records.get(key)??null,setItem:(key,value)=>records.set(key,value)}});
   const run=source=>vm.runInContext(source,context);
-  for(const script of ['settings','products','store','account'])run(fs.readFileSync(path.join(root,script+'.js'),'utf8'));
+  for(const script of ['settings','products','store','security-questions','account'])run(fs.readFileSync(path.join(root,script+'.js'),'utf8'));
   document.dispatchEvent(new window.Event('DOMContentLoaded'));
   const form=document.querySelector('form');let submissions=0;
   form.addEventListener('submit',event=>{submissions++;event.preventDefault();});
