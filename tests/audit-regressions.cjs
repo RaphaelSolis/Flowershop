@@ -6,7 +6,8 @@ const vm = require("node:vm");
 
 function shoppingStore() {
   const state = { records: new Map(), fail: false, failAt: 0 };
-  const context = vm.createContext({
+  class StoreTestDate extends Date { constructor(...args) { super(...(args.length ? args : ["2026-11-22T02:00:00Z"])); } static now() { return new Date("2026-11-22T02:00:00Z").getTime(); } }
+  const context = vm.createContext({Date: StoreTestDate,
     localStorage: {
       getItem: key => state.records.get(key) ?? null,
       setItem(key, value) {
@@ -52,7 +53,7 @@ console.log("PASS Cart merging and adding at the quantity cap preserve all units
   assert.equal(order.delivery.fee, 100);
   assert.equal(order.total, 340);
   assert.equal(order.items[0].name, "Tulip");
-  assert.equal(order.items[0].image, "assets/collections/flo-1.png");
+  assert.equal(order.items[0].image, "assets/product-photos/collections-flo-1.webp");
 
   store.addLine({
     productId: "custom-bouquet", quantity: 2, unitPrice: 1, options: {

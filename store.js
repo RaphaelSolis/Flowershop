@@ -402,9 +402,21 @@ const PetalStore = (function () {
     const deliveryFee = items.length ? round(configuredFee) : 0;
     return { subtotal, deliveryFee, total: round(subtotal + deliveryFee) };
   }
+  // Store hours always use Manila time, regardless of the customer's timezone.
+  function orderHours(now = new Date()) {
+    const formatter = new Intl.DateTimeFormat("en-PH", {
+      timeZone: "Asia/Manila", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23",
+    });
+    const parts = Object.fromEntries(formatter.formatToParts(now).map(part => [part.type, part.value]));
+    const hour = Number(parts.hour);
+    return { open: hour >= 8 && hour < 18,
+      time: new Intl.DateTimeFormat("en-PH", { timeZone: "Asia/Manila", hour: "numeric", minute: "2-digit" }).format(now) };
+  }
   function placeOrder(customer, payment) {
     if (!hasProfile())
       throw new Error("Create a profile or sign in before placing an order.");
+    if (!orderHours().open)
+      throw new Error("Orders are accepted from 8:00 AM to 6:00 PM (Manila time). Please return at 8:00 AM.");
     for (const field of [
       "name",
       "email",
@@ -551,6 +563,8 @@ const PetalStore = (function () {
     return read("petal-inquiries", []);
   }
   function saveInquiry(details) {
+    if (!/^[0-9]{11}$/.test(details.phone || ""))
+      throw new Error("Enter exactly 11 digits for your mobile number.");
     const list = inquiries();
     const inquiry = {
       ...details,
@@ -595,6 +609,7 @@ const PetalStore = (function () {
     getOrder,
     placeOrder,
     checkoutCharges,
+    orderHours,
     setOrderStatus,
     reviews,
     eligibleOrders,

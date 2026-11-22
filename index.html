@@ -11,18 +11,18 @@
     />
     <title>The Petal Haus | Home</title>
     <!-- styles.css?v=20261118-audit-fixes controls colors, fonts, spacing, and phone layouts. -->
-    <link rel="stylesheet" href="styles.css?v=20261119-gallery-marquee" />
-    <link rel="stylesheet" href="design-spec.css?v=20261119-canva-story" />
-    <link rel="stylesheet" href="layout.css?v=20261119-tablet-header" />
+    <link rel="stylesheet" href="styles.css?v=20261122-instructions-final" />
+    <link rel="stylesheet" href="design-spec.css?v=20261122-instructions-final" />
+    <link rel="stylesheet" href="layout.css?v=20261122-instructions-final" />
     <!-- defer means: finish reading this HTML before running app.js?v=20261118-audit-fixes. -->
     <!-- products.js loads the price list first; app.js?v=20261118-audit-fixes then makes buttons work. -->
-    <script src="settings.js?v=20261119-account-delivery" defer></script>
-    <script src="products.js?v=20261119-account-delivery" defer></script>
-    <script src="store.js?v=20261119-account-delivery" defer></script>
-    <script src="app.js?v=20261119-gallery-marquee" defer></script>
-    <script src="shop.js?v=20261119-ui-updates" defer></script>
-    <script src="customize.js?v=20261119-ui-updates" defer></script>
-    <script src="pages.js?v=20261119-account-delivery" defer></script>
+    <script src="settings.js?v=20261122-instructions-final" defer></script>
+    <script src="products.js?v=20261122-instructions-final" defer></script>
+    <script src="store.js?v=20261122-instructions-final" defer></script>
+    <script src="app.js?v=20261122-instructions-final" defer></script>
+    <script src="shop.js?v=20261122-instructions-final" defer></script>
+    <script src="customize.js?v=20261122-instructions-final" defer></script>
+    <script src="pages.js?v=20261122-instructions-final" defer></script>
   </head>
   <body data-page="home">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -132,13 +132,13 @@
             fetchpriority="high"
           />
           <div class="hero-copy">
-            <p data-animate="shift" class="hero-greeting">Hey there, visitor!</p>
-            <h1 data-animate="shift" class="hero-heading" id="hero-heading">
+            <p data-animate="rise" class="hero-greeting">Hey there, visitor!</p>
+            <h1 data-animate="rise" class="hero-heading" id="hero-heading">
               Make Every Moment
               <br />
               Bloom Brighter
             </h1>
-            <p data-animate="shift" class="hero-tagline">
+            <p data-animate="rise" class="hero-tagline">
               “Every petal tells a story, every bloom holds a feeling.”
             </p>
             <a class="pill" href="collections.html">
@@ -149,15 +149,15 @@
           </div>
         </section>
         <!-- HOME: the four service promises. -->
-        <div class="service-badges"><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M5 8h22l-4 15H8m19-12h8l6 7v5H23M3 13h9M1 18h8"/><circle cx="14" cy="26" r="4"/><circle cx="33" cy="26" r="4"/></svg><span>Fast and Reliable Delivery</span></div><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 35 7 21C-4 10 12 0 22 12 32 0 48 10 37 21Z"/></svg><span>Handpicked with Care</span></div><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18"/><path d="M11 15q4-5 8 0m6 0q4-5 8 0M11 25h22c-2 13-20 13-22 0Z"/></svg><span>Customer Satisfaction Guaranteed</span></div><div class="service-badge" data-animate="shift"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="6"/><path d="M22 16c-15-20-25 0-6 6-20 15 0 25 6 6 15 20 25 0 6-6 20-15 0-25-6-6Z"/></svg><span>Crafted by Expert Florists</span></div></div>
+        <div class="service-badges"><div class="service-badge" data-animate="rise"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M5 8h22l-4 15H8m19-12h8l6 7v5H23M3 13h9M1 18h8"/><circle cx="14" cy="26" r="4"/><circle cx="33" cy="26" r="4"/></svg><span>Fast and Reliable Delivery</span></div><div class="service-badge" data-animate="rise"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 35 7 21C-4 10 12 0 22 12 32 0 48 10 37 21Z"/></svg><span>Handpicked with Care</span></div><div class="service-badge" data-animate="rise"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18"/><path d="M11 15q4-5 8 0m6 0q4-5 8 0M11 25h22c-2 13-20 13-22 0Z"/></svg><span>Customer Satisfaction Guaranteed</span></div><div class="service-badge" data-animate="rise"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="6"/><path d="M22 16c-15-20-25 0-6 6-20 15 0 25 6 6 15 20 25 0 6-6 20-15 0-25-6-6Z"/></svg><span>Crafted by Expert Florists</span></div></div>
         <!-- CUSTOMER REVIEWS: edit each review and customer name here. -->
         <section class="testimonials" id="feedback" aria-labelledby="service-heading">
-          <h2 data-animate="shift" class="section-heading" id="service-heading">
+          <h2 data-animate="rise" class="section-heading" id="service-heading">
             EXCELLENT SERVICE
             <img class="floret" src="assets/home/petal-green.png" alt="" />
           </h2>
           <div class="testimonial-grid">
-            <article data-animate="rise" class="testimonial-card testimonial-1">
+            <a data-animate="rise" class="testimonial-card testimonial-1" href="feedback.html#published-reviews" aria-label="Read all customer reviews">
               <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
               <p>
                 Absolutely stunning flowers! The bouquet was fresh, beautifully arranged, and lasted
@@ -167,8 +167,8 @@
                 <img src="assets/home/profile-pink.png" alt="" />
                 <span>Jerlyn T.</span>
               </div>
-            </article>
-            <article data-animate="rise" class="testimonial-card testimonial-2">
+            </a>
+            <a data-animate="rise" class="testimonial-card testimonial-2" href="feedback.html#published-reviews" aria-label="Read all customer reviews">
               <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
               <p>
                 “I ordered a sunflower bouquet for my best friend’s birthday and she absolutely
@@ -178,8 +178,8 @@
                 <img src="assets/home/profile.png" alt="" />
                 <span>Anonymous Person</span>
               </div>
-            </article>
-            <article data-animate="rise" class="testimonial-card testimonial-3">
+            </a>
+            <a data-animate="rise" class="testimonial-card testimonial-3" href="feedback.html#published-reviews" aria-label="Read all customer reviews">
               <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
               <p>
                 “I love that I can customize my own bouquet! I got to choose my preferred flowers
@@ -189,17 +189,17 @@
                 <img src="assets/home/profile.png" alt="" />
                 <span>Olivia R.</span>
               </div>
-            </article>
+            </a>
           </div>
-          <div data-public-reviews="" class="public-review-grid"></div>
+
         </section>
         <section class="story story-reference" id="story" aria-labelledby="story-heading">
           <picture>
-            <source media="(min-width: 768px)" srcset="assets/home/banner-2.png" width="1300" height="554" />
-            <img src="assets/home/story-florist.png" width="937" height="799" alt="A florist carefully arranging a bouquet" loading="lazy" decoding="async" />
+            <source media="(min-width: 768px)" srcset="assets/home/story-artwork.webp" width="1300" height="554" />
+            <img src="assets/home/story-florist.webp" width="937" height="799" alt="A florist carefully arranging a bouquet" loading="lazy" decoding="async" />
           </picture>
           <div class="story-copy">
-            <h2 id="story-heading" data-animate="shift">FLOWERS THAT SPEAK FROM THE HEART</h2>
+            <h2 id="story-heading" data-animate="rise">FLOWERS THAT SPEAK FROM THE HEART</h2>
             <p data-animate="rise">We believe flowers speak a language of their own. That's why every bouquet is carefully arranged to convey heartfelt emotions and celebrate the moments that matter most.</p>
             <a data-animate="rise" class="pill" href="about.html">OUR STORY <img src="assets/home/arrow.png" alt="" /></a>
           </div>
@@ -207,7 +207,7 @@
         <!-- STORE DETAILS: address and opening hours. The footer has another copy. -->
         <section class="store-info" aria-label="Visit our store">
           <article>
-            <h2 data-animate="shift">LOCATED AT:</h2>
+            <h2 data-animate="rise">LOCATED AT:</h2>
             <img class="store-icon" src="assets/home/store.png" alt="" loading="lazy" />
             <p data-animate="rise">
               Golden Gate Basketball Court, Topland Ave, Las Piñas,
@@ -216,15 +216,15 @@
             </p>
           </article>
           <article>
-            <h2 data-animate="shift">STORE HOURS:</h2>
+            <h2 data-animate="rise">STORE HOURS:</h2>
             <img class="store-icon" src="assets/home/clock.png" alt="" loading="lazy" />
             <div class="hours">
-              <p data-animate="shift">
+              <p data-animate="rise">
                 Delivery:
                 <br />
                 <time>8:00 AM - 6:00 PM</time>
               </p>
-              <p data-animate="shift">
+              <p data-animate="rise">
                 Physical Store:
                 <br />
                 <time>8:00 AM - 6:00 PM</time>
@@ -234,80 +234,80 @@
         </section>
         <div class="home-selectors">
           <section class="category-selector" aria-labelledby="collections-heading">
-            <h2 data-animate="shift" class="section-heading" id="collections-heading">
+            <h2 data-animate="rise" class="section-heading" id="collections-heading">
               SHOP BY COLLECTIONS
               <img class="floret" src="assets/home/petal-green.png" alt="" />
             </h2>
             <div class="category-grid">
-              <a data-animate="shift" class="category-link" href="collections.html#flower">
+              <a data-animate="rise" class="category-link" href="collections.html#flower">
                 <span class="category-label">Flower</span>
                 <img src="assets/home/coll-1.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="collections.html#bouquet">
+              <a data-animate="rise" class="category-link" href="collections.html#bouquet">
                 <span class="category-label">Bouquet</span>
                 <img src="assets/home/coll-2.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="collections.html#new-arrival">
+              <a data-animate="rise" class="category-link" href="collections.html#new-arrival">
                 <span class="category-label">New Arrivals</span>
                 <img src="assets/home/coll-3.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="collections.html#best-sellers">
+              <a data-animate="rise" class="category-link" href="collections.html#best-sellers">
                 <span class="category-label">Best Sellers</span>
                 <img src="assets/home/coll-4.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="collections.html#potted-flowers">
+              <a data-animate="rise" class="category-link" href="collections.html#potted-flowers">
                 <span class="category-label">Potted Flowers</span>
                 <img src="assets/home/coll-5.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="collections.html#gifts">
+              <a data-animate="rise" class="category-link" href="collections.html#gifts">
                 <span class="category-label">Gifts</span>
                 <img src="assets/home/coll-6.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="customize.html">
+              <a data-animate="rise" class="category-link" href="customize.html">
                 <span class="category-label">Customize Yours</span>
                 <img src="assets/home/coll-7.png" alt="" loading="lazy" />
               </a>
             </div>
             <div class="selector-actions">
-              <a data-animate="shift" class="pill green" href="collections.html">
+              <a data-animate="rise" class="pill green" href="collections.html">
                 SHOP NOW
                 <img src="assets/home/arrow.png" alt="" />
               </a>
             </div>
           </section>
           <section class="category-selector" aria-labelledby="occasions-heading">
-            <h2 data-animate="shift" class="section-heading" id="occasions-heading">
+            <h2 data-animate="rise" class="section-heading" id="occasions-heading">
               SHOP BY OCCASIONS
               <img class="floret" src="assets/home/petal-green.png" alt="" />
             </h2>
             <div class="category-grid occasion-grid">
-              <a data-animate="shift" class="category-link" href="occasions.html#birthday">
+              <a data-animate="rise" class="category-link" href="occasions.html#birthday">
                 <span class="category-label">Birthday</span>
                 <img src="assets/home/occ-1.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="occasions.html#wedding">
+              <a data-animate="rise" class="category-link" href="occasions.html#wedding">
                 <span class="category-label">Wedding</span>
                 <img src="assets/home/occ-2.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="occasions.html#anniversary">
+              <a data-animate="rise" class="category-link" href="occasions.html#anniversary">
                 <span class="category-label">Anniversary</span>
                 <img src="assets/home/occ-3.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="occasions.html#achievement">
+              <a data-animate="rise" class="category-link" href="occasions.html#achievement">
                 <span class="category-label">Achievement</span>
                 <img src="assets/home/occ-4.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="occasions.html#sympathy">
+              <a data-animate="rise" class="category-link" href="occasions.html#sympathy">
                 <span class="category-label">Sympathy</span>
                 <img src="assets/home/occ-5.png" alt="" loading="lazy" />
               </a>
-              <a data-animate="shift" class="category-link" href="occasions.html#thank-you">
+              <a data-animate="rise" class="category-link" href="occasions.html#thank-you">
                 <span class="category-label">Thank You</span>
                 <img src="assets/home/occ-6.png" alt="" loading="lazy" />
               </a>
             </div>
             <div class="selector-actions">
-              <a data-animate="shift" class="pill green" href="occasions.html">
+              <a data-animate="rise" class="pill green" href="occasions.html">
                 SHOP NOW
                 <img src="assets/home/arrow.png" alt="" />
               </a>
@@ -317,9 +317,9 @@
         <!-- MOVING PHOTO GALLERY: the original photos repeat for a seamless loop. -->
         <section class="gallery" id="gallery">
           <div class="gallery-layout">
-          <h2 data-animate="shift">CAPTURING BEAUTY IN EVERY BLOOM</h2>
+          <h2 data-animate="rise">CAPTURING BEAUTY IN EVERY BLOOM</h2>
           <div class="gallery-marquee" data-gallery-marquee="" role="region" aria-label="Flower gallery">
-            <div class="gallery-marquee-viewport" tabindex="0" aria-label="Gallery photos: pause or use the arrow keys to browse">
+            <div class="gallery-marquee-viewport" tabindex="0" aria-label="Gallery photos: hover to pause or use the arrow keys to browse">
               <div class="gallery-marquee-track" aria-live="off">
                 <ul class="gallery-marquee-group" role="list">
                   <li><img src="assets/home/feat-pic-1.webp?v=20261119-marquee" width="910" height="1300" decoding="async" alt="Flower shop displays" loading="lazy" /></li>
@@ -329,15 +329,13 @@
                 </ul>
               </div>
             </div>
-            <div class="gallery-controls">
-              <button class="gallery-playback" type="button" data-gallery-playback="" aria-label="Pause moving gallery" aria-pressed="false">PAUSE</button>
-            </div>
+
           </div>
           <p data-animate="rise">
             Browse our gallery and find inspiration in arrangements designed to brighten every
             occasion.
           </p>
-          <a data-animate="shift" href="gallery.html" class="pill">
+          <a data-animate="rise" href="gallery.html" class="pill">
             VIEW GALLERY
             <img src="assets/home/arrow.png" alt="" />
           </a>

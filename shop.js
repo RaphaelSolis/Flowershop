@@ -98,7 +98,7 @@ function openProductOptions(product, context, existing) {
     fields += optionSelect("Candle scent", "scent", SHOP_SETTINGS.candleScents, options.scent);
   if (kind === "letter") {
     const letters = options.letters || [options.letter || ""];
-    fields += '<p class="letter-price-note">PHP ' + money(product.price) +
+    fields += '<p class="letter-price-note">₱' + money(product.price) +
       ' per letter. Quantity applies to each letter.</p><div id="letter-fields">' +
       letters.map((letter, index) => letterField(letter, index)).join("") +
       '</div><button type="button" class="text-button" data-add-letter>ADD ANOTHER LETTER</button>';
@@ -106,18 +106,19 @@ function openProductOptions(product, context, existing) {
   document.getElementById("product-options-dialog").dataset.kind = kind === "flower" ? "flower" : "gift";
   document.getElementById("product-options-title").textContent = product.name;
   form.innerHTML =
-    '<div class="product-option-layout"><div class="product-option-photo"><img src="' +
+    '<div class="product-option-layout"><div class="product-option-card"><div class="product-option-photo"><img src="' +
     product.image +
     '" alt="' +
     escapeHTML(product.name) +
-    '"></div><div class="option-fields">' +
+    '"></div><div class="product-option-caption"><strong>' + escapeHTML(product.name) +
+    '</strong><output id="product-options-price"></output></div></div><div class="option-fields">' +
     fields +
     '<label for="product-option-quantity">Quantity</label><div class="product-quantity">' +
     '<button type="button" data-product-adjust="-1" aria-label="Decrease quantity">−</button>' +
     '<input id="product-option-quantity" name="quantity" type="number" min="1" max="99" step="1" value="' +
     (existing?.quantity || 1) +
     '" required><button type="button" data-product-adjust="1" aria-label="Increase quantity">+</button></div>' +
-    '<div class="option-total">Price: <output id="product-options-price"></output></div><p id="product-options-error" class="form-error" role="alert"></p>' +
+    '<p id="product-options-error" class="form-error" role="alert"></p>' +
     '<button class="pill" type="submit">' +
     (context === "addon" ? "Select add-on" : existing ? "Save changes" : "Add to Cart") +
     "</button></div></div>";
@@ -158,7 +159,7 @@ function updateProductOptionPrice() {
   for (const swatch of document.querySelectorAll("[data-option-color]"))
     swatch.setAttribute("aria-pressed", swatch.dataset.optionColor === values.options.color);
   document.getElementById("product-options-price").textContent =
-    "PHP " + money(productUnitPrice(productSelection.product, values.options) * values.quantity);
+    "₱" + money(productUnitPrice(productSelection.product, values.options) * values.quantity);
 }
 function submitProductOptions(event) {
   event.preventDefault();
@@ -219,6 +220,16 @@ function filterShopSection(sectionId) {
   if (typeof history !== "undefined")
     history.replaceState(null, "", url.pathname + url.search + url.hash);
 }
+function expandShopSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+  const expanded = section.classList.toggle("products-expanded");
+  const button = section.querySelector("[data-section]");
+  button.textContent = expanded ? "SEE LESS" : "SEE MORE";
+  button.setAttribute("aria-expanded", String(expanded));
+  section.querySelectorAll("[data-next],[data-previous]").forEach(arrow => arrow.hidden = expanded);
+  section.querySelector(".product-grid").scrollLeft = 0;
+}
 function scrollProductsRight(sectionId, direction = 1) {
   const row = document.querySelector("#" + sectionId + " .product-grid");
   if (!row) return;
@@ -254,7 +265,7 @@ function searchProducts(inputId = "search-input", resultsId = "search-results") 
         product.image +
         '" alt=""><div><h3>' +
         escapeHTML(product.name) +
-        "</h3><p>PHP " +
+        "</h3><p>₱" +
         money(product.price) +
         '</p></div><button class="pill" type="button" data-configure="' +
         product.id +
@@ -275,7 +286,7 @@ function initializeShop() {
     const title = card.querySelector(".photo-caption h3");
     const price = card.querySelector(".photo-caption p");
     if (title && product) title.textContent = product.name;
-    if (price && product) price.textContent = money(product.price) + " PHP";
+    if (price && product) price.textContent = "₱" + money(product.price);
     const available = PetalStore.available(card.dataset.product);
     card.classList.toggle("out-of-stock", !available);
     for (const button of card.querySelectorAll("[data-add],[data-configure]"))
@@ -325,15 +336,9 @@ document.addEventListener("click", function (event) {
     if (product) {
       const searchDialog = document.getElementById("search-dialog");
       if (searchDialog?.open) closeDialog(searchDialog);
-      if (button.dataset.add && productKind(product) !== "letter") {
-        try {
-          PetalStore.addLine({ productId: product.id, quantity: 1, options: {} });
-          refreshCartUI();
-          showSuccess("Successfully added to cart!", "cart.html", "MY CART");
-        } catch (error) { toast(error.message); }
-      } else openProductOptions(product);
+      openProductOptions(product);
     }
-  } else if (button.dataset.section) filterShopSection(button.dataset.section);
+  } else if (button.dataset.section) expandShopSection(button.dataset.section);
   else if (button.hasAttribute("data-show-all")) filterShopSection("");
   else if (button.dataset.next) scrollProductsRight(button.dataset.next);
   else if (button.dataset.previous) scrollProductsRight(button.dataset.previous, -1);

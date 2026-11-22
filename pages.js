@@ -96,7 +96,7 @@ function renderCheckoutPage(prefill = true) {
           '<article class="checkout-summary-item"><img src="' + escapeHTML(line.image) + '" alt=""><div><h3>' +
           escapeHTML(line.name) +
           '</h3><p>' + line.quantity + ' × ' + escapeHTML(line.details || line.name) +
-          '</p><output>PHP ' + money(line.unitPrice * line.quantity) + '</output></div></article>' 
+          '</p><output>₱' + money(line.unitPrice * line.quantity) + '</output></div></article>'
         );
       })
       .join("") ||
@@ -122,6 +122,19 @@ function renderCheckoutPage(prefill = true) {
     const address = defaultAddressFields(user);
     for (const name of deliveryAddressFields) form.elements.namedItem(name).value = address[name];
   }
+  updateOrderHours();
+}
+function updateOrderHours() {
+  const panel = document.getElementById("order-hours");
+  if (!panel || !PetalStore.hasProfile()) return;
+  const hours = PetalStore.orderHours();
+  panel.dataset.open = String(hours.open);
+  panel.innerHTML = "<p>Manila time: <strong>" + escapeHTML(hours.time) +
+    "</strong></p><p>Order hours: 8:00 AM–6:00 PM daily.</p><p>" +
+    (hours.open ? "We are accepting orders." : "Ordering is closed. Please return at 8:00 AM.") + "</p>";
+  const items = PetalStore.getCart();
+  document.getElementById("pay-button").disabled = checkoutInProgress || !hours.open ||
+    !items.length || items.some(line => !PetalStore.lineAvailable(line));
 }
 function refreshCheckoutSavedData() {
   if (page !== "checkout" || checkoutInProgress || !checkoutSnapshot) return false;
@@ -189,6 +202,7 @@ function submitCheckout(event) {
   } catch (error) {
     checkoutInProgress = false;
     document.getElementById("pay-button").disabled = !PetalStore.hasProfile();
+    updateOrderHours();
     document.getElementById("checkout-error").textContent = error.message;
   }
 }
@@ -228,9 +242,9 @@ function receiptMarkup(order) {
           escapeHTML(line.details || "") +
           "</small></td><td>" +
           line.quantity +
-          "</td><td>PHP " +
+          "</td><td>₱" +
           money(line.unitPrice) +
-          "</td><td>PHP " +
+          "</td><td>₱" +
           money(line.quantity * line.unitPrice) +
           "</td></tr>"
         );
@@ -358,8 +372,8 @@ function submitInquiry(event) {
     form.reportValidity();
     return;
   }
-  if (!isValidPhone(formValue(form, "phone"))) {
-    status.textContent = "Enter a valid phone number with 7 to 15 digits.";
+  if (!/^[0-9]{11}$/.test(formValue(form, "phone"))) {
+    status.textContent = "Enter exactly 11 digits for your mobile number.";
     return;
   }
   if (typeof form.reportValidity === "function" && !form.reportValidity()) return;
@@ -371,7 +385,7 @@ function submitInquiry(event) {
     status.textContent = "Your inquiry " + inquiry.id + " has been saved.";
     form.reset();
     renderCustomerInquiries();
-    showSuccess("Successfully submitted your inquiry!", "contact.html", "Contact details");
+    showSuccess("Successfully submitted your inquiry!", "#contact-details", "Contact details");
   } catch (error) { status.textContent = error.message; }
 }
 function updateReviewEligibility() {
@@ -429,7 +443,7 @@ function submitBuyerReview(event) {
       formValue(form, "reference"), rating, formValue(form, "message"),
       { name: formValue(form, "reviewName"), anonymous: form.elements.namedItem("anonymous").checked },
     );
-    status.textContent = "Your review is now displayed below and on the home page.";
+    status.textContent = "Your review is now displayed below.";
     form.reset();
     const user = PetalStore.session();
     if (user) {
@@ -447,7 +461,12 @@ function submitBuyerReview(event) {
 }
 function initializePages() {
   if (page === "cart") renderCartPage();
-  if (page === "checkout") renderCheckoutPage();
+  if (page === "checkout") {
+    renderCheckoutPage();
+    setInterval(updateOrderHours, 15000);
+    window.addEventListener("focus", updateOrderHours);
+    document.addEventListener("visibilitychange", updateOrderHours);
+  }
   if (page === "receipt") renderReceiptPage();
   if (page === "notifications") renderNotificationsPage();
   if (page === "contact") renderCustomerInquiries();
@@ -495,6 +514,8 @@ document.addEventListener("click", function (event) {
 });
 document.addEventListener("input", function (event) {
   const input = event.target;
+  if (input.closest("#contact-form") && input.name === "phone")
+    input.value = input.value.replace(/[^0-9]/g, "").slice(0, 11);
   if (input.hasAttribute("data-line-quantity")) {
     const row = input.closest("[data-line-id]");
     const value = Number(input.value);
@@ -535,13 +556,19 @@ document.addEventListener("submit", function (event) {
   if (event.target.id === "review-form") submitBuyerReview(event);
 });
 
+document.addEventListener("click", function (event) {
+  if (!event.target.closest("[data-clear-recent-searches]")) return;
+  try { PetalStore.write("petal-recent-searches:" + PetalStore.owner(), []); renderRecentSearches(); }
+  catch (error) { toast(error.message); }
+});
 // Search suggestions and recent searches are shared by the page and popup.
 function renderRecentSearches() {
   const stored = PetalStore.read("petal-recent-searches:" + PetalStore.owner(), []);
   const queries = Array.isArray(stored) ? stored.filter(query => typeof query === "string").slice(0, 6) : [];
   for (const container of document.querySelectorAll("[data-recent-searches]"))
     container.innerHTML = queries.length
-      ? queries.map(query => '<button type="button" data-search-query="' + escapeHTML(query) + '">' + escapeHTML(query) + '</button>').join("")
+      ? queries.map(query => '<button type="button" data-search-query="' + escapeHTML(query) + '">' + escapeHTML(query) + '</button>').join("") +
+        '<button type="button" class="clear-recent-searches" data-clear-recent-searches>CLEAR ALL</button>'
       : '<p>No recent searches yet.</p>';
 }
 function rememberSearch(value) {

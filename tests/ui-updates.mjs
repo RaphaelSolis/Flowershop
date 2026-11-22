@@ -21,7 +21,8 @@ async function loadPage(name, seed = '', search = '', queueFrames = false) {
   let timerId=0; let frames=[];
   const location={href:'https://flowers.test/'+name+'.html'+search,search,hash:''};
   const history={replaceState(_state,_title,url){location.href=new URL(url,location.href).href;location.search=new URL(location.href).search;}};
-  const context=vm.createContext({document,window,location,history,Event:window.Event,KeyboardEvent:window.KeyboardEvent,
+  class StoreTestDate extends Date { constructor(...args) { super(...(args.length ? args : ["2026-11-22T02:00:00Z"])); } static now() { return new Date("2026-11-22T02:00:00Z").getTime(); } }
+  const context=vm.createContext({Date: StoreTestDate,document,window,location,history,Event:window.Event,KeyboardEvent:window.KeyboardEvent,
     URL,URLSearchParams,TextEncoder,crypto:webcrypto,console,
     requestAnimationFrame:cb=>{if(queueFrames)frames.push(cb);else cb();return 1;},
     setTimeout:cb=>{timers.set(++timerId,cb);return timerId;}, clearTimeout:id=>timers.delete(id),
@@ -43,6 +44,9 @@ async function loadPage(name, seed = '', search = '', queueFrames = false) {
 {
  const p=await loadPage('collections');
  p.click('[data-add="flower-1"]');
+ assert.equal(p.run('PetalStore.getCart().length'),0);
+ assert.equal(p.document.getElementById('product-options-dialog').open,true);
+ p.document.querySelector('#product-options-form button[type=submit]').click();
  assert.equal(p.run('PetalStore.getCart().length'),1);
  assert.equal(p.document.getElementById('success-dialog').open,true);
  assert.equal(p.document.querySelector('[data-success-message]').textContent,'Successfully added to cart!');
@@ -75,9 +79,19 @@ async function loadPage(name, seed = '', search = '', queueFrames = false) {
  p.click('#flower [data-previous]');assert.equal(row.scrollLeft,500);
  p.click('#flower [data-previous]');assert.equal(row.scrollLeft,324);
  assert.ok(!p.document.querySelector('#flower [data-next]').disabled);
+ p.click('#flower [data-section]');
+ assert.ok(p.document.getElementById('flower').classList.contains('products-expanded'));
+ assert.equal(p.document.querySelector('#flower [data-section]').textContent,'SEE LESS');
+ assert.equal(row.scrollLeft,0);
+ assert.ok(Array.from(p.document.querySelectorAll('#flower [data-next],#flower [data-previous]')).every(arrow=>arrow.hidden));
+ assert.ok(Array.from(p.document.querySelectorAll('.product-section')).every(section=>!section.hidden));
+ p.click('#flower [data-section]');
+ assert.equal(p.document.getElementById('flower').classList.contains('products-expanded'),false);
+ assert.equal(p.document.querySelector('#flower [data-section]').textContent,'SEE MORE');
+ assert.ok(Array.from(p.document.querySelectorAll('#flower [data-next],#flower [data-previous]')).every(arrow=>!arrow.hidden));
  await p.close();
 }
-console.log('PASS Immediate add notification, wrapper/ribbon rules, unique cart badge, deduplicated search, Clear Search, and both wrapping carousel arrows.');
+console.log('PASS Options before add notification, wrapper/ribbon rules, unique cart badge, deduplicated search, Clear Search, carousel arrows, and See More/See Less without hiding other sections.');
 
 {
  const p=await loadPage('customize');
@@ -122,6 +136,69 @@ console.log('PASS Immediate add notification, wrapper/ribbon rules, unique cart 
  await q.close();
 }
 console.log('PASS Multiple letter messages, per-letter pricing, selected add-on edits/removal, and cart bouquet editing preserve selections and recalculate totals.');
+
+{
+ const p=await loadPage('customize');
+ assert.equal(p.document.querySelector('.builder-edit-links'),null);
+ for(const section of ['flowers','wrapping','addons'])assert.equal(p.document.querySelector('[href="#edit-'+section+'"]'),null);
+ p.click('[data-add-custom]');
+ assert.equal(p.run('PetalStore.getCart().length'),0);
+ assert.match(p.document.getElementById('toast').textContent,/Choose a ribbon color/);
+ p.click('[data-choice="wrapping"][data-index="1"]');
+ assert.equal(p.document.querySelector('[data-choice="wrapping"][data-index="1"]').getAttribute('aria-pressed'),'true');
+ p.click('[data-color="5"]');
+ assert.equal(p.document.querySelector('[data-choice="wrapping"][aria-pressed="true"]'),null);
+ assert.equal(p.run('selectedWrapping().name'),'Blue plain wrapping');
+ p.click('[data-choice="wrapping"][data-index="0"]');
+ assert.equal(p.document.querySelector('[data-color][aria-pressed="true"]'),null);
+ p.click('[data-choice="addon"][data-index="4"]');
+ p.change(p.document.querySelector('[name="letters"]'),'First message');
+ p.document.querySelector('#product-options-form button[type=submit]').click();
+ p.click('[data-choice="addon"][data-index="4"]');
+ const letters=p.document.querySelectorAll('[name="letters"]');
+ assert.equal(letters.length,2);assert.equal(letters[0].value,'First message');assert.equal(letters[1].value,'');
+ p.change(letters[1],'Second message');
+ p.document.querySelector('#product-options-form button[type=submit]').click();
+ p.click('[data-ribbon="Blue"]');p.click('[data-add-custom]');
+ const line=JSON.parse(p.run('JSON.stringify(PetalStore.getCart()[0])'));
+ assert.equal(line.unitPrice,1210);assert.equal(line.options.ribbon,'Blue');
+ assert.equal(line.options.wrapping.name,'Kraft Paper Wrapping');
+ assert.deepEqual(line.options.addons.find(addon=>addon.productId==='addon-4').options.letters,['First message','Second message']);
+ await p.close();
+}
+console.log('PASS Customize Yours has no Edit shortcuts, requires a ribbon, switches wrapping modes, and adds another letter without replacing the first.');
+
+{
+ const p=await loadPage('contact');
+ const form=p.document.getElementById('contact-form');
+ for(const [name,value] of Object.entries({firstName:'Garden',lastName:'Shopper',email:customer.email,message:'Please confirm my bouquet details.'}))p.change(form.elements.namedItem(name),value);
+ p.change(form.elements.namedItem('phone'),'0912345678');
+ form.querySelector('button[type=submit]').click();assert.equal(p.run('PetalStore.inquiries().length'),0);
+ p.change(form.elements.namedItem('phone'),'09a123456789012');
+ assert.equal(form.elements.namedItem('phone').value,'09123456789');
+ form.querySelector('button[type=submit]').click();assert.equal(p.run('PetalStore.inquiries().length'),1);
+ assert.equal(p.document.getElementById('success-dialog').open,true);
+ assert.equal(p.document.querySelector('[data-success-link]').getAttribute('href'),'#contact-details');
+ let scrolls=0;p.document.getElementById('contact-details').scrollIntoView=()=>scrolls++;
+ p.click('[data-success-link]');assert.equal(scrolls,1);
+ assert.equal(p.document.getElementById('success-dialog').open,false);
+ assert.equal(p.location.href,'https://flowers.test/contact.html');
+ await p.close();
+}
+console.log('PASS Contact accepts exactly 11 mobile digits and the confirmation shortcut closes the dialog and scrolls to contact details.');
+
+{
+ const p=await loadPage('search');p.run('rememberSearch("Tulip");rememberSearch("Rose");');
+ p.change(p.document.getElementById('page-search-input'),'Sunflower');
+ p.click('[data-clear-recent-searches]');
+ assert.equal(p.run('PetalStore.read("petal-recent-searches:"+PetalStore.owner(),[]).length'),0);
+ assert.equal(p.document.querySelector('[data-recent-searches] [data-search-query]'),null);
+ assert.equal(p.document.getElementById('page-search-input').value,'Sunflower');
+ assert.ok(p.document.querySelector('#page-search-results .search-result'));
+ await p.close();
+}
+console.log('PASS Clear All deletes saved recent searches while keeping the current search and results.');
+
 
 for(const seed of ['',registered,placed,placed+'PetalStore.setOrderStatus(testOrder.reference,"Cancelled");']){
  const p=await loadPage('feedback',seed);
@@ -247,7 +324,7 @@ console.log('PASS Receipt shows the saved subtotal/fee/total and order confirmat
  assert.equal(p.document.getElementById('profile-orders').textContent,'0');
  await p.close();
  const q=await loadPage('customize');
- q.click('[data-choice=flower][data-index="3"]');q.click('[data-add-custom]');
+ q.click('[data-choice=flower][data-index="3"]');q.click('[data-ribbon="Blue"]');q.click('[data-add-custom]');
  const flower=JSON.parse(q.run('JSON.stringify(PetalStore.getCart()[0].options.flowers.find(flower=>flower.index===3))'));
  assert.equal(flower.name,'Blue Chrysanthemum');assert.equal(flower.unitPrice,80);
  assert.match(q.document.querySelector('[data-choice=flower][data-index="3"] img').src,/blue-chrysanthemum.webp/);
@@ -266,6 +343,7 @@ console.log('PASS Profile activity keeps only orders; Blue Chrysanthemum replace
  const container=p.document.querySelector('[data-public-reviews]');
  assert.equal(container.firstElementChild.querySelector('p').textContent,'A new review visible immediately');
  assert.equal(container.querySelectorAll('[data-review-id]').length,1);
+ assert.match(container.querySelector('[data-review-id] time').textContent,/November 22, 2026/);
  p.run('renderPublicReviews();renderPublicReviews();');
  assert.equal(container.querySelectorAll('[data-review-id]').length,1);
  const snapshot=Array.from(p.records);await p.close();
@@ -273,8 +351,14 @@ console.log('PASS Profile activity keeps only orders; Blue Chrysanthemum replace
  assert.equal(q.document.querySelector('[data-public-reviews]').firstElementChild.querySelector('p').textContent,'A new review visible immediately');
  assert.equal(q.document.querySelectorAll('[data-review-id]').length,1);
  await q.close();
+ const home=await loadPage('index',`for(const [key,value] of ${JSON.stringify(snapshot)})localStorage.setItem(key,value);`);
+ assert.equal(home.document.querySelector('[data-review-id]'),null);
+ assert.equal(home.document.querySelector('[data-public-reviews]'),null);
+ assert.equal(home.document.querySelector('[data-gallery-playback]'),null);
+ assert.ok(Array.from(home.document.querySelectorAll('.testimonial-card')).every(card=>card.getAttribute('href')==='feedback.html#published-reviews'));
+ await home.close();
 }
-console.log('PASS Submitted reviews appear first immediately and after reload, without duplication.');
+console.log('PASS Submitted reviews are dated and stay on View All Reviews; featured comments link there without duplicating new reviews.');
 
 {
  const p=await loadPage('receipt',placed+`delete testOrder.delivery;delete testOrder.subtotal;testOrder.total=120;PetalStore.write('petal-orders',[testOrder]);`);

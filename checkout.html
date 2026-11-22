@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#577438" />
     <title>The Petal Haus | Checkout</title>
-    <link rel="stylesheet" href="styles.css?v=20261119-gallery-marquee" />
-    <link rel="stylesheet" href="design-spec.css?v=20261119-account-delivery" />
-    <link rel="stylesheet" href="layout.css?v=20261119-tablet-header" />
-    <script src="settings.js?v=20261119-account-delivery" defer></script>
-    <script src="products.js?v=20261119-account-delivery" defer></script>
-    <script src="store.js?v=20261119-account-delivery" defer></script>
-    <script src="app.js?v=20261119-gallery-marquee" defer></script>
-    <script src="shop.js?v=20261119-ui-updates" defer></script>
-    <script src="customize.js?v=20261119-ui-updates" defer></script>
-    <script src="pages.js?v=20261119-account-delivery" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20261122-instructions-final" />
+    <link rel="stylesheet" href="design-spec.css?v=20261122-instructions-final" />
+    <link rel="stylesheet" href="layout.css?v=20261122-instructions-final" />
+    <script src="settings.js?v=20261122-instructions-final" defer></script>
+    <script src="products.js?v=20261122-instructions-final" defer></script>
+    <script src="store.js?v=20261122-instructions-final" defer></script>
+    <script src="app.js?v=20261122-instructions-final" defer></script>
+    <script src="shop.js?v=20261122-instructions-final" defer></script>
+    <script src="customize.js?v=20261122-instructions-final" defer></script>
+    <script src="pages.js?v=20261122-instructions-final" defer></script>
   </head>
   <body data-page="checkout">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -157,7 +157,7 @@
               </div>
               <label>Email<input name="email" type="email" autocomplete="email" maxlength="150" required /></label>
               <label>Phone Number<input name="phone" type="tel" autocomplete="tel" pattern="(?=(?:[^0-9]*[0-9]){7,15}[^0-9]*$)\+?[0-9\(\) \-]{7,20}" title="Enter a phone number with 7 to 15 digits." required /></label>
-              <h3 class="section-bar">Shipping Address</h3>
+              <h3 class="section-bar shipping-heading">Shipping Address</h3>
               <div class="form-two-columns">
                 <label>House Number<input name="houseNumber" autocomplete="address-line1" maxlength="100" required /></label>
                 <label>Street<input name="street" autocomplete="address-line2" maxlength="150" required /></label>
@@ -185,6 +185,7 @@
                 <label id="wallet-provider-field" hidden>Online wallet<select name="provider" form="checkout-form"><option value="">Choose an e-wallet</option><option>GCash</option><option>Maya</option></select></label>
               </section>
               <section class="delivery-section"><h3 class="section-bar">Delivery Type</h3><p><strong>Same day delivery</strong></p><p>Delivery fee: <output id="delivery-option-fee">₱0</output></p></section>
+              <div class="order-hours" id="order-hours" role="status" aria-live="polite"></div>
               <p class="form-error" id="checkout-error" role="alert"></p>
               <button class="pill" id="pay-button" type="submit" form="checkout-form" disabled>PLACE ORDER</button>
             </aside>

@@ -5,7 +5,8 @@ const vm = require("node:vm");
 
 function shoppingStore() {
   const records = new Map();
-  const context = vm.createContext({
+  class StoreTestDate extends Date { constructor(...args) { super(...(args.length ? args : ["2026-11-22T02:00:00Z"])); } static now() { return new Date("2026-11-22T02:00:00Z").getTime(); } }
+  const context = vm.createContext({Date: StoreTestDate,
     localStorage: {
       getItem: key => records.get(key) ?? null,
       setItem: (key, value) => records.set(key, value),

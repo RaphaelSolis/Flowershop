@@ -9,7 +9,7 @@ const customization = {
   wrappingMode: "style",
   wrapping: 0,
   color: 0,
-  ribbon: "Pink",
+  ribbon: "",
   addons: {
     0: {
       productId: "addon-0",
@@ -55,6 +55,11 @@ function setCustomizationAddon(index, line) {
 function updateCustomization() {
   if (page !== "customize") return;
   document.getElementById("builder-ribbon").value = customization.ribbon;
+  for (const swatch of document.querySelectorAll("[data-ribbon]"))
+    swatch.setAttribute("aria-pressed", swatch.dataset.ribbon === customization.ribbon);
+  document.getElementById("ribbon-choice-note").textContent = customization.ribbon
+    ? "Selected: " + customization.ribbon + " ribbon."
+    : "Choose a ribbon color to continue (required).";
   for (const button of document.querySelectorAll('[data-choice="flower"]'))
     button.setAttribute("aria-pressed", Object.hasOwn(customization.flowers, button.dataset.index));
   for (const button of document.querySelectorAll('[data-choice="wrapping"]'))
@@ -97,7 +102,7 @@ function updateCustomization() {
           flower.index +
           '" aria-label="Add one ' +
           flower.name +
-          ' stem">+</button></div><span>PHP ' +
+          ' stem">+</button></div><span>₱' +
           money(flower.unitPrice * flower.quantity) +
           "</span></div>"
         );
@@ -113,7 +118,7 @@ function updateCustomization() {
           addon.name +
           "</strong><p>" +
           escapeHTML(addon.details) +
-          "</p></div><span>PHP " +
+          "</p></div><span>₱" +
           money(addon.unitPrice * addon.quantity) +
           '</span><div class="selected-addon-actions"><button type="button" data-edit-addon="' +
           index + '">EDIT</button><button type="button" data-remove-addon="' +
@@ -132,7 +137,7 @@ function updateCustomization() {
         flower.name +
         "</td><td>" +
         flower.quantity +
-        " stems</td><td>PHP " +
+        " stems</td><td>₱" +
         money(flower.quantity * flower.unitPrice) +
         "</td></tr>"
       );
@@ -141,7 +146,7 @@ function updateCustomization() {
   rows +=
     "<tr><td>Wrapping</td><td>" +
     wrapping.name +
-    "</td><td>PHP " +
+    "</td><td>₱" +
     money(wrapping.price) +
     "</td></tr>";
   rows += "<tr><td>Ribbon</td><td>" + customization.ribbon + "</td><td>Included</td></tr>";
@@ -153,17 +158,22 @@ function updateCustomization() {
       addon.quantity +
       " × " +
       escapeHTML(addon.details) +
-      "</td><td>PHP " +
+      "</td><td>₱" +
       money(addon.quantity * addon.unitPrice) +
       "</td></tr>";
   document.getElementById("custom-summary-rows").innerHTML = rows;
-  document.getElementById("summary-total").textContent = "PHP " + money(customBouquetTotal());
+  document.getElementById("summary-total").textContent = "₱" + money(customBouquetTotal());
   document.querySelector("[data-add-custom]").disabled = !flowers.length;
 }
 function addCustomizedBouquet() {
   const flowers = selectedFlowerItems();
   if (!flowers.length) {
     toast("Choose at least one flower.");
+    return;
+  }
+  if (!colors.some(color => color[0] === customization.ribbon)) {
+    toast("Choose a ribbon color in Step 4 before continuing.");
+    document.getElementById("select-ribbon").scrollIntoView({ behavior: "smooth", block: "center" });
     return;
   }
   const wrapping = selectedWrapping();
@@ -244,9 +254,19 @@ document.addEventListener("click", function (event) {
     customization.wrappingMode = "color";
     customization.color = Number(button.dataset.color);
     updateCustomization();
+  } else if (button.dataset.ribbon) {
+    customization.ribbon = button.dataset.ribbon;
+    updateCustomization();
   } else if (button.dataset.choice === "addon") {
     const product = { ...addons[index], id: "addon-" + index, addonIndex: index, group: "addon" };
-    openProductOptions(product, "addon", customization.addons[index]);
+    if (productKind(product) === "letter" && customization.addons[index]) {
+      const existing = customization.addons[index];
+      const letters = existing.options.letters || [existing.options.letter];
+      if (letters.length >= 10) { toast("You can add up to 10 letters. Use EDIT to change your messages."); return; }
+      openProductOptions(product, "addon", { ...existing, options: { ...existing.options, letters: [...letters, ""] } });
+      const input = document.querySelector(".letter-field:last-child textarea");
+      input.focus();
+    } else openProductOptions(product, "addon", customization.addons[index]);
   } else if (button.hasAttribute("data-flower-adjust")) {
     const flowerIndex = Number(button.dataset.flowerIndex);
     customization.flowers[flowerIndex] = boundedQuantity(

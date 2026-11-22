@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#577438" />
     <title>The Petal Haus | Contact Us</title>
-    <link rel="stylesheet" href="styles.css?v=20261119-gallery-marquee" />
-    <link rel="stylesheet" href="design-spec.css?v=20261119-account-delivery" />
-    <link rel="stylesheet" href="layout.css?v=20261119-tablet-header" />
-    <script src="settings.js?v=20261119-account-delivery" defer></script>
-    <script src="products.js?v=20261119-account-delivery" defer></script>
-    <script src="store.js?v=20261119-account-delivery" defer></script>
-    <script src="app.js?v=20261119-gallery-marquee" defer></script>
-    <script src="shop.js?v=20261119-ui-updates" defer></script>
-    <script src="customize.js?v=20261119-ui-updates" defer></script>
-    <script src="pages.js?v=20261119-account-delivery" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20261122-instructions-final" />
+    <link rel="stylesheet" href="design-spec.css?v=20261122-instructions-final" />
+    <link rel="stylesheet" href="layout.css?v=20261122-instructions-final" />
+    <script src="settings.js?v=20261122-instructions-final" defer></script>
+    <script src="products.js?v=20261122-instructions-final" defer></script>
+    <script src="store.js?v=20261122-instructions-final" defer></script>
+    <script src="app.js?v=20261122-instructions-final" defer></script>
+    <script src="shop.js?v=20261122-instructions-final" defer></script>
+    <script src="customize.js?v=20261122-instructions-final" defer></script>
+    <script src="pages.js?v=20261122-instructions-final" defer></script>
   </head>
   <body data-page="contact">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -148,7 +148,7 @@
               <label>First Name:*<input name="firstName" placeholder="Juan" autocomplete="given-name" maxlength="50" required /></label>
               <label>Last Name:*<input name="lastName" placeholder="Dela Cruz" autocomplete="family-name" maxlength="50" required /></label>
             </div>
-            <label>Your Phone Number:*<input name="phone" type="tel" placeholder="09123456789" autocomplete="tel" pattern="(?=(?:[^0-9]*[0-9]){7,15}[^0-9]*$)\+?[0-9\(\) \-]{7,20}" title="Enter a phone number with 7 to 15 digits." required /></label>
+            <label>Your Phone Number:*<input name="phone" type="tel" placeholder="09123456789" autocomplete="tel" pattern="[0-9]{11}" minlength="11" maxlength="11" inputmode="numeric" title="Enter exactly 11 digits." required /></label>
             <label>Your Email Address:*<input name="email" type="email" placeholder="juandelacruz@gmail.com" autocomplete="email" maxlength="150" required /></label>
             <input type="hidden" name="type" value="Question" />
             <input type="hidden" name="subject" value="Website inquiry" />
@@ -157,11 +157,11 @@
             <p id="contact-status" role="status"></p>
           </form>
           <details class="saved-inquiries" hidden><summary>Your inquiries</summary><h2>Your inquiries</h2><div id="customer-inquiries"></div></details>
-          <h2 class="contact-heading floral-heading">CONTACT DETAILS <img class="heading-flower" src="assets/home/petal-green.png" alt="" /></h2>
+          <h2 class="contact-heading floral-heading" id="contact-details">CONTACT DETAILS <img class="heading-flower" src="assets/home/petal-green.png" alt="" /></h2>
           <div class="contact-cards">
-            <article><span class="contact-icon" aria-hidden="true">☎</span><h2>Phone</h2><a data-store-phone=""></a></article>
-            <article><span class="contact-icon" aria-hidden="true">✉</span><h2>Email</h2><a data-store-email=""></a></article>
-            <article><span class="contact-icon" aria-hidden="true">⌖</span><h2>Location</h2><a data-store-map="" target="_blank" rel="noopener noreferrer">Golden Gate Basketball Court, Topland Ave, Las Piñas, 1747 Metro Manila</a></article>
+            <article><span class="contact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h4l2 5-3 2a15 15 0 0 0 6 6l2-3 5 2v4c0 2-3 3-5 2C8 19 3 14 3 6c0-2 0-3 2-3Z"/></svg></span><h2>Phone</h2><a data-store-phone=""></a></article>
+            <article><span class="contact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 5 9 8 9-8"/></svg></span><h2>Email</h2><a data-store-email=""></a></article>
+            <article><span class="contact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><h2>Location</h2><a data-store-map="" target="_blank" rel="noopener noreferrer">Golden Gate Basketball Court, Topland Ave, Las Piñas, 1747 Metro Manila</a></article>
           </div>
         </section>
       </main>

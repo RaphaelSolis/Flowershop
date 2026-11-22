@@ -104,7 +104,7 @@ function initializeContactLinks() {
 const publicReviewTemplates = new WeakMap();
 function renderPublicReviews() {
   const reviews = PetalStore.reviews();
-  for (const container of document.querySelectorAll("[data-public-reviews]")) {
+  for (const container of document.querySelectorAll('body[data-page="feedback"] [data-public-reviews]')) {
     if (!publicReviewTemplates.has(container)) publicReviewTemplates.set(container, container.innerHTML);
     container.innerHTML = reviews
       .map(function (review) {
@@ -121,7 +121,9 @@ function renderPublicReviews() {
           escapeHTML(review.name) +
           "</strong><small>Verified order · " +
           escapeHTML(review.reference) +
-          "</small></article>"
+          '</small><time datetime="' + escapeHTML(review.date) + '">Submitted ' +
+          escapeHTML(new Date(review.date).toLocaleDateString("en-PH", { timeZone: "Asia/Manila", year: "numeric", month: "long", day: "numeric" })) +
+          "</time></article>"
         );
       })
       .join("") + publicReviewTemplates.get(container);
@@ -181,7 +183,10 @@ function handleCommonClick(event) {
       popover.querySelector("button").focus();
     }
   } else if (button.hasAttribute("data-success-link") && button.getAttribute("href")?.startsWith("#")) {
+    event.preventDefault();
     closeDialog(button.closest("dialog"));
+    const target = document.getElementById(button.getAttribute("href").slice(1));
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
   } else if (button.hasAttribute("data-close"))
     closeDialog(button.closest("dialog"));
   else if (button.hasAttribute("data-search")) {
@@ -255,7 +260,6 @@ function initializeGalleryMarquee() {
   const viewport = gallery.querySelector(".gallery-marquee-viewport");
   const track = gallery.querySelector(".gallery-marquee-track");
   const group = track.querySelector(".gallery-marquee-group");
-  const playbackButton = gallery.querySelector("[data-gallery-playback]");
   const motionPreference = window.matchMedia?.("(prefers-reduced-motion: reduce)");
   const repeatedGroup = group.cloneNode(true);
   repeatedGroup.setAttribute("aria-hidden", "true");
@@ -271,10 +275,6 @@ function initializeGalleryMarquee() {
     const reducedMotion = !!motionPreference?.matches;
     gallery.classList.toggle("is-playing", ready && visible && !paused && !reducedMotion && !document.hidden);
     gallery.classList.toggle("is-paused", paused || reducedMotion);
-    playbackButton.hidden = reducedMotion;
-    playbackButton.textContent = paused ? "RESUME" : "PAUSE";
-    playbackButton.setAttribute("aria-label", paused ? "Resume moving gallery" : "Pause moving gallery");
-    playbackButton.setAttribute("aria-pressed", String(paused));
   }
   function prepareImages() {
     if (loading) return;
@@ -291,11 +291,6 @@ function initializeGalleryMarquee() {
     paused = true;
     updatePlayback();
   }
-  playbackButton.addEventListener("click", () => {
-    paused = !paused;
-    if (!paused) viewport.scrollLeft = 0;
-    updatePlayback();
-  });
   viewport.addEventListener("pointerdown", event => {
     if (event.pointerType === "touch" || event.pointerType === "pen") pause();
   });
@@ -306,6 +301,8 @@ function initializeGalleryMarquee() {
     const distance = group.querySelector("li").getBoundingClientRect().width + 16;
     viewport.scrollBy({ left: event.key === "ArrowRight" ? distance : -distance, behavior: "auto" });
   });
+  viewport.addEventListener("pointerleave", () => { paused = false; viewport.scrollLeft = 0; updatePlayback(); });
+  viewport.addEventListener("blur", () => { paused = false; viewport.scrollLeft = 0; updatePlayback(); });
   document.addEventListener("visibilitychange", updatePlayback);
   motionPreference?.addEventListener?.("change", updatePlayback);
   if (typeof window.IntersectionObserver === "function") {
@@ -332,10 +329,11 @@ function initializeNavigation() {
   }
   const header = document.querySelector(".site-header");
   if (!header) return;
-  const tabs = Array.from(header.querySelectorAll(".nav-link,[data-cart]"));
+  const tabs = Array.from(header.querySelectorAll(".nav-link,.header-actions .icon-button"));
   const shopPages = ["collections", "occasions", "customize"];
   for (const tab of tabs) {
     const isActive = tab.hasAttribute("data-cart") ? ["cart", "checkout", "receipt"].includes(page)
+      : tab.hasAttribute("data-search") ? page === "search"
       : tab.hasAttribute("data-shop-menu") ? shopPages.includes(page)
       : tab.getAttribute("href") === (page === "home" ? "index" : page) + ".html";
     tab.classList.toggle("active", isActive);
