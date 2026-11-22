@@ -41,6 +41,51 @@ async function loadPage(name, seed = '', search = '', queueFrames = false) {
   return {window,document,run,click,change,close,records,timers,location,frame(){const next=frames;frames=[];next.forEach(cb=>cb());}};
 }
 
+
+{
+ const p=await loadPage('all-products');
+ const ids=()=>Array.from(p.document.querySelectorAll('#all-products-grid [data-product]'),card=>card.dataset.product);
+ const catalog=JSON.parse(p.run('JSON.stringify(allProducts)'));
+ assert.deepEqual(ids(),catalog.map(product=>product.id));
+ assert.equal(new Set(ids()).size,catalog.length);
+ assert.equal(p.document.getElementById('all-products-count').textContent,catalog.length+' products');
+ assert.equal(p.document.querySelector('#shop-dropdown a').getAttribute('href'),'all-products.html');
+ assert.equal(p.document.querySelector('#shop-dropdown a').getAttribute('aria-current'),'page');
+ assert.equal(p.document.querySelector('[data-shop-menu]').getAttribute('aria-current'),'page');
+ assert.equal(p.document.querySelector('.footer-menu a[href="collections.html"]').getAttribute('aria-current'),'page');
+ p.click('[data-mobile-menu]');p.click('[data-shop-menu]');
+ assert.ok(p.document.getElementById('main-nav').classList.contains('open'));
+ assert.ok(p.document.querySelector('.shop-menu').classList.contains('open'));
+ const input=p.document.getElementById('all-products-search'),category=p.document.getElementById('all-products-category');
+ p.change(input,'  TULIP  ');
+ const tulips=catalog.filter(product=>product.name.toLowerCase().includes('tulip'));
+ assert.deepEqual(ids(),tulips.map(product=>product.id));
+ p.change(category,'gifts');assert.equal(ids().length,0);
+ assert.ok(p.document.querySelector('.all-products-empty'));
+ p.click('[data-reset-product-filters]');
+ assert.equal(input.value,'');assert.equal(category.value,'');assert.equal(ids().length,catalog.length);
+ p.change(category,'gifts');
+ assert.deepEqual(ids(),catalog.filter(product=>product.section==='gifts').map(product=>product.id));
+ p.click('#all-products-grid [data-add="gifts-4"]');
+ assert.equal(p.document.getElementById('product-options-dialog').open,true);
+ assert.equal(p.run('PetalStore.getCart().length'),0);
+ p.change(p.document.querySelector('[name="letters"]'),'A little gift with love.');
+ p.document.querySelector('#product-options-form button[type=submit]').click();
+ assert.equal(p.run('PetalStore.getCart()[0].productId'),'gifts-4');
+ assert.equal(p.run('PetalStore.getCart()[0].options.letters[0]'),'A little gift with love.');
+ assert.equal(p.document.getElementById('success-dialog').open,true);
+ await p.close();
+ const q=await loadPage('all-products',`PetalStore.setStock('flower-1',false);`);
+ assert.ok(q.document.querySelector('#all-products-grid [data-product="flower-1"]').classList.contains('out-of-stock'));
+ assert.ok(Array.from(q.document.querySelectorAll('#all-products-grid [data-product="flower-1"] button')).every(button=>button.disabled));
+ q.document.querySelector('#all-products-grid [data-add="flower-1"]').click();
+ assert.equal(q.document.getElementById('product-options-dialog').open,false);
+ q.run(`PetalStore.setStock('flower-1',true);initializeShop();`);
+ assert.equal(q.document.querySelector('#all-products-grid [data-add="flower-1"]').disabled,false);
+ await q.close();
+}
+console.log('PASS All Products includes every catalog listing, keeps SHOP active, filters and resets, opens gift options before cart, and respects stock updates.');
+
 {
  const p=await loadPage('collections');
  p.click('[data-add="flower-1"]');

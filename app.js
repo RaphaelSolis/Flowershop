@@ -322,7 +322,7 @@ function initializeNavigation() {
   for (const link of document.querySelectorAll(".footer-menu a")) {
     const current = (page === "home" ? "index" : page) + ".html";
     const active = link.getAttribute("href") === current ||
-      (link.getAttribute("href") === "collections.html" && ["occasions", "customize"].includes(page));
+      (link.getAttribute("href") === "collections.html" && ["all-products", "occasions", "customize"].includes(page));
     link.classList.toggle("active", active);
     if (active) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
@@ -330,7 +330,7 @@ function initializeNavigation() {
   const header = document.querySelector(".site-header");
   if (!header) return;
   const tabs = Array.from(header.querySelectorAll(".nav-link,.header-actions .icon-button"));
-  const shopPages = ["collections", "occasions", "customize"];
+  const shopPages = ["all-products", "collections", "occasions", "customize"];
   for (const tab of tabs) {
     const isActive = tab.hasAttribute("data-cart") ? ["cart", "checkout", "receipt"].includes(page)
       : tab.hasAttribute("data-search") ? page === "search"

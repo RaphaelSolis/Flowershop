@@ -276,7 +276,52 @@ function searchProducts(inputId = "search-input", resultsId = "search-results") 
   if (!matches.length)
     results.innerHTML = "<p>No products found for “" + escapeHTML(query) + "”.</p>";
 }
+// One complete catalog, using the same products and option forms as the shop pages.
+const catalogCategoryLabels = {
+  flower: "Flowers", bouquet: "Bouquets", "new-arrival": "New Arrivals",
+  "best-sellers": "Best Sellers", "potted-flowers": "Potted Flowers", gifts: "Gifts",
+  birthday: "Birthday", wedding: "Wedding", anniversary: "Anniversary",
+  achievement: "Achievement", sympathy: "Sympathy", "thank-you": "Thank You",
+};
+function catalogCategoryName(section) {
+  return catalogCategoryLabels[section] || section.replace(/-/g, " ").replace(/\b\w/g, letter => letter.toUpperCase());
+}
+function renderAllProducts() {
+  const grid = document.getElementById("all-products-grid");
+  if (!grid) return;
+  const query = document.getElementById("all-products-search").value.trim().toLowerCase();
+  const category = document.getElementById("all-products-category").value;
+  const matches = allProducts.filter(product =>
+    (!category || product.section === category) &&
+    (product.name + " " + catalogCategoryName(product.section)).toLowerCase().includes(query));
+  grid.innerHTML = matches.map(product => {
+    const available = PetalStore.available(product.id);
+    const disabled = available ? "" : " disabled";
+    return '<article class="product-card' + (available ? "" : " out-of-stock") + '" data-product="' + escapeHTML(product.id) + '">' +
+      '<button class="product-selection-button" type="button" data-configure="' + escapeHTML(product.id) +
+      '" aria-label="Configure ' + escapeHTML(product.name) + '"' + disabled + '>' +
+      '<div class="photo-card"><div class="catalog-photo-window photo-only"><img src="' + escapeHTML(product.image) +
+      '" alt="' + escapeHTML(product.name) + '" width="320" height="320" loading="lazy" decoding="async" /></div>' +
+      '<div class="photo-caption"><h3>' + escapeHTML(product.name) + '</h3><p>₱' + money(product.price) +
+      '</p><small class="all-product-category">' + escapeHTML(catalogCategoryName(product.section)) + '</small></div></div></button>' +
+      '<button class="add-cart" type="button" data-add="' + escapeHTML(product.id) + '" aria-label="' +
+      (available ? 'Add ' + escapeHTML(product.name) + ' to cart' : escapeHTML(product.name) + ' is unavailable') + '"' + disabled + '>' +
+      (available ? 'ADD TO CART <img src="assets/home/cart.png" alt="" />' : 'UNAVAILABLE') + '</button></article>';
+  }).join("") || '<p class="all-products-empty">No products found. Try another search or choose a different category.</p>';
+  document.getElementById("all-products-count").textContent = matches.length + (matches.length === 1 ? " product" : " products");
+}
+function initializeAllProducts() {
+  const select = document.getElementById("all-products-category");
+  if (!select) return;
+  const current = select.value;
+  const categories = [...new Set(allProducts.map(product => product.section))];
+  select.innerHTML = '<option value="">All categories</option>' + categories.map(section =>
+    '<option value="' + escapeHTML(section) + '">' + escapeHTML(catalogCategoryName(section)) + '</option>').join("");
+  select.value = categories.includes(current) ? current : "";
+  renderAllProducts();
+}
 function initializeShop() {
+  initializeAllProducts();
   const parameters = new URLSearchParams(location.search);
   const section = parameters.get("section");
   if (section && document.getElementById(section)?.classList.contains("product-section"))
@@ -309,6 +354,10 @@ document.addEventListener("click", function (event) {
     button.closest(".letter-field").remove();
     updateLetterFields();
     updateProductOptionPrice();
+  } else if (button.hasAttribute("data-reset-product-filters")) {
+    document.getElementById("all-products-filters").reset();
+    renderAllProducts();
+    document.getElementById("all-products-search").focus();
   } else if (button.hasAttribute("data-clear-search")) {
     const form = button.closest("form");
     const input = form.querySelector('input[type="search"]');
@@ -355,12 +404,15 @@ document.addEventListener("click", function (event) {
 document.addEventListener("input", function (event) {
   if (event.target.closest("#product-options-form")) updateProductOptionPrice();
   if (event.target.id === "search-input") searchProducts();
+  if (event.target.id === "all-products-search") renderAllProducts();
   if (event.target.id === "page-search-input") searchProducts("page-search-input", "page-search-results");
 });
 document.addEventListener("change", function (event) {
+  if (event.target.id === "all-products-category") renderAllProducts();
   if (event.target.closest("#product-options-form")) updateProductOptionPrice();
 });
 document.addEventListener("submit", function (event) {
+  if (event.target.id === "all-products-filters") { event.preventDefault(); renderAllProducts(); }
   if (event.target.id === "product-options-form") submitProductOptions(event);
   if (event.target.id === "search-form") {
     event.preventDefault();
