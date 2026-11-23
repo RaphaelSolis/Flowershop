@@ -518,13 +518,6 @@ body[data-page='checkout'] .order-sidebar > #checkout-error:empty { display: non
 /* The Shop label keeps its chosen case, including inside the phone menu. */
 .site-header [data-shop-menu] { text-transform: none; }
 @media (min-width: 1025px) {
-  body[data-page] .site-header { height: auto !important; min-height: 0; padding-block: 12px; }
-  .header-layout { gap: 10px; }
-  .header-layout .brand { width: clamp(144px, 11vw, 180px); height: clamp(144px, 11vw, 180px); }
-  .header-layout .profile-link { margin-right: 12px; }
   .header-layout .main-nav { font-size: clamp(20px, 1.55vw, 26px); gap: clamp(6px, .6vw, 14px); }
-  .header-layout .nav-link { font-size: inherit !important; min-height: 44px; gap: 6px; }
-  .header-layout .nav-link img { width: clamp(20px, 1.4vw, 26px); height: clamp(20px, 1.4vw, 26px); }
-  .header-layout .header-actions { flex: none; gap: 12px; margin-left: 0; }
-  .header-layout .icon-button, .header-layout .icon-button img { width: 40px; height: 40px; }
+  .header-layout .nav-link { font-size: inherit !important; }
 }
