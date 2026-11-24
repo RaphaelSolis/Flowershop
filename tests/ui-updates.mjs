@@ -54,7 +54,7 @@ async function loadPage(name, seed = '', search = '', queueFrames = false) {
  assert.equal(p.document.querySelector('#shop-dropdown a').getAttribute('href'),'all-products.html');
  assert.equal(p.document.querySelector('#shop-dropdown a').getAttribute('aria-current'),'page');
  assert.equal(p.document.querySelector('[data-shop-menu]').getAttribute('aria-current'),'page');
- assert.equal(p.document.querySelector('.footer-menu a[href="collections.html"]').getAttribute('aria-current'),'page');
+ assert.equal(p.document.querySelector('.footer-menu a[href="all-products.html"]').getAttribute('aria-current'),'page');
  p.click('[data-mobile-menu]');p.click('[data-shop-menu]');
  assert.ok(p.document.getElementById('main-nav').classList.contains('open'));
  assert.ok(p.document.querySelector('.shop-menu').classList.contains('open'));
@@ -87,6 +87,40 @@ async function loadPage(name, seed = '', search = '', queueFrames = false) {
  await q.close();
 }
 console.log('PASS All Products includes every catalog listing, keeps SHOP active, filters and resets, opens gift options before cart, and respects stock updates.');
+
+for(const name of ['index','all-products','checkout','feedback']){
+ const p=await loadPage(name);
+ const footer=p.document.querySelector('.footer-shop-menu');
+ const control=footer.querySelector('[data-shop-menu]');
+ const panel=p.document.getElementById(control.getAttribute('aria-controls'));
+ const header=p.document.querySelector('.site-header .shop-menu');
+ const entries=menu=>Array.from(menu.querySelectorAll('.shop-dropdown a'),link=>({href:link.getAttribute('href'),label:link.textContent.trim()}));
+ assert.deepEqual(entries(footer),entries(header));assert.equal(entries(footer).length,4);
+ assert.equal(p.document.querySelectorAll('#footer-shop-dropdown').length,1);
+ control.focus();assert.equal(p.window.getComputedStyle(panel).display,'none');
+ p.click(control);assert.equal(control.getAttribute('aria-expanded'),'true');
+ assert.equal(p.window.getComputedStyle(panel).display,'grid');
+ p.click(control);assert.equal(control.getAttribute('aria-expanded'),'false');
+ assert.equal(p.window.getComputedStyle(panel).display,'none');
+ p.click('.site-header [data-shop-menu]');assert.ok(header.classList.contains('open'));
+ p.click(control);assert.ok(footer.classList.contains('open'));assert.ok(!header.classList.contains('open'));
+ assert.equal(header.querySelector('[data-shop-menu]').getAttribute('aria-expanded'),'false');
+ p.click('main');assert.equal(control.getAttribute('aria-expanded'),'false');
+ p.click(control);panel.querySelector('a').focus();
+ p.document.dispatchEvent(new p.window.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+ assert.equal(p.document.activeElement,control);
+ assert.equal(control.getAttribute('aria-expanded'),'false');assert.equal(p.window.getComputedStyle(panel).display,'none');
+ p.click(control);p.click(panel.querySelector('a'));
+ assert.equal(control.getAttribute('aria-expanded'),'false');
+ if(name==='all-products'){
+  assert.equal(control.getAttribute('aria-current'),'page');
+  assert.equal(panel.querySelector('[aria-current=page]').getAttribute('href'),'all-products.html');
+  assert.equal(panel.querySelectorAll('[aria-current=page]').length,1);
+ }
+ await p.close();
+}
+console.log('PASS Footer Shop matches the four header destinations, toggles while focused, closes outside/on Escape/selection, and marks the actual active destination.');
+
 
 {
  const p=await loadPage('collections');

@@ -191,14 +191,24 @@ function handleCommonClick(event) {
   }
 }
 document.addEventListener("click", handleCommonClick);
+document.addEventListener("click", function (event) {
+  for (const menu of document.querySelectorAll(".shop-menu.open")) {
+    if (!menu.contains(event.target) || event.target.closest(".shop-dropdown a")) {
+      menu.classList.remove("open");
+      menu.querySelector("[data-shop-menu]").setAttribute("aria-expanded", "false");
+    }
+  }
+});
 document.addEventListener("keydown", function (event) {
   if (event.key === "Escape") {
-    document.querySelector(".shop-menu")?.classList.remove("open");
+    const footerControl = document.activeElement?.closest(".footer-shop-menu")?.querySelector("[data-shop-menu]");
+    for (const menu of document.querySelectorAll(".shop-menu")) menu.classList.remove("open");
     document.getElementById("main-nav")?.classList.remove("open");
     for (const button of document.querySelectorAll(
       "[data-shop-menu],[data-mobile-menu]",
     ))
       button.setAttribute("aria-expanded", "false");
+    footerControl?.focus();
   }
 });
 function refreshAccountUI() {
@@ -317,8 +327,7 @@ function initializeGalleryMarquee() {
 function initializeNavigation() {
   for (const link of document.querySelectorAll(".footer-menu a")) {
     const current = (page === "home" ? "index" : page) + ".html";
-    const active = link.getAttribute("href") === current ||
-      (link.getAttribute("href") === "collections.html" && ["all-products", "occasions", "customize"].includes(page));
+    const active = link.getAttribute("href") === current;
     link.classList.toggle("active", active);
     if (active) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
@@ -327,6 +336,12 @@ function initializeNavigation() {
   if (!header) return;
   const tabs = Array.from(header.querySelectorAll(".nav-link,.header-actions .icon-button"));
   const shopPages = ["all-products", "collections", "occasions", "customize"];
+  for (const button of document.querySelectorAll(".footer-shop-toggle")) {
+    const active = shopPages.includes(page);
+    button.classList.toggle("active", active);
+    if (active) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  }
   for (const tab of tabs) {
     const isActive = tab.hasAttribute("data-cart") ? ["cart", "checkout", "receipt"].includes(page)
       : tab.hasAttribute("data-search") ? page === "search"

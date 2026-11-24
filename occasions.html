@@ -13,13 +13,13 @@
     <!-- styles.css?v=20261118-audit-fixes controls colors, fonts, spacing, and phone layouts. -->
     <link rel="stylesheet" href="styles.css?v=20261124-outputs" />
     <link rel="stylesheet" href="design-spec.css?v=20261124-outputs" />
-    <link rel="stylesheet" href="layout.css?v=20261124-outputs" />
+    <link rel="stylesheet" href="layout.css?v=20261125-header-final" />
     <!-- defer means: finish reading this HTML before running app.js?v=20261118-audit-fixes. -->
     <!-- products.js loads the price list first; app.js?v=20261118-audit-fixes then makes buttons work. -->
     <script src="settings.js?v=20261122-instructions-final" defer></script>
     <script src="products.js?v=20261124-outputs" defer></script>
     <script src="store.js?v=20261124-outputs" defer></script>
-    <script src="app.js?v=20261124-outputs" defer></script>
+    <script src="app.js?v=20261125-header-final" defer></script>
     <script src="shop.js?v=20261124-outputs" defer></script>
     <script src="customize.js?v=20261122-instructions-final" defer></script>
     <script src="pages.js?v=20261124-outputs" defer></script>
@@ -1459,7 +1459,29 @@ This footer is copied into each storefront page. Edit each copy for a site-wide 
             <a href="index.html">Home</a>
             <a href="about.html">About Us</a>
             <a href="gallery.html">Gallery</a>
-            <a href="collections.html">Shop</a>
+            <div class="shop-menu footer-shop-menu">
+              <button class="footer-shop-toggle" type="button" aria-expanded="false" aria-controls="footer-shop-dropdown" data-shop-menu>
+                Shop <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="m3 6 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+              <div class="shop-dropdown" id="footer-shop-dropdown">
+                <a href="all-products.html">
+                  <img src="assets/home/petal-green.png" alt="" />
+                  All Products
+                </a>
+                <a href="collections.html">
+                  <img src="assets/home/petal-green.png" alt="" />
+                  Shop by Collection
+                </a>
+                <a href="occasions.html" aria-current="page">
+                  <img src="assets/home/petal-green.png" alt="" />
+                  Shop by Occasions
+                </a>
+                <a href="customize.html">
+                  <img src="assets/home/petal-green.png" alt="" />
+                  Customize Yours
+                </a>
+              </div>
+            </div>
             <a href="contact.html">Contact Us</a>
             <a href="feedback.html">Feedback</a>
           </nav>
