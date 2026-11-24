@@ -7,7 +7,7 @@
     <title>The Petal Haus | Feedback</title>
     <link rel="stylesheet" href="styles.css?v=20261122-instructions-final" />
     <link rel="stylesheet" href="design-spec.css?v=20261122-instructions-final" />
-    <link rel="stylesheet" href="layout.css?v=20261124-complete-banners" />
+    <link rel="stylesheet" href="layout.css?v=20261124-mobile-restore" />
     <script src="settings.js?v=20261122-instructions-final" defer></script>
     <script src="products.js?v=20261122-instructions-final" defer></script>
     <script src="store.js?v=20261122-password-recovery" defer></script>
@@ -135,7 +135,10 @@
       <main id="main">
         <section class="hero hero-reference " aria-label="FEEDBACK">
           <div class="hero-layout">
-          <img decoding="async" class="hero-image" fetchpriority="high" src="assets/banners/rose-pink-complete.webp" alt="A complete pink rose with its leaves and stem" width="876" height="1044" />
+          <picture class="hero-photo">
+            <source media="(min-width: 1025px)" srcset="assets/banners/rose-pink-complete.webp" width="876" height="1044" />
+            <img class="hero-image" src="assets/banners/feedback.png" alt="" fetchpriority="high" />
+          </picture>
           <div class="hero-copy">
             
             <h1 class="hero-title">FEEDBACK</h1>

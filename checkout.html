@@ -7,7 +7,7 @@
     <title>The Petal Haus | Checkout</title>
     <link rel="stylesheet" href="styles.css?v=20261122-instructions-final" />
     <link rel="stylesheet" href="design-spec.css?v=20261122-instructions-final" />
-    <link rel="stylesheet" href="layout.css?v=20261124-complete-banners" />
+    <link rel="stylesheet" href="layout.css?v=20261124-mobile-restore" />
     <script src="settings.js?v=20261122-instructions-final" defer></script>
     <script src="products.js?v=20261122-instructions-final" defer></script>
     <script src="store.js?v=20261122-password-recovery" defer></script>
@@ -135,7 +135,10 @@
       <main id="main">
         <section class="hero hero-reference " aria-label="CART">
           <div class="hero-layout">
-          <img decoding="async" class="hero-image" fetchpriority="high" src="assets/banners/lily-gold-complete.webp" alt="Complete golden lily flowers" width="1044" height="1034" />
+          <picture class="hero-photo">
+            <source media="(min-width: 1025px)" srcset="assets/banners/lily-gold-complete.webp" width="1044" height="1034" />
+            <img class="hero-image" src="assets/banners/cart.png" alt="" fetchpriority="high" />
+          </picture>
           <div class="hero-copy">
             
             <h1 class="hero-title">CART</h1>

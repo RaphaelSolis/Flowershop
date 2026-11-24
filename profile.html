@@ -7,7 +7,7 @@
     <title>The Petal Haus | My Profile</title>
     <link rel="stylesheet" href="styles.css?v=20261122-instructions-final" />
     <link rel="stylesheet" href="design-spec.css?v=20261122-instructions-final" />
-    <link rel="stylesheet" href="layout.css?v=20261124-complete-banners" />
+    <link rel="stylesheet" href="layout.css?v=20261124-mobile-restore" />
     <script src="settings.js?v=20261122-instructions-final" defer></script>
     <script src="products.js?v=20261122-instructions-final" defer></script>
     <script src="store.js?v=20261122-password-recovery" defer></script>
@@ -118,7 +118,10 @@
       <main id="main">
         <section class="hero hero-reference hero-welcome" aria-label="Welcome">
           <div class="hero-layout">
-          <img decoding="async" class="hero-image" fetchpriority="high" src="assets/banners/chrysanthemum-complete.webp" alt="A complete blue chrysanthemum flower" width="1006" height="816" />
+          <picture class="hero-photo">
+            <source media="(min-width: 1025px)" srcset="assets/banners/chrysanthemum-complete.webp" width="1006" height="816" />
+            <img class="hero-image" src="assets/banners/notif.png" alt="" fetchpriority="high" />
+          </picture>
           <div class="hero-copy">
             <p class="hero-greeting">Hey there, visitor!</p>
             

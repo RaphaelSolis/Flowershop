@@ -522,9 +522,12 @@ body[data-page='checkout'] .order-sidebar > #checkout-error:empty { display: non
   .header-layout .nav-link { font-size: inherit !important; }
 }
 
-/* Complete flower photos keep their proportions on every existing banner. */
-body[data-page] .hero:not(.hero-home) .hero-image { object-fit: contain; object-position: center; }
+/* The picture wrapper lets each image retain the existing banner layout. */
+.hero-photo { display: contents; }
+
+/* Complete flower photos and larger banner text apply only on desktop. */
 @media (min-width: 1025px) {
+  body[data-page] .hero:not(.hero-home) .hero-image { object-fit: contain; object-position: center; }
   body[data-page] .hero:not(.hero-home) { height: auto; min-height: clamp(560px, 40vw, 760px); padding: 0; }
   body[data-page] .hero:not(.hero-home) .hero-layout { display: grid; grid-template-columns: 56% 44%; align-items: stretch; width: 100%; max-width: none; height: auto; min-height: inherit; padding: 0; margin: 0; }
   body[data-page] .hero:not(.hero-home) .hero-copy { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; justify-content: center; width: auto; height: auto; min-height: inherit; padding: clamp(32px, 3.5vw, 64px) var(--desktop-gutter); text-align: left; }

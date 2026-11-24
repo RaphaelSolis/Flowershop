@@ -13,7 +13,7 @@
     <!-- styles.css?v=20261118-audit-fixes controls colors, fonts, spacing, and phone layouts. -->
     <link rel="stylesheet" href="styles.css?v=20261122-instructions-final" />
     <link rel="stylesheet" href="design-spec.css?v=20261122-instructions-final" />
-    <link rel="stylesheet" href="layout.css?v=20261124-complete-banners" />
+    <link rel="stylesheet" href="layout.css?v=20261124-mobile-restore" />
     <!-- defer means: finish reading this HTML before running app.js?v=20261118-audit-fixes. -->
     <!-- products.js loads the price list first; app.js?v=20261118-audit-fixes then makes buttons work. -->
     <script src="settings.js?v=20261122-instructions-final" defer></script>
@@ -128,10 +128,10 @@
       <main id="main">
         <section aria-labelledby="hero-title" class="hero hero-customize">
           <div class="hero-layout">
-          <img decoding="async"
-            class="hero-image"
-            fetchpriority="high"
-          src="assets/banners/peony-complete.webp" alt="A complete pink peony flower" width="884" height="798" />
+          <picture class="hero-photo">
+            <source media="(min-width: 1025px)" srcset="assets/banners/peony-complete.webp" width="884" height="798" />
+            <img alt="Vibrant pink peonies" class="hero-image" fetchpriority="high" src="assets/banners/custom.png" />
+          </picture>
           <div class="hero-copy">
             <h1 class="hero-title" id="hero-title">
               CUSTOMIZE
