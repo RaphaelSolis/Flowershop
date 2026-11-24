@@ -46,7 +46,7 @@ function renderCartPage() {
   container.closest(".cart-page-layout").classList.toggle("cart-empty", !items.length);
   container.innerHTML = items.map(function (line) {
     return '<article class="cart-line-card" data-line-id="' + escapeHTML(line.lineId) + '">' +
-      '<div class="cart-product"><div class="cart-product-photo"><img src="' + escapeHTML(line.image) + '" alt="' + escapeHTML(line.name) + '"></div>' +
+      '<div class="cart-product"><div class="cart-product-photo"><img src="' + escapeHTML(productPhotoURL(line.image)) + '" alt="' + escapeHTML(line.name) + '"></div>' +
       '<strong class="cart-product-name">' + escapeHTML(line.name) + '</strong>' +
       '<p class="cart-product-details">' + escapeHTML(line.details || "") + '</p>' +
       (!PetalStore.lineAvailable(line) ? '<p class="form-error">Currently unavailable. Remove this item before checkout.</p>' : '') +
@@ -93,7 +93,7 @@ function renderCheckoutPage(prefill = true) {
     items
       .map(function (line) {
         return (
-          '<article class="checkout-summary-item"><img src="' + escapeHTML(line.image) + '" alt=""><div><h3>' +
+          '<article class="checkout-summary-item"><img src="' + escapeHTML(productPhotoURL(line.image)) + '" alt=""><div><h3>' +
           escapeHTML(line.name) +
           '</h3><p>' + line.quantity + ' × ' + escapeHTML(line.details || line.name) +
           '</p><output>₱' + money(line.unitPrice * line.quantity) + '</output></div></article>'
@@ -267,12 +267,12 @@ function renderReceiptPage() {
   const container = document.getElementById("receipt-content");
   if (!order) {
     container.innerHTML =
-      '<p>No receipt was found for your account. <a href="cart.html">Return to your cart.</a></p>';
+      '<p>No receipt was found for your account. <a href="cart.html">Return to your cart.</a></p><div class="receipt-actions"><a class="pill green" href="index.html" data-receipt-home>Back to home</a></div>';
     return;
   }
   container.innerHTML =
     receiptMarkup(order) +
-    '<div class="receipt-actions"><button class="pill" type="button" data-print-receipt>Print / save as PDF</button><button class="pill green" type="button" data-download-receipt>Download receipt</button><a class="pill" href="feedback.html">WRITE A REVIEW</a></div>';
+    '<div class="receipt-actions"><button class="pill" type="button" data-print-receipt>Print / save as PDF</button><button class="pill green" type="button" data-download-receipt>Download receipt</button><a class="pill" href="feedback.html">Write a review</a><a class="pill green" href="index.html" data-receipt-home>Back to home</a></div>';
   const url = new URL(location.href);
   if (url.searchParams.get("placed") === "1" && url.searchParams.get("reference") === order.reference) {
     url.searchParams.delete("placed");
@@ -388,9 +388,58 @@ function submitInquiry(event) {
     showSuccess("Successfully submitted your inquiry!", "#contact-details", "Contact details");
   } catch (error) { status.textContent = error.message; }
 }
+let editingReviewReference = "";
+function resetReviewForm() {
+  const form = document.getElementById("review-form");
+  editingReviewReference = "";
+  form.reset();
+  const user = PetalStore.session();
+  if (user) {
+    form.elements.namedItem("reviewName").value = user.name;
+    form.elements.namedItem("reviewEmail").value = user.email;
+  }
+  updateReviewEligibility();
+  updateReviewPresentation();
+}
+function beginReviewEdit(reference) {
+  const review = PetalStore.editableReview(reference);
+  const status = document.getElementById("review-status");
+  if (!review) { status.textContent = "Log in to edit your own review for an active order."; return; }
+  const form = document.getElementById("review-form");
+  editingReviewReference = reference;
+  form.elements.namedItem("reviewName").value = (review.anonymous ?? review.name === "Anonymous Person") ? PetalStore.session().name : review.name;
+  form.elements.namedItem("reviewEmail").value = PetalStore.session().email;
+  form.elements.namedItem("message").value = review.message;
+  form.elements.namedItem("anonymous").checked = review.anonymous ?? review.name === "Anonymous Person";
+  for (const input of form.querySelectorAll('[name="rating"]')) input.checked = Number(input.value) === review.rating;
+  status.textContent = "";
+  updateReviewEligibility();
+  updateReviewPresentation();
+  form.scrollIntoView({ behavior: "smooth", block: "start" });
+  form.elements.namedItem("message").focus({ preventScroll: true });
+}
 function updateReviewEligibility() {
-  const eligible = PetalStore.eligibleOrders();
   const orderSelect = document.getElementById("review-order");
+  const submit = document.getElementById("review-submit");
+  const cancel = document.getElementById("review-cancel-edit");
+  if (editingReviewReference) {
+    const review = PetalStore.editableReview(editingReviewReference);
+    orderSelect.innerHTML = '<option value="' + escapeHTML(editingReviewReference) + '">' + escapeHTML(editingReviewReference) + '</option>';
+    orderSelect.value = editingReviewReference;
+    orderSelect.closest("label").hidden = false;
+    orderSelect.disabled = true;
+    orderSelect.required = false;
+    submit.textContent = "Save changes";
+    cancel.hidden = false;
+    document.getElementById("review-account-actions").hidden = PetalStore.hasProfile();
+    document.getElementById("review-eligibility").textContent = review
+      ? "Editing your review for order " + review.reference + "."
+      : "This review can no longer be edited. Log in to its account or cancel editing.";
+    return review ? [PetalStore.getOrder(review.reference)] : [];
+  }
+  submit.textContent = "Submit review";
+  cancel.hidden = true;
+  const eligible = PetalStore.eligibleOrders();
   const selectedReference = orderSelect.value;
   orderSelect.innerHTML =
     '<option value="">Choose an order</option>' +
@@ -414,7 +463,7 @@ function updateReviewEligibility() {
     : eligible.length
       ? (eligible.length === 1 ? "Your order is selected." : "Choose an order.") + " One review per order."
       : PetalStore.orders().some(function (order) { return order.status !== "Cancelled"; })
-        ? "You have already reviewed your orders. Each order can be reviewed once."
+        ? "You have already reviewed your orders. You can edit your reviews below."
         : "Place an order before submitting feedback. You can choose a rating and write your review now.";
   return eligible;
 }
@@ -439,22 +488,17 @@ function submitBuyerReview(event) {
     return;
   }
   try {
-    PetalStore.submitReview(
-      formValue(form, "reference"), rating, formValue(form, "message"),
+    const editing = !!editingReviewReference;
+    const saveReview = editing ? PetalStore.updateReview : PetalStore.submitReview;
+    saveReview(
+      editingReviewReference || formValue(form, "reference"), rating, formValue(form, "message"),
       { name: formValue(form, "reviewName"), anonymous: form.elements.namedItem("anonymous").checked },
     );
-    status.textContent = "Your review is now displayed below.";
-    form.reset();
-    const user = PetalStore.session();
-    if (user) {
-      form.elements.namedItem("reviewName").value = user.name;
-      form.elements.namedItem("reviewEmail").value = user.email;
-    }
-    updateReviewEligibility();
-    updateReviewPresentation();
+    status.textContent = editing ? "Your review changes are now displayed below." : "Your review is now displayed below.";
+    resetReviewForm();
     renderPublicReviews();
     refreshCartUI();
-    showSuccess("Successfully submitted your review!", "#published-reviews", "VIEW REVIEWS");
+    showSuccess(editing ? "Successfully updated your review!" : "Successfully submitted your review!", "#published-reviews", "VIEW REVIEWS");
   } catch (error) {
     status.textContent = error.message;
   }
@@ -495,7 +539,12 @@ function initializePages() {
 document.addEventListener("click", function (event) {
   const button = event.target.closest("button,a");
   if (!button) return;
-  if (button.hasAttribute("data-cart-adjust")) {
+  if (button.hasAttribute("data-edit-review")) {
+    beginReviewEdit(button.dataset.editReview);
+  } else if (button.hasAttribute("data-cancel-review-edit")) {
+    resetReviewForm();
+    document.getElementById("review-status").textContent = "Review editing cancelled.";
+  } else if (button.hasAttribute("data-cart-adjust")) {
     const input = button.closest("[data-line-id]").querySelector("[data-line-quantity]");
     input.value = boundedQuantity(Number(input.value) + Number(button.dataset.cartAdjust), 1, 99);
     input.dispatchEvent(new Event("input", { bubbles: true }));
@@ -840,7 +889,7 @@ window.addEventListener("storage", function (event) {
   if (page === "cart") renderCartPage();
   refreshAccountUI();
   refreshCartUI();
-  if (event.key === null || ["petal-reviews", "petal-orders"].includes(event.key)) {
+  if (event.key === null || ["petal-reviews", "petal-orders", "petal-session", "petal-profiles"].includes(event.key)) {
     renderPublicReviews();
     if (page === "feedback") updateReviewEligibility();
   }

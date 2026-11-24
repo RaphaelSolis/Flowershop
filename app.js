@@ -20,6 +20,11 @@ function escapeHTML(value) {
     return replacements[character];
   });
 }
+function productPhotoURL(source) {
+  const path = String(source || "");
+  return path.startsWith("assets/product-photos/")
+    ? path.split("?")[0] + "?v=20261124-outputs" : path;
+}
 function boundedQuantity(value, minimum, maximum) {
   const number = Number(value);
   return Number.isFinite(number)
@@ -123,7 +128,12 @@ function renderPublicReviews() {
           escapeHTML(review.reference) +
           '</small><time datetime="' + escapeHTML(review.date) + '">Submitted ' +
           escapeHTML(new Date(review.date).toLocaleDateString("en-PH", { timeZone: "Asia/Manila", year: "numeric", month: "long", day: "numeric" })) +
-          "</time></article>"
+          "</time>" +
+          (review.updatedAt ? '<time datetime="' + escapeHTML(review.updatedAt) + '">Updated ' +
+            escapeHTML(new Date(review.updatedAt).toLocaleDateString("en-PH", { timeZone: "Asia/Manila", year: "numeric", month: "long", day: "numeric" })) + '</time>' : '') +
+          (PetalStore.hasProfile() && review.owner === PetalStore.owner()
+            ? '<button type="button" class="text-button review-edit-button" data-edit-review="' + escapeHTML(review.reference) + '">Edit review</button>' : '') +
+          "</article>"
         );
       })
       .join("") + publicReviewTemplates.get(container);
@@ -152,7 +162,8 @@ function initializeAnimations() {
 function handleCommonClick(event) {
   const button = event.target.closest("button,a");
   if (!button) return;
-  if (button.hasAttribute("data-confirm-logout")) {
+  if (button.hasAttribute("data-confirm-logout") || button.hasAttribute("data-logout")) {
+    event.preventDefault();
     PetalStore.logout();
     location.href = "Log-Sign/LoginPage.html";
   } else if (button.hasAttribute("data-shop-menu")) {
@@ -168,20 +179,6 @@ function handleCommonClick(event) {
   } else if (button.hasAttribute("data-cart")) {
     event.preventDefault();
     location.href = "cart.html";
-  } else if (button.hasAttribute("data-logout")) {
-    event.preventDefault();
-    const header = button.closest(".site-header");
-    if (!header) return;
-    let popover = header.querySelector(".logout-popover");
-    if (popover) { popover.remove(); button.setAttribute("aria-expanded", "false"); }
-    else {
-      popover = document.createElement("div");
-      popover.className = "logout-popover";
-      popover.innerHTML = '<button type="button" data-confirm-logout>Logout</button>';
-      header.appendChild(popover);
-      button.setAttribute("aria-expanded", "true");
-      popover.querySelector("button").focus();
-    }
   } else if (button.hasAttribute("data-success-link") && button.getAttribute("href")?.startsWith("#")) {
     event.preventDefault();
     closeDialog(button.closest("dialog"));
@@ -196,11 +193,10 @@ function handleCommonClick(event) {
 document.addEventListener("click", handleCommonClick);
 document.addEventListener("keydown", function (event) {
   if (event.key === "Escape") {
-    document.querySelector(".logout-popover")?.remove();
     document.querySelector(".shop-menu")?.classList.remove("open");
     document.getElementById("main-nav")?.classList.remove("open");
     for (const button of document.querySelectorAll(
-      "[data-shop-menu],[data-mobile-menu],[data-logout]",
+      "[data-shop-menu],[data-mobile-menu]",
     ))
       button.setAttribute("aria-expanded", "false");
   }

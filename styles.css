@@ -3076,7 +3076,7 @@ They replace selected desktop sizes and stack content to fit a phone.
 }
 .catalog-photo-window.photo-only img {
   height: 100% !important;
-  object-fit: cover;
+  object-fit: contain;
 }
 /* Desktop service cards and gallery/button typography from the reference notes. */
 .hero-home .pill {

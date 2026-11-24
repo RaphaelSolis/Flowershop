@@ -293,7 +293,8 @@ function renderAllProducts() {
   const category = document.getElementById("all-products-category").value;
   const matches = allProducts.filter(product =>
     (!category || product.section === category) &&
-    (product.name + " " + catalogCategoryName(product.section)).toLowerCase().includes(query));
+    (product.name + " " + catalogCategoryName(product.section)).toLowerCase().includes(query))
+    .sort((a, b) => Number(a.section === "gifts") - Number(b.section === "gifts"));
   grid.innerHTML = matches.map(product => {
     const available = PetalStore.available(product.id);
     const disabled = available ? "" : " disabled";

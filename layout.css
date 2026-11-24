@@ -278,8 +278,6 @@ body[data-page="contact"] .hero-contact .hero-layout { display: grid; grid-templ
 .cart-count:empty { display: none; }
 .site-header .icon-button.active { color: var(--pink); }
 .site-header .icon-button.active img { filter: brightness(0) saturate(100%) invert(58%) sepia(53%) saturate(1200%) hue-rotate(297deg); }
-.site-header .icon-button::after { content: attr(aria-label); position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%); z-index: 5; padding: 7px 12px; background: var(--deep-pink); border-radius: 8px; color: #fff; font: 14px/1.3 'EB Garamond', serif; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .2s; }
-.site-header .icon-button:is(:hover, :focus-visible)::after { opacity: 1; }
 @media (hover: hover) {
   :is(button:enabled, .pill, .button, .category-link, .product-selection-button, .testimonial-card):hover { box-shadow: 0 0 5px 2px #ef6e9977, 0 0 20px 4px #ef6e9980; filter: brightness(1.04); }
   :is(.text-link, .footer-menu a, .footer-left a, .nav-link, .contact-cards a, .notification-card a):hover { text-shadow: 0 0 8px var(--pink); }
@@ -293,7 +291,7 @@ body[data-page="contact"] .hero-contact .hero-layout { display: grid; grid-templ
 .product-grid::-webkit-scrollbar { display: none; }
 .product-card, #anniversary .product-card { width: 100%; justify-self: center; text-align: center; }
 .product-selection-button { flex: 1; }
-.product-selection-button .photo-card { width: 100%; height: 100%; border-radius: 44px 44px 20px 20px; overflow: hidden; }
+.product-selection-button .photo-card { width: 100%; height: 100%; border-radius: 44px 44px 20px 20px; overflow: hidden; background: transparent; }
 .catalog-photo-window { aspect-ratio: 1; border-radius: 44px 44px 0 0; background: transparent; }
 .catalog-photo-window img { display: block; height: 100% !important; width: 100%; object-fit: contain; }
 .product-selection-button .photo-caption { width: 100%; height: auto; min-height: 86px; flex: 1; border: 0; border-radius: 0 0 20px 20px; padding: 12px 8px; display: flex; flex-direction: column; justify-content: center; gap: 6px; background: var(--yellow); }
@@ -442,14 +440,12 @@ body[data-page='checkout'] #checkout-form .shipping-heading { position: relative
   .product-option-card { width: min(200px, 100%); justify-self: center; }
   .product-option-card .product-option-photo { aspect-ratio: 1.1; }
 }
-/* Keep the last action tooltip within the header edge. */
-.site-header .icon-button:last-child::after { left: auto; right: 0; transform: none; }
 /* Compact labels keep checkout actions aligned with the surrounding form. */
 body[data-page='checkout'] #checkout-form :is(h2, .section-bar),
 body[data-page='checkout'] .delivery-section .section-bar { font-size: 28px; }
 body[data-page='checkout'] .payment-section .radio-label { font-size: 20px; }
 body[data-page='checkout'] .checkout-order-card > .text-link { font-size: 18px; }
-body[data-page='checkout'] .order-sidebar > :is(.payment-section, .delivery-section) { align-self: start; }
+body[data-page='checkout'] .order-sidebar > :is(.payment-section, .delivery-section) { align-self: stretch; margin: 0; }
 body[data-page='checkout'] .order-sidebar > #checkout-error:empty { display: none; }
 @media (hover: hover) {
   a[href]:hover, .faq summary:hover, .rating-star:hover { text-shadow: 0 0 8px #ef6e9980; }
@@ -538,4 +534,36 @@ body[data-page='checkout'] .order-sidebar > #checkout-error:empty { display: non
   body[data-page] .hero:not(.hero-home) .hero-tagline { font-size: clamp(20px, 1.7vw, 28px); line-height: 1.4; max-width: 620px; margin-top: 24px; }
   body[data-page] .hero:not(.hero-home) .pill { font-size: clamp(22px, 1.8vw, 30px) !important; align-self: flex-start; flex: none; min-width: clamp(220px, 18vw, 300px); min-height: clamp(56px, 4.5vw, 72px); margin-top: clamp(24px, 2.2vw, 36px); padding: 14px 34px; gap: 14px; }
   body[data-page] .hero:not(.hero-home) .pill img { width: 30px; height: 30px; }
+}
+
+/* Align the decorative flowers with the heading text, including wrapped headings. */
+.section-heading { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.section-heading .floret { flex: none; margin-left: 0; }
+.floral-heading { flex-wrap: nowrap; }
+
+/* Category artwork keeps its original proportions and cart photos show the entire item. */
+.category-grid:not(.occasion-grid) .category-link img { height: auto; aspect-ratio: 403 / 480; object-fit: contain; }
+.cart-product-photo { height: auto; aspect-ratio: 1; background: transparent; }
+.cart-product-photo img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+
+/* Both carousel directions share the same button and arrow geometry. */
+.product-carousel :is(.carousel-next, .carousel-previous) { display: grid; place-items: center; top: 42%; transform: translateY(-50%); width: 40px; height: 40px; min-height: 40px; padding: 0; border: 0; border-radius: 50%; background: var(--green); color: #fff; }
+.product-carousel .carousel-next { right: 0; left: auto; }
+.product-carousel .carousel-previous { left: 0; right: auto; }
+.product-carousel :is(.carousel-next, .carousel-previous) svg { width: 22px; height: 22px; }
+.product-carousel .carousel-previous svg { transform: scaleX(-1); }
+.products-expanded .product-carousel :is(.carousel-next, .carousel-previous) { display: none; }
+
+/* Menu hover feedback has no rectangular outline, background, or tooltip box. */
+.site-header :is(.nav-link, .icon-button, .mobile-menu) { text-transform: none; letter-spacing: normal; background: transparent; border: 0; box-shadow: none; }
+.site-header :is(.nav-link, .icon-button, .mobile-menu):focus:not(:focus-visible) { outline: none; }
+@media (hover: hover) {
+  .site-header :is(.nav-link, .icon-button, .mobile-menu):hover { box-shadow: none; text-shadow: 0 0 8px var(--pink); filter: drop-shadow(0 0 6px #ef6e9990); }
+  .site-header .shop-dropdown a:hover { text-shadow: 0 0 8px var(--deep-pink); }
+}
+
+.review-form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.review-edit-button { margin-top: 12px; justify-self: start; text-transform: none; letter-spacing: normal; text-decoration: underline; }
+@media (max-width: 767px) {
+  .product-carousel :is(.carousel-next, .carousel-previous) { width: 36px; height: 36px; min-height: 36px; }
 }

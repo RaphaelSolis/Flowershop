@@ -530,6 +530,34 @@ const PetalStore = (function () {
       );
     });
   }
+  function validateReview(rating, message) {
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5 ||
+        typeof message !== "string" || !message.trim() || message.length > 1000)
+      throw new Error("Choose a rating and write your review.");
+  }
+  function editableReview(reference) {
+    if (!hasProfile()) return null;
+    return reviews().find(review => review.reference === reference && review.owner === owner()) || null;
+  }
+  function updateReview(reference, rating, message, display = {}) {
+    const review = editableReview(reference);
+    if (!review) throw new Error("Log in to edit your own review for an active order.");
+    validateReview(rating, message);
+    const list = read("petal-reviews", []);
+    const index = list.findIndex(item => item.reference === reference && item.owner === owner());
+    const anonymous = display.anonymous === undefined
+      ? (review.anonymous ?? review.name === "Anonymous Person") : !!display.anonymous;
+    list[index] = {
+      ...list[index],
+      name: anonymous ? "Anonymous Person" : String(display.name || review.name).trim().slice(0, 100),
+      anonymous,
+      rating,
+      message: message.trim(),
+      updatedAt: new Date().toISOString(),
+    };
+    write("petal-reviews", list);
+    return list[index];
+  }
   function submitReview(reference, rating, message, display = {}) {
     const order = eligibleOrders().find(function (item) {
       return item.reference === reference;
@@ -538,20 +566,14 @@ const PetalStore = (function () {
       throw new Error(
         "Place an order before submitting feedback. Each order can be reviewed once.",
       );
-    if (
-      !Number.isInteger(rating) ||
-      rating < 1 ||
-      rating > 5 ||
-      !message.trim() ||
-      message.length > 1000
-    )
-      throw new Error("Choose a rating and write your review.");
+    validateReview(rating, message);
     const list = read("petal-reviews", []);
     list.unshift({
       id: makeId("REVIEW"),
       owner: owner(),
       reference: reference,
       name: display.anonymous ? "Anonymous Person" : String(display.name || order.customer.name).trim().slice(0, 100),
+      anonymous: !!display.anonymous,
       rating: rating,
       message: message.trim(),
       date: new Date().toISOString(),
@@ -614,6 +636,8 @@ const PetalStore = (function () {
     reviews,
     eligibleOrders,
     submitReview,
+    editableReview,
+    updateReview,
     inquiries,
     saveInquiry,
   };

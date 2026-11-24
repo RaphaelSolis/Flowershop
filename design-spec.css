@@ -613,8 +613,6 @@ body[data-page="feedback"] .hero-reference .hero-image { object-position: left t
 .profile-logout img { width: 125rem; }
 .profile-logout h3 { font-size: 36rem; }
 .profile-nav button.active { color: var(--yellow); }
-.logout-popover { position: absolute; top: calc(100% - 18rem); right: 140rem; z-index: 30; background: #e9abbf; padding: 14rem 28rem; border: 1rem solid var(--deep-pink); border-radius: 20rem; color: var(--yellow); font-size: 20rem; }
-.logout-popover button { background: none; border: 0; padding: 5rem; }
 @media (max-width: 700px) {
   .about-page p { font-size: 21px; }
   .profile-panel .standard-form { gap: 25px; margin-top: 25px; }
@@ -622,7 +620,6 @@ body[data-page="feedback"] .hero-reference .hero-image { object-position: left t
   .profile-logout { min-height: 340px; gap: 20px; }
   .profile-logout img { width: 70px; }
   .profile-logout h3 { font-size: 28px; }
-  .logout-popover { right: 20px; top: 75px; padding: 14px 20px; font-size: 18px; }
 }
 @media (max-width: 600px) {
   .story > img { height: 260rem; }

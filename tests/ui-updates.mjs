@@ -46,7 +46,9 @@ async function loadPage(name, seed = '', search = '', queueFrames = false) {
  const p=await loadPage('all-products');
  const ids=()=>Array.from(p.document.querySelectorAll('#all-products-grid [data-product]'),card=>card.dataset.product);
  const catalog=JSON.parse(p.run('JSON.stringify(allProducts)'));
- assert.deepEqual(ids(),catalog.map(product=>product.id));
+ const ordered=catalog.filter(product=>product.section!=='gifts').concat(catalog.filter(product=>product.section==='gifts'));
+ assert.deepEqual(ids(),ordered.map(product=>product.id));
+ assert.ok(ordered.slice(-catalog.filter(product=>product.section==='gifts').length).every(product=>product.section==='gifts'));
  assert.equal(new Set(ids()).size,catalog.length);
  assert.equal(p.document.getElementById('all-products-count').textContent,catalog.length+' products');
  assert.equal(p.document.querySelector('#shop-dropdown a').getAttribute('href'),'all-products.html');
@@ -268,6 +270,71 @@ for(const seed of ['',registered,placed,placed+'PetalStore.setOrderStatus(testOr
  await p.close();
 }
 console.log('PASS Feedback stars and green typed text, Anonymous placement, placed-order requirement, cancelled/visitor rejection, and one review per order.');
+
+{
+ const seed=placed+`PetalStore.submitReview(testOrder.reference,4,'Original anonymous review',{anonymous:true});
+   const legacy=PetalStore.read('petal-reviews',[]);delete legacy[0].anonymous;PetalStore.write('petal-reviews',legacy);`;
+ const p=await loadPage('feedback',seed);
+ const original=JSON.parse(p.run('JSON.stringify(PetalStore.reviews()[0])'));
+ const form=p.document.getElementById('review-form');
+ let scrolls=0;form.scrollIntoView=()=>scrolls++;
+ p.click('[data-edit-review]');assert.equal(scrolls,1);
+ assert.equal(form.elements.namedItem('message').value,original.message);
+ assert.equal(form.elements.namedItem('reviewName').value,customer.name);
+ assert.equal(form.elements.namedItem('reviewEmail').value,customer.email);
+ assert.equal(form.elements.namedItem('anonymous').checked,true);
+ assert.equal(form.querySelector('[name=rating]:checked').value,'4');
+ assert.equal(form.elements.namedItem('reference').value,original.reference);
+ assert.equal(form.elements.namedItem('reference').disabled,true);
+ assert.equal(p.document.getElementById('review-submit').textContent,'Save changes');
+ p.change(form.elements.namedItem('message'),'Unsaved draft');
+ p.click('[data-cancel-review-edit]');
+ assert.deepEqual(JSON.parse(p.run('JSON.stringify(PetalStore.reviews()[0])')),original);
+ assert.equal(form.elements.namedItem('message').value,'');
+ assert.equal(p.document.getElementById('review-cancel-edit').hidden,true);
+ p.click('[data-edit-review]');p.click('[name=anonymous]');
+ p.change(form.elements.namedItem('reviewName'),'Garden Reviewer');
+ p.change(form.elements.namedItem('message'),'Even better after the update! <b>Fresh flowers</b>');
+ p.click('[name=rating][value="5"]');
+ p.click('#review-submit');
+ const updated=JSON.parse(p.run('JSON.stringify(PetalStore.reviews()[0])'));
+ assert.equal(updated.id,original.id);assert.equal(updated.date,original.date);
+ assert.equal(updated.reference,original.reference);assert.equal(updated.owner,original.owner);
+ assert.equal(updated.name,'Garden Reviewer');assert.equal(updated.anonymous,false);
+ assert.equal(updated.rating,5);assert.ok(updated.updatedAt);
+ assert.equal(p.run('PetalStore.reviews().length'),1);assert.equal(p.run('PetalStore.eligibleOrders().length'),0);
+ const card=p.document.querySelector('[data-review-id]');
+ assert.equal(card.querySelector('p').textContent,updated.message);assert.equal(card.querySelector('b'),null);
+ assert.equal(card.querySelectorAll('time').length,2);
+ assert.equal(card.querySelector('[data-edit-review]').dataset.editReview,updated.reference);
+ assert.match(p.document.querySelector('[data-success-message]').textContent,/updated your review/i);
+ assert.equal(p.document.getElementById('review-submit').textContent,'Submit review');
+ assert.equal(p.document.getElementById('review-cancel-edit').hidden,true);
+ for(const [rating,message] of [[0,'x'],[6,'x'],[1.5,'x'],['5','x'],[5,''],[5,'   '],[5,'x'.repeat(1001)]]){
+  assert.throws(()=>p.run(`PetalStore.updateReview(${JSON.stringify(original.reference)},${JSON.stringify(rating)},${JSON.stringify(message)})`),/Choose a rating/);
+ }
+ assert.throws(()=>p.run(`(()=>{const write=localStorage.setItem;localStorage.setItem=()=>{throw new Error('full')};try{PetalStore.updateReview(${JSON.stringify(original.reference)},3,'Cannot save')}finally{localStorage.setItem=write}})()`),/Could not save/);
+ assert.deepEqual(JSON.parse(p.run('JSON.stringify(PetalStore.reviews()[0])')),updated);
+ const saved=JSON.stringify(Object.fromEntries(p.records));
+ p.run('PetalStore.signIn("Another Shopper","another@example.com");renderPublicReviews();updateReviewEligibility();');
+ assert.equal(p.document.querySelector('[data-edit-review]'),null);
+ assert.throws(()=>p.run(`PetalStore.updateReview(${JSON.stringify(original.reference)},1,'Foreign edit')`),/own review/);
+ p.run(`beginReviewEdit(${JSON.stringify(original.reference)})`);
+ assert.match(p.document.getElementById('review-status').textContent,/own review/);
+ p.run('PetalStore.logout();renderPublicReviews();updateReviewEligibility();');
+ assert.equal(p.document.querySelector('[data-edit-review]'),null);
+ assert.throws(()=>p.run(`PetalStore.updateReview(${JSON.stringify(original.reference)},1,'Guest edit')`),/own review/);
+ await p.close();
+ const q=await loadPage('feedback',`for(const [key,value] of Object.entries(${saved}))localStorage.setItem(key,value);`);
+ assert.deepEqual(JSON.parse(q.run('JSON.stringify(PetalStore.reviews()[0])')),updated);
+ assert.ok(q.document.querySelector('[data-edit-review]'));
+ q.run(`PetalStore.setOrderStatus(${JSON.stringify(original.reference)},"Cancelled");renderPublicReviews();updateReviewEligibility();`);
+ assert.equal(q.document.querySelector('[data-edit-review]'),null);
+ assert.throws(()=>q.run(`PetalStore.updateReview(${JSON.stringify(original.reference)},1,'Cancelled order edit')`),/active order/);
+ await q.close();
+}
+console.log('PASS Own reviews can be loaded, cancelled, edited, and reloaded without duplicate records; legacy anonymity, original dates, escaping, invalid fields, failed saves, and ownership checks are preserved.');
+
 
 {
  const p=await loadPage('checkout',registered+`PetalStore.addLine({productId:'flower-1',quantity:1,options:{}});`);
