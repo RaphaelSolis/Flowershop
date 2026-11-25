@@ -17,7 +17,6 @@ Some supplied product pictures already have prices printed inside the image.
 Changing this file cannot change words printed inside an image.
 
 Keep the id the same unless you also change the matching data-add in the HTML.
-Read group-guide.html for a step-by-step explanation.
 */
 
 // SHOP PRODUCTS — collections first, then occasions

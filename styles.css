@@ -5,7 +5,6 @@ HTML says what is on the page. This CSS says how it looks.
 A selector such as .site-header styles every element with class="site-header".
 Inside its braces, each line is one appearance rule.
 
-Read group-guide.html for examples of changing colors, fonts, and sizes.
 Search for the numbered sections below to find a part of the website.
 The latest page-specific design values are in design-spec.css, loaded after this file.
 */
