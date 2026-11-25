@@ -121,7 +121,7 @@ function initializePasswordRecovery(form) {
       changeEmail.hidden = false;
       email.readOnly = true;
       submit.textContent = "RESET PASSWORD";
-      status.textContent = "Answer both security questions and choose your new password.";
+      status.textContent = "";
       form.elements.namedItem("answer1").focus();
       return;
     }
