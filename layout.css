@@ -616,3 +616,9 @@ body[data-page='checkout'] .order-sidebar > #checkout-error:empty { display: non
 @media (min-width: 701px) and (max-width: 767px) {
   body[data-page="contact"] .hero-contact .hero-layout { min-height: 360px; }
 }
+
+/* Keep the cart delete cross at its original size instead of shared button text size. */
+body[data-page="cart"] .cart-delete { font-size: 70rem !important; }
+@media (max-width: 700px) {
+  body[data-page="cart"] .cart-delete { font-size: 40px !important; }
+}
