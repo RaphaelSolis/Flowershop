@@ -479,7 +479,7 @@ const PetalStore = (function () {
         method: payment.method,
         provider: cashOnDelivery ? "" : payment.provider || "",
         mode: cashOnDelivery ? "offline" : "demo",
-        status: cashOnDelivery ? "Due on delivery" : "Demo — no charge",
+        status: cashOnDelivery ? "Due on delivery" : "Unpaid",
         ...(payment.method === "credit-card" ? { brand: payment.brand, last4: payment.last4 } : {}),
       },
       items: JSON.parse(JSON.stringify(items)),
