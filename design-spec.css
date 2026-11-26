@@ -31,7 +31,7 @@
 .category-link:nth-child(7n + 2), .category-link:nth-child(7n + 6), .category-link:nth-child(7n) { --tile-color: #e7808f; }
 .category-link:nth-child(7n + 3) { --tile-color: #f2a47a; }
 .category-link:nth-child(7n + 4) { --tile-color: #fcf5b7; }
-.category-grid:not(.occasion-grid) .category-link img { border-radius: 56.4rem; background: linear-gradient(145deg, var(--tile-color), white); }
+.category-grid:not(.occasion-grid) .category-link img { border-radius: 56.4rem; background: linear-gradient(145deg, var(--tile-color), var(--cream)); }
 .selector-actions .pill { border-radius: 64.4rem; font: 700 22.7rem/1 "EB Garamond", serif; color: var(--footer-cream); }
 .home-selectors .selector-actions .pill { font: 400 21.4rem/1 Garamond, serif; color: var(--cream); }
 .gallery .pill { border-radius: 64.4rem; font: 400 21.4rem/1 Garamond, serif; color: var(--footer-cream); }
@@ -43,7 +43,7 @@
 .product-card:nth-child(6n + 2) { --product-color: #e7808f; }
 .product-card:nth-child(6n + 3), .product-card:nth-child(6n + 5) { --product-color: #f2a47a; }
 .product-card:nth-child(6n + 4) { --product-color: #fcf5b7; }
-.catalog-photo-window { border-bottom-left-radius: 0; border-bottom-right-radius: 0; background: linear-gradient(145deg, var(--product-color), white); }
+.catalog-photo-window { border-bottom-left-radius: 0; border-bottom-right-radius: 0; background: linear-gradient(145deg, var(--product-color), var(--cream)); }
 .product-selection-button .photo-caption { border: 1rem solid var(--footer-cream); border-radius: 22.4rem; background: var(--footer-cream); color: var(--green); }
 .photo-caption h3 { font-weight: 700; }
 .photo-caption p { font-weight: 400; }
@@ -54,7 +54,7 @@
 .builder-step { background: #db99aeeb; border-color: var(--deep-pink); border-radius: 20.4rem; }
 .builder-step .step-heading { color: var(--yellow); font: italic 700 30.8rem/1.2 "EB Garamond", serif; }
 .choice-button { border-radius: 17.4rem; overflow: hidden; }
-.choice-photo { display: block; aspect-ratio: 1; overflow: hidden; border-radius: 56.4rem 56.4rem 0 0; background: linear-gradient(145deg, #f2a47a, white); }
+.choice-photo { display: block; aspect-ratio: 1; overflow: hidden; border-radius: 56.4rem 56.4rem 0 0; background: linear-gradient(145deg, #f2a47a, var(--cream)); }
 .choice-photo img { width: 100%; height: auto; max-width: none; }
 .choice-caption { display: block; background: var(--yellow); border-radius: 17.4rem; padding: 12rem 6rem; color: var(--green); font: 400 23rem/1.2 "EB Garamond", serif; }
 .choice-caption strong { display: block; font-size: 30.8rem; }
@@ -65,7 +65,7 @@
 .summary-actions .pill { border-radius: 64.4rem; font-size: 20.6rem; color: var(--footer-cream); }
 .product-options-dialog { border-radius: 24.4px; background: #db99aeeb; }
 .product-options-dialog h2 { font-size: 22.8px; font-weight: 700; }
-.product-option-layout > img { border-radius: 24.4px; background: linear-gradient(145deg, #f0b8c7, white); }
+.product-option-layout > img { border-radius: 24.4px; background: linear-gradient(145deg, #f0b8c7, var(--cream)); }
 .product-options-dialog .option-fields { font-family: "EB Garamond", serif; font-weight: 700; }
 .product-options-dialog .option-fields label { color: var(--yellow); font-size: 16.2px; }
 .product-options-dialog .option-fields select { font-size: 13.8px; }
@@ -133,9 +133,9 @@ body[data-page="feedback"] .standard-form :is(input, select, textarea) { font: 4
 body[data-page="feedback"] .standard-form .pill { border-radius: 16.4px; font-size: 16px; }
 body[data-page="feedback"] .content-page > h2 { color: var(--green); font-size: 42px; }
 .review-helper, #review-eligibility, #review-status { font: italic 400 12px/1.4 "EB Garamond", serif; color: var(--pink); }
-.review-rating { background: var(--page-cream); border-radius: 16.4px; padding: 12px; }
+.review-rating { background: var(--cream); border-radius: 16.4px; padding: 12px; }
 .review-rating .review-stars { margin-top: 8px; font-size: 26px; }
-.review-card { background: #fbfcfa; border-color: #e9abbf; border-radius: 22.4px; }
+.review-card { background: var(--cream); border-color: #e9abbf; border-radius: 22.4px; }
 .review-card .review-stars { color: #f8d548; }
 .review-card p { color: var(--pink); font: 400 13px/1.6 Montserrat, sans-serif; }
 .review-card strong { color: var(--deep-pink); font: 700 14px/1.4 Montserrat, sans-serif; }
@@ -159,7 +159,7 @@ body[data-page="notifications"] .content-page h1 { font-size: 38px; }
 #notification-list .notification-card:last-child { margin-bottom: 0; }
 .search-page h2, #search-dialog h2 { font-size: 28px; color: var(--pink); }
 .search-panel { background: var(--card-pink); border-radius: 22.4px; padding: 24px; }
-.search-page .search-form input, #search-dialog .search-form input { font: 400 18px/1.3 "EB Garamond", serif; color: var(--pink); border: 1px solid var(--pink); border-radius: 16.4px; background: white; min-width: 0; }
+.search-page .search-form input, #search-dialog .search-form input { font: 400 18px/1.3 "EB Garamond", serif; color: var(--pink); border: 1px solid var(--pink); border-radius: 16.4px; background: var(--cream); min-width: 0; }
 .search-page .search-form input::placeholder, #search-dialog .search-form input::placeholder { color: var(--pink); opacity: 1; }
 .search-form svg { width: 22px; height: 22px; stroke: var(--green); fill: none; stroke-width: 2; align-self: center; }
 .search-tags { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 24px; }
@@ -167,7 +167,7 @@ body[data-page="notifications"] .content-page h1 { font-size: 38px; }
 .search-tags button:nth-child(4n + 2) { background: var(--pink); color: var(--cream); }
 .search-tags button:nth-child(4n + 3) { background: #f3baa5; }
 .search-tags button:nth-child(4n) { background: var(--green); color: var(--cream); }
-#search-dialog { font-size: 18px; width: min(720px, calc(100vw - 28px)); background: var(--page-cream); border-radius: 22.4px; padding: 28px; }
+#search-dialog { font-size: 18px; width: min(720px, calc(100vw - 28px)); background: var(--cream); border-radius: 22.4px; padding: 28px; }
 #search-dialog .search-form { display: flex; }
 #search-dialog .search-form input { flex: 1; padding: 12px; }
 #search-dialog .pill { font-size: 18px; border-radius: 56.4px; }
@@ -246,7 +246,7 @@ body[data-page="notifications"] .content-page h1 { font-size: 38px; }
   .category-grid:not(.occasion-grid) .category-link img { border-radius: 28rem; }
   .product-card .add-cart { min-height: 44rem; }
 }
-.product-option-photo { aspect-ratio: 1; align-self: center; overflow: hidden; border-radius: 24.4px; background: linear-gradient(145deg, #f0b8c7, white); }
+.product-option-photo { aspect-ratio: 1; align-self: center; overflow: hidden; border-radius: 24.4px; background: linear-gradient(145deg, #f0b8c7, var(--cream)); }
 .product-option-photo img { width: 100%; height: auto; max-width: none; }
 #success-dialog .dialog-heading h2, #success-dialog .dialog-close { color: var(--yellow); }
 
@@ -328,7 +328,7 @@ body[data-page="feedback"] .content-page > h2 { font-size: 66.3rem; margin: 110r
 #review-character-count { margin-top: -45rem; font-style: normal; }
 .content-page .standard-form .review-rating { border: 0; padding: 0; margin: 0; background: none; border-radius: 0; }
 .content-page .standard-form .review-rating legend { padding: 0; font-size: 36rem; background: none; color: var(--pink); margin-bottom: 8rem; }
-.rating-stars { display: flex; justify-content: center; gap: 10rem; padding: 16rem; background: var(--page-cream); border-radius: 16.4rem; }
+.rating-stars { display: flex; justify-content: center; gap: 10rem; padding: 16rem; background: var(--cream); border-radius: 16.4rem; }
 .rating-stars .rating-star { position: relative; cursor: pointer; display: block; font-size: 80rem !important; line-height: 1; }
 .content-page .standard-form .rating-stars .rating-star { color: #b7baaa; }
 .rating-star input { position: absolute; width: 100% !important; height: 100%; opacity: 0; margin: 0; inset: 0; cursor: pointer; }
@@ -363,7 +363,7 @@ body[data-page="cart"] .content-page h1 { display: flex; font-size: 66.3rem; mar
 .cart-column-headings span { background: var(--input-yellow); border-radius: 16.4rem; padding: 8rem 20rem; font-size: 32rem; justify-self: center; }
 body[data-page="cart"] .cart-line-card { display: grid; grid-template-columns: 1.15fr 1.4fr 1fr 50rem; gap: 24rem; background: none; border: 0; border-radius: 0; margin: 0 0 55rem; padding: 0; align-items: center; }
 .cart-product { display: block; text-align: center; min-width: 0; }
-.cart-product-photo { height: 205rem; overflow: hidden; border-radius: 50rem 50rem 0 0; background: linear-gradient(145deg,#f0b8c7,white); }
+.cart-product-photo { height: 205rem; overflow: hidden; border-radius: 50rem 50rem 0 0; background: linear-gradient(145deg, #f0b8c7, var(--cream)); }
 .cart-product-photo img { width: 100%; height: auto; }
 .cart-product-name { display: block; background: var(--input-yellow); border-radius: 18rem; padding: 12rem; font: 700 24rem/1.1 "EB Garamond",serif; }
 .cart-product-details { font-size: 16rem !important; }

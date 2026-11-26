@@ -69,7 +69,6 @@ The phone rules below set 1rem back to 1px for the separate phone layout.
   --deep-pink: #e11a5d;
   --panel: #e9abbf;
   --step: #db99ae;
-  --page-cream: #fffdeb;
   --card-pink: #f2d1d3;
   --input-yellow: #fff5b5;
 }
@@ -78,6 +77,7 @@ The phone rules below set 1rem back to 1px for the separate phone layout.
   box-sizing: border-box;
 }
 html {
+  background: var(--cream);
   scroll-behavior: smooth;
   scroll-padding-top: 24rem;
 }
@@ -1294,7 +1294,7 @@ p {
   border-radius: 8px;
   padding: 10px;
   font-size: 20px;
-  background: white;
+  background: var(--cream);
   color: var(--green);
 }
 .search-results a {
@@ -1338,7 +1338,7 @@ p {
   border: 1px solid var(--green);
   border-radius: 8px;
   padding: 10px;
-  background: white;
+  background: var(--cream);
   color: var(--green);
 }
 .feedback-form textarea {
@@ -1997,7 +1997,7 @@ They replace selected desktop sizes and stack content to fit a phone.
 .testimonial-card {
   border: 2rem solid var(--pink);
   border-radius: 30rem;
-  background: #fff;
+  background: var(--cream);
   color: var(--deep-pink);
   padding: 24rem;
   min-height: 292rem;
@@ -2630,7 +2630,7 @@ They replace selected desktop sizes and stack content to fit a phone.
 .receipt-sheet {
   border: 2px solid var(--green);
   border-radius: 18px;
-  background: white;
+  background: var(--cream);
   padding: 30px;
   font-size: 20px;
   overflow: auto;
@@ -2830,7 +2830,6 @@ They replace selected desktop sizes and stack content to fit a phone.
 }
 .testimonial-card {
   border-radius: 36.4rem;
-  background: #fbfcfa;
 }
 .testimonial-card p {
   font-size: 12.3rem;
@@ -3055,6 +3054,7 @@ They replace selected desktop sizes and stack content to fit a phone.
   html {
     font-size: 1px;
   }
+  html,
   body {
     background: white;
   }
