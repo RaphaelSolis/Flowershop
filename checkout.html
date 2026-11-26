@@ -7,14 +7,15 @@
     <title>The Petal Haus | Checkout</title>
     <link rel="stylesheet" href="styles.css?v=20261124-outputs" />
     <link rel="stylesheet" href="design-spec.css?v=20261124-outputs" />
-    <link rel="stylesheet" href="layout.css?v=20261126-cart-delete-color" />
+    <link rel="stylesheet" href="layout.css?v=20261126-checkout-payment" />
     <script src="settings.js?v=20261122-instructions-final" defer></script>
     <script src="products.js?v=20261124-outputs" defer></script>
-    <script src="store.js?v=20261124-outputs" defer></script>
+    <script src="store.js?v=20261126-checkout-payment" defer></script>
     <script src="app.js?v=20261125-header-final" defer></script>
     <script src="shop.js?v=20261124-outputs" defer></script>
     <script src="customize.js?v=20261122-instructions-final" defer></script>
-    <script src="pages.js?v=20261124-outputs" defer></script>
+    <script src="checkout-payment.js?v=20261126-checkout-payment" defer></script>
+    <script src="pages.js?v=20261126-checkout-payment" defer></script>
   </head>
   <body data-page="checkout">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -186,10 +187,45 @@
               </section>
               <section class="payment-section standard-form">
                 <h3 class="section-bar">PAYMENT DETAILS</h3>
-                <label class="radio-label"><input type="radio" name="payment" value="credit-card" form="checkout-form" required />CREDIT CARD</label>
-                <div class="payment-logos"><img src="order details page elements/visa.png" alt="Visa / Mastercard" /><img src="order details page elements/bpi.png" alt="BPI" /></div>
-                <label class="radio-label"><input type="radio" name="payment" value="e-wallet" form="checkout-form" required />E-WALLET</label>
-                <label id="wallet-provider-field" hidden>Online wallet<select name="provider" form="checkout-form"><option value="">Choose an e-wallet</option><option>GCash</option><option>Maya</option></select></label>
+                <p class="payment-note" id="payment-demo-note"><strong>Demo checkout — no money will be charged.</strong> Use test card details only.</p>
+                <label class="radio-label"><input type="radio" name="payment" value="credit-card" form="checkout-form" aria-controls="card-details" required />CREDIT / DEBIT CARD</label>
+                <div class="payment-logos" role="group" aria-label="Choose a card option">
+                  <label class="payment-card-option">
+                    <input type="radio" name="cardProvider" value="Visa / Mastercard" form="checkout-form" aria-label="Visa or Mastercard" aria-controls="card-details" />
+                    <img src="assets/payments/visa-mastercard.png" alt="Visa and Mastercard" width="800" height="335" />
+                    <span>Visa / Mastercard</span>
+                  </label>
+                  <label class="payment-card-option">
+                    <input type="radio" name="cardProvider" value="BPI" form="checkout-form" aria-label="BPI card" aria-controls="card-details" />
+                    <img src="assets/payments/bpi.png" alt="BPI" width="800" height="336" />
+                    <span>BPI card</span>
+                  </label>
+                </div>
+                <fieldset class="card-details" id="card-details" form="checkout-form" aria-describedby="payment-demo-note card-test-help" disabled hidden>
+                  <legend>Card details</legend>
+                  <p class="payment-note" id="card-test-help">Try Visa <strong>4242 4242 4242 4242</strong> or Mastercard <strong>5555 5555 5555 4444</strong>, a future expiry, and CVV <strong>123</strong>. For BPI, use either test card.</p>
+                  <label>Cardholder name
+                    <input name="cardholderName" form="checkout-form" autocomplete="off" maxlength="100" placeholder="Name on card" aria-describedby="cardholderName-error" data-card-field required />
+                    <span class="payment-field-error" id="cardholderName-error" aria-live="polite"></span>
+                  </label>
+                  <label>Card number
+                    <input name="cardNumber" form="checkout-form" type="text" inputmode="numeric" autocomplete="off" maxlength="23" placeholder="1234 5678 9012 3456" aria-describedby="cardNumber-error" data-card-field required />
+                    <span class="payment-field-error" id="cardNumber-error" aria-live="polite"></span>
+                  </label>
+                  <div class="form-two-columns">
+                    <label>Expiry date
+                      <input name="cardExpiry" form="checkout-form" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="MM/YY" aria-describedby="cardExpiry-error" data-card-field required />
+                      <span class="payment-field-error" id="cardExpiry-error" aria-live="polite"></span>
+                    </label>
+                    <label>CVV
+                      <input name="cardCvv" form="checkout-form" type="password" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="123" aria-describedby="cardCvv-error" data-card-field required />
+                      <span class="payment-field-error" id="cardCvv-error" aria-live="polite"></span>
+                    </label>
+                  </div>
+                  <p class="payment-note">Card details are cleared after submission. Only the card type and last four digits appear on your saved receipt.</p>
+                </fieldset>
+                <label class="radio-label"><input type="radio" name="payment" value="e-wallet" form="checkout-form" aria-controls="wallet-provider-field" required />E-WALLET</label>
+                <label id="wallet-provider-field" hidden>Online wallet<select name="provider" form="checkout-form" disabled><option value="">Choose an e-wallet</option><option>GCash</option><option>Maya</option></select></label>
               </section>
               <section class="delivery-section"><h3 class="section-bar">Delivery Type</h3><p><strong>Same day delivery</strong></p><p>Delivery fee: <output id="delivery-option-fee">₱0</output></p></section>
               <div class="order-hours" id="order-hours" role="status" aria-live="polite"></div>

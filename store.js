@@ -452,6 +452,10 @@ const PetalStore = (function () {
       throw new Error("Remove unavailable items before checkout.");
     if (!["credit-card", "e-wallet"].includes(payment.method))
       throw new Error("Please choose a cashless payment method.");
+    if (payment.method === "credit-card" &&
+        (payment.mode !== "demo" || !["Visa / Mastercard", "BPI"].includes(payment.provider) ||
+         !["Visa", "Mastercard"].includes(payment.brand) || !/^[0-9]{4}$/.test(payment.last4 || "")))
+      throw new Error("Complete your card details before placing an order.");
     const list = allOrders();
     let reference;
     do {
@@ -473,7 +477,9 @@ const PetalStore = (function () {
       payment: {
         method: payment.method,
         provider: payment.provider || "",
-        status: "Selected",
+        mode: "demo",
+        status: "Demo — no charge",
+        ...(payment.method === "credit-card" ? { brand: payment.brand, last4: payment.last4 } : {}),
       },
       items: JSON.parse(JSON.stringify(items)),
       subtotal: charges.subtotal,

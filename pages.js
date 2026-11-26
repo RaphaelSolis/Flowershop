@@ -141,7 +141,11 @@ function refreshCheckoutSavedData() {
   const current = checkoutState();
   if (current.owner === checkoutSnapshot.owner && current.cart === checkoutSnapshot.cart) return false;
   const accountChanged = current.owner !== checkoutSnapshot.owner;
-  if (accountChanged) document.getElementById("checkout-form").reset();
+  if (accountChanged) {
+    document.getElementById("checkout-form").reset();
+    clearCheckoutCardDetails();
+    updateCheckoutPayment();
+  }
   renderCheckoutPage(accountChanged);
   refreshAccountUI();
   document.getElementById("checkout-error").textContent = accountChanged
@@ -170,6 +174,10 @@ function submitCheckout(event) {
     error.textContent = "Enter a valid phone number with 7 to 15 digits.";
     return;
   }
+  if (!validateCheckoutPayment()) {
+    form.reportValidity();
+    return;
+  }
   if (typeof form.reportValidity === "function" && !form.reportValidity()) return;
   const customer = {};
   for (const name of [
@@ -182,10 +190,7 @@ function submitCheckout(event) {
     customer[name] = formValue(form, name);
   customer.name = [formValue(form, "firstName"), formValue(form, "lastName")].join(" ").trim();
   customer.address = [formValue(form, "houseNumber"), formValue(form, "street"), formValue(form, "barangay")].join(", ");
-  const payment = {
-    method: document.querySelector('[name="payment"]:checked')?.value || "",
-    provider: formValue(form, "provider"),
-  };
+  const payment = checkoutPaymentDetails();
   if (payment.method === "e-wallet" && !payment.provider) {
     document.getElementById("checkout-error").textContent =
       "Choose an e-wallet.";
@@ -195,6 +200,7 @@ function submitCheckout(event) {
     checkoutInProgress = true;
     document.getElementById("pay-button").disabled = true;
     const order = PetalStore.placeOrder(customer, payment);
+    clearCheckoutCardDetails();
     refreshCartUI();
     const receiptLink =
       "receipt.html?reference=" + encodeURIComponent(order.reference);
@@ -207,6 +213,10 @@ function submitCheckout(event) {
   }
 }
 function receiptMarkup(order) {
+  const paymentDescription = order.payment.method === "credit-card"
+    ? "Credit / debit card" + (order.payment.provider ? " — " + escapeHTML(order.payment.provider) : "") +
+      (order.payment.last4 ? " · " + escapeHTML(order.payment.brand || "Card") + " ending in " + escapeHTML(order.payment.last4) : "")
+    : "E-wallet — " + escapeHTML(order.payment.provider);
   const address = [
     order.customer.address,
     order.customer.city,
@@ -229,9 +239,8 @@ function receiptMarkup(order) {
     "</p><p>Status: <strong>" +
     escapeHTML(order.status) +
     "</strong></p><p>Payment: " +
-    (order.payment.method === "credit-card"
-      ? "Credit card"
-      : "E-wallet — " + escapeHTML(order.payment.provider)) +
+    paymentDescription +
+    (order.payment.mode === "demo" ? "</p><p>Demo checkout — no payment was charged." : "") +
     "</p></div><table><thead><tr><th>Item</th><th>Qty</th><th>Unit price</th><th>Total</th></tr></thead><tbody>" +
     order.items
       .map(function (line) {
@@ -506,6 +515,7 @@ function submitBuyerReview(event) {
 function initializePages() {
   if (page === "cart") renderCartPage();
   if (page === "checkout") {
+    initializeCheckoutPayment();
     renderCheckoutPage();
     setInterval(updateOrderHours, 15000);
     window.addEventListener("focus", updateOrderHours);
@@ -594,13 +604,6 @@ document.addEventListener("input", function (event) {
     row.querySelector("[data-line-total]").textContent =
       "₱" + money(item.quantity * item.unitPrice);
     updateCartPageTotal();
-  }
-});
-document.addEventListener("change", function (event) {
-  if (event.target.name === "payment") {
-    const wallet = event.target.value === "e-wallet";
-    document.getElementById("wallet-provider-field").hidden = !wallet;
-    document.querySelector('[name="provider"]').required = wallet;
   }
 });
 document.addEventListener("submit", function (event) {
