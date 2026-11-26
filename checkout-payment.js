@@ -55,6 +55,9 @@ function clearCheckoutCardDetails() {
     input.removeAttribute("aria-invalid");
     document.getElementById(input.name + "-error").textContent = "";
   }
+  document.getElementById("card-payment-summary").hidden = true;
+  const dialog = document.getElementById("card-entry-dialog");
+  if (dialog.open) closeDialog(dialog);
 }
 function updateCheckoutPayment() {
   const form = document.getElementById("checkout-form");
@@ -62,7 +65,6 @@ function updateCheckoutPayment() {
   const card = method === "credit-card";
   const wallet = method === "e-wallet";
   const details = document.getElementById("card-details");
-  details.hidden = !card;
   details.disabled = !card;
   const providers = document.querySelectorAll('[name="cardProvider"]');
   if (card && !form.elements.namedItem("cardProvider").value) providers[0].checked = true;
@@ -76,7 +78,13 @@ function updateCheckoutPayment() {
   walletProvider.disabled = !wallet;
   walletProvider.required = wallet;
   if (!wallet) walletProvider.value = "";
-  document.getElementById("checkout-error").textContent = "";
+}
+function openCheckoutCardDialog() {
+  document.querySelector('[name="payment"][value="credit-card"]').checked = true;
+  updateCheckoutPayment();
+  const provider = document.getElementById("checkout-form").elements.namedItem("cardProvider").value;
+  document.getElementById("card-entry-title").textContent = provider === "BPI" ? "BPI card details" : "Card details";
+  openDialog("card-entry-dialog");
 }
 function validateCheckoutPayment() {
   const form = document.getElementById("checkout-form");
@@ -85,6 +93,10 @@ function validateCheckoutPayment() {
   for (const input of document.querySelectorAll("[data-card-field]")) {
     if (!validateCheckoutCardField(input)) valid = false;
   }
+  if (!valid) {
+    openCheckoutCardDialog();
+    document.getElementById("card-entry-form").reportValidity();
+  }
   return valid;
 }
 function checkoutPaymentDetails() {
@@ -92,7 +104,8 @@ function checkoutPaymentDetails() {
   const method = form.elements.namedItem("payment").value;
   if (method !== "credit-card")
     return { method, provider: form.elements.namedItem("provider").value, mode: "demo" };
-  const number = form.elements.namedItem("cardNumber").value.replace(/\s/g, "");
+  const cardForm = document.getElementById("card-entry-form");
+  const number = cardForm.elements.namedItem("cardNumber").value.replace(/\s/g, "");
   return {
     method, provider: form.elements.namedItem("cardProvider").value, mode: "demo",
     brand: checkoutCardBrand(number), last4: number.slice(-4),
@@ -123,7 +136,15 @@ function initializeCheckoutPayment() {
     if (event.target.name === "cardProvider") {
       document.querySelector('[name="payment"][value="credit-card"]').checked = true;
       updateCheckoutPayment();
-    } else if (event.target.name === "payment") updateCheckoutPayment();
+      openCheckoutCardDialog();
+    } else if (event.target.name === "payment") {
+      updateCheckoutPayment();
+      if (event.target.value === "credit-card") openCheckoutCardDialog();
+    }
+  });
+  document.addEventListener("click", function (event) {
+    if (event.target.name === "cardProvider" || event.target.closest("#edit-card-details"))
+      openCheckoutCardDialog();
   });
   document.addEventListener("input", function (event) {
     const input = event.target;
@@ -132,6 +153,7 @@ function initializeCheckoutPayment() {
     input.setCustomValidity("");
     input.removeAttribute("aria-invalid");
     document.getElementById(input.name + "-error").textContent = "";
+    document.getElementById("card-payment-summary").hidden = true;
   });
   document.addEventListener("focusout", function (event) {
     if (event.target.matches("[data-card-field]")) validateCheckoutCardField(event.target);
@@ -139,6 +161,14 @@ function initializeCheckoutPayment() {
   document.addEventListener("invalid", function (event) {
     if (event.target.matches("[data-card-field]")) validateCheckoutCardField(event.target);
   }, true);
+  document.getElementById("card-entry-form").addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (!validateCheckoutPayment()) return;
+    const payment = checkoutPaymentDetails();
+    document.getElementById("card-payment-label").textContent = payment.brand + " ending in " + payment.last4;
+    document.getElementById("card-payment-summary").hidden = false;
+    closeDialog(document.getElementById("card-entry-dialog"));
+  });
   // Also clear values kept in the browser's back/forward page cache.
   window.addEventListener("pagehide", clearCheckoutCardDetails);
   window.addEventListener("pageshow", updateCheckoutPayment);
