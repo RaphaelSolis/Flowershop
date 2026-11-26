@@ -6,16 +6,16 @@
     <meta name="theme-color" content="#577438" />
     <title>The Petal Haus | Checkout</title>
     <link rel="stylesheet" href="styles.css?v=20261124-outputs" />
-    <link rel="stylesheet" href="design-spec.css?v=20261124-outputs" />
-    <link rel="stylesheet" href="layout.css?v=20261126-compact-payment" />
+    <link rel="stylesheet" href="design-spec.css?v=20261127-footer-cod-background" />
+    <link rel="stylesheet" href="layout.css?v=20261127-footer-cod-background" />
     <script src="settings.js?v=20261122-instructions-final" defer></script>
     <script src="products.js?v=20261124-outputs" defer></script>
-    <script src="store.js?v=20261126-compact-payment" defer></script>
+    <script src="store.js?v=20261127-footer-cod-background" defer></script>
     <script src="app.js?v=20261125-header-final" defer></script>
     <script src="shop.js?v=20261124-outputs" defer></script>
     <script src="customize.js?v=20261122-instructions-final" defer></script>
-    <script src="checkout-payment.js?v=20261126-compact-payment" defer></script>
-    <script src="pages.js?v=20261126-compact-payment" defer></script>
+    <script src="checkout-payment.js?v=20261127-footer-cod-background" defer></script>
+    <script src="pages.js?v=20261127-footer-cod-background" defer></script>
   </head>
   <body data-page="checkout">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -201,6 +201,7 @@
                 <p class="card-payment-summary" id="card-payment-summary" hidden><span id="card-payment-label"></span> <button class="text-button" id="edit-card-details" type="button">Edit</button></p>
                 <label class="radio-label"><input type="radio" name="payment" value="e-wallet" form="checkout-form" aria-controls="wallet-provider-field" required />E-WALLET</label>
                 <label id="wallet-provider-field" hidden>Online wallet<select name="provider" form="checkout-form" disabled><option value="">Choose an e-wallet</option><option>GCash</option><option>Maya</option></select></label>
+                <label class="radio-label"><input type="radio" name="payment" value="cash-on-delivery" form="checkout-form" required />CASH ON DELIVERY</label>
               </section>
               <section class="delivery-section"><h3 class="section-bar">Delivery Type</h3><p><strong>Same day delivery</strong></p><p>Delivery fee: <output id="delivery-option-fee">₱0</output></p></section>
               <div class="order-hours" id="order-hours" role="status" aria-live="polite"></div>

@@ -85,8 +85,7 @@
 .product-options-dialog[open] { animation: petal-flicker .65s ease both; }
 .product-options-dialog[data-kind="gift"][open] .option-fields { animation: petal-rise .65s ease both; }
 
-/* Cream pages, checkout and form cards. */
-body:is([data-page="checkout"], [data-page="contact"], [data-page="feedback"], [data-page="about"], [data-page="search"], [data-page="notifications"], [data-page="profile"]) { background: var(--page-cream); }
+/* Checkout and form cards. */
 .content-page :is(input, select, textarea) { min-width: 0; border: 1px solid var(--pink); border-radius: 16.4px; background: var(--input-yellow); }
 .content-page .standard-form :is(label, legend) { color: var(--pink); }
 .content-page .standard-form { background: var(--card-pink); border: 1px solid var(--pink); border-radius: 36.4px; padding: 28px; }

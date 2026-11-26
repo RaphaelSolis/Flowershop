@@ -102,6 +102,7 @@ function validateCheckoutPayment() {
 function checkoutPaymentDetails() {
   const form = document.getElementById("checkout-form");
   const method = form.elements.namedItem("payment").value;
+  if (method === "cash-on-delivery") return { method };
   if (method !== "credit-card")
     return { method, provider: form.elements.namedItem("provider").value, mode: "demo" };
   const cardForm = document.getElementById("card-entry-form");

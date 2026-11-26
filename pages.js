@@ -213,10 +213,15 @@ function submitCheckout(event) {
   }
 }
 function receiptMarkup(order) {
-  const paymentDescription = order.payment.method === "credit-card"
-    ? "Credit / debit card" + (order.payment.provider ? " — " + escapeHTML(order.payment.provider) : "") +
-      (order.payment.last4 ? " · " + escapeHTML(order.payment.brand || "Card") + " ending in " + escapeHTML(order.payment.last4) : "")
-    : "E-wallet — " + escapeHTML(order.payment.provider);
+  const cashOnDelivery = order.payment.method === "cash-on-delivery";
+  const totalLabel = cashOnDelivery ? "Due on delivery" : "Total";
+  let paymentDescription;
+  if (order.payment.method === "credit-card") {
+    paymentDescription = "Credit / debit card" + (order.payment.provider ? " — " + escapeHTML(order.payment.provider) : "") +
+      (order.payment.last4 ? " · " + escapeHTML(order.payment.brand || "Card") + " ending in " + escapeHTML(order.payment.last4) : "");
+  } else {
+    paymentDescription = cashOnDelivery ? "Cash on delivery" : "E-wallet — " + escapeHTML(order.payment.provider);
+  }
   const address = [
     order.customer.address,
     order.customer.city,
@@ -262,7 +267,7 @@ function receiptMarkup(order) {
     '</tbody></table><dl class="receipt-charges"><div><dt>Subtotal</dt><dd>₱' +
     money(Number.isFinite(order.subtotal) ? order.subtotal : PetalStore.total(order.items)) +
     '</dd></div><div><dt>Delivery fee</dt><dd>₱' + money(order.delivery?.fee || 0) +
-    '</dd></div></dl><p class="receipt-grand-total">Total: ₱' +
+    '</dd></div></dl><p class="receipt-grand-total">' + totalLabel + ": ₱" +
     money(order.total) +
     "</p></article>"
   );
