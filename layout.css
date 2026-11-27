@@ -330,6 +330,8 @@ body[data-page="contact"] .hero-contact .hero-layout { display: grid; grid-templ
 .product-option-caption { padding: 14px 8px; text-align: center; color: var(--green); display: grid; gap: 6px; }
 .product-option-caption strong { font-size: 17px; font-weight: 700; }
 .product-option-caption output { font-size: 17px; font-weight: 400; margin: 0; }
+.product-stock { display: block; font: 600 clamp(12px, 1.1vw, 15px)/1.35 Montserrat, sans-serif; color: #395327; }
+.out-of-stock .product-stock { color: #9d173e; }
 .product-options-dialog .option-fields { min-width: 0; }
 .product-options-dialog .option-fields .pill { width: 100%; }
 
@@ -346,6 +348,12 @@ body:is([data-page='contact'], [data-page='feedback']) .standard-form :is(input,
 #contact-details { scroll-margin-top: 36px; }
 body[data-page='about'] .about-page > p, .team-grid p { text-align: justify; }
 .review-card time { display: block; margin-top: 8px; font-size: 14px; color: var(--green); }
+.review-attachment { display: grid; gap: 8px; }
+#review-form .review-attachment input[type="file"] { width: 100%; min-width: 0; margin-top: 8px; font-size: 16px; }
+#review-attachment-help { font: 400 14px/1.5 Montserrat, sans-serif; }
+.review-media { display: block; width: min(100%, 520px); max-height: 420px; object-fit: contain; margin: 12px 0; border-radius: 12px; }
+.shop-reply { padding: 12px; margin-top: 12px; border-left: 3px solid var(--green); background: var(--input-yellow); color: var(--green); }
+:is(.review-card, .notification-card) .shop-reply p { margin: 4px 0 0; color: var(--green); white-space: pre-wrap; }
 .search-result img { width: 75px; height: 90px; object-fit: contain; border-radius: 24px 24px 10px 10px; background: var(--yellow); }
 .search-tags .clear-recent-searches { background: var(--green); color: #fff; min-width: 0; }
 .notification-banner .hero-heading { text-transform: none; }

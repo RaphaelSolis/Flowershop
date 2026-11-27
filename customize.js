@@ -24,8 +24,15 @@ const customization = {
 };
 function selectedFlowerItems() {
   return Object.entries(customization.flowers).map(function ([index, quantity]) {
-    const flower = customFlowers[Number(index)];
+    const flower = PetalStore.productDetails(PetalStore.customStem(Number(index)));
     return { index: Number(index), name: flower.name, quantity: quantity, unitPrice: flower.price };
+  });
+}
+function selectedAddons() {
+  return Object.values(customization.addons).map(line => {
+    const index = Number(line.productId.slice(6));
+    const product = { ...addons[index], id: line.productId, group: "addon" };
+    return { ...line, name: PetalStore.productDetails(product).name, unitPrice: PetalStore.productPrice(product, line.options) };
   });
 }
 function selectedWrapping() {
@@ -43,7 +50,7 @@ function customBouquetTotal() {
   const flowers = selectedFlowerItems().reduce(function (sum, flower) {
     return sum + flower.quantity * flower.unitPrice;
   }, 0);
-  const extras = Object.values(customization.addons).reduce(function (sum, addon) {
+  const extras = selectedAddons().reduce(function (sum, addon) {
     return sum + addon.quantity * addon.unitPrice;
   }, 0);
   return PetalStore.round(flowers + selectedWrapping().price + extras);
@@ -60,8 +67,23 @@ function updateCustomization() {
   document.getElementById("ribbon-choice-note").textContent = customization.ribbon
     ? "Selected: " + customization.ribbon + " ribbon."
     : "Choose a ribbon color to continue (required).";
-  for (const button of document.querySelectorAll('[data-choice="flower"]'))
-    button.setAttribute("aria-pressed", Object.hasOwn(customization.flowers, button.dataset.index));
+  for (const button of document.querySelectorAll('[data-choice="flower"],[data-choice="addon"]')) {
+    const index = Number(button.dataset.index);
+    const flower = button.dataset.choice === "flower";
+    const product = flower ? PetalStore.customStem(index) : { ...addons[index], id: "addon-" + index };
+    const details = PetalStore.productDetails(product);
+    const caption = button.querySelector(".choice-caption");
+    caption.replaceChildren();
+    const title = document.createElement("strong");
+    title.textContent = details.name;
+    caption.append(title, "₱" + money(details.price));
+    showStock(caption, product.id);
+    button.querySelector("img").alt = details.name;
+    const selected = Object.hasOwn(flower ? customization.flowers : customization.addons, index);
+    button.setAttribute("aria-pressed", String(selected));
+    button.setAttribute("aria-label", details.name + ", ₱" + money(details.price) + ", " + stockLabel(product.id));
+    button.disabled = !PetalStore.available(product.id) && (!flower || !selected);
+  }
   for (const button of document.querySelectorAll('[data-choice="wrapping"]'))
     button.setAttribute(
       "aria-pressed",
@@ -74,8 +96,6 @@ function updateCustomization() {
       customization.wrappingMode === "color" &&
         Number(button.dataset.color) === customization.color,
     );
-  for (const button of document.querySelectorAll('[data-choice="addon"]'))
-    button.setAttribute("aria-pressed", Object.hasOwn(customization.addons, button.dataset.index));
   for (const input of document.querySelectorAll(".stem-quantity input")) input.value = customization.flowers[input.dataset.flowerQuantity] || "";
   const flowers = selectedFlowerItems();
   document.getElementById("selected-flowers").innerHTML =
@@ -83,15 +103,15 @@ function updateCustomization() {
       .map(function (flower) {
         return (
           '<div class="selected-flower-row"><strong>' +
-          flower.name +
+          escapeHTML(flower.name) +
           '</strong><div class="small-quantity"><button type="button" data-flower-adjust="-1" data-flower-index="' +
           flower.index +
           '" aria-label="Remove one ' +
-          flower.name +
+          escapeHTML(flower.name) +
           ' stem">−</button><label class="sr-only" for="flower-quantity-' +
           flower.index +
           '">' +
-          flower.name +
+          escapeHTML(flower.name) +
           ' stem quantity</label><input id="flower-quantity-' +
           flower.index +
           '" data-flower-quantity="' +
@@ -101,7 +121,7 @@ function updateCustomization() {
           '"><button type="button" data-flower-adjust="1" data-flower-index="' +
           flower.index +
           '" aria-label="Add one ' +
-          flower.name +
+          escapeHTML(flower.name) +
           ' stem">+</button></div><span>₱' +
           money(flower.unitPrice * flower.quantity) +
           "</span></div>"
@@ -109,13 +129,14 @@ function updateCustomization() {
       })
       .join("") || "<p>Choose one or more flowers above.</p>";
   document.getElementById("selected-addons").innerHTML =
-    Object.entries(customization.addons)
-      .map(function ([index, addon]) {
+    selectedAddons()
+      .map(function (addon) {
+        const index = Number(addon.productId.slice(6));
         return (
           '<div class="selected-addon-row"><div><strong>' +
           addon.quantity +
           " × " +
-          addon.name +
+          escapeHTML(addon.name) +
           "</strong><p>" +
           escapeHTML(addon.details) +
           "</p></div><span>₱" +
@@ -134,7 +155,7 @@ function updateCustomization() {
     .map(function (flower) {
       return (
         "<tr><td>" +
-        flower.name +
+        escapeHTML(flower.name) +
         "</td><td>" +
         flower.quantity +
         " stems</td><td>₱" +
@@ -150,10 +171,10 @@ function updateCustomization() {
     money(wrapping.price) +
     "</td></tr>";
   rows += "<tr><td>Ribbon</td><td>" + customization.ribbon + "</td><td>Included</td></tr>";
-  for (const addon of Object.values(customization.addons))
+  for (const addon of selectedAddons())
     rows +=
       "<tr><td>" +
-      addon.name +
+      escapeHTML(addon.name) +
       "</td><td>" +
       addon.quantity +
       " × " +
@@ -177,7 +198,7 @@ function addCustomizedBouquet() {
     return;
   }
   const wrapping = selectedWrapping();
-  const extras = Object.values(customization.addons);
+  const extras = selectedAddons();
   const options = {
     flowers: flowers,
     wrappingMode: customization.wrappingMode,
@@ -207,10 +228,6 @@ function addCustomizedBouquet() {
     options: options,
     details: details,
   };
-  if (!PetalStore.lineAvailable(line)) {
-    toast("One of your selected flowers or add-ons is unavailable.");
-    return;
-  }
   try { PetalStore.addLine(line, customization.replaceId); }
   catch (error) { toast(error.message); return; }
   refreshCartUI();
@@ -272,7 +289,7 @@ document.addEventListener("click", function (event) {
     customization.flowers[flowerIndex] = boundedQuantity(
       (customization.flowers[flowerIndex] || 0) + Number(button.dataset.flowerAdjust),
       0,
-      99,
+      Math.min(99, PetalStore.stockLeft(PetalStore.customStem(flowerIndex).id)),
     );
     if (!customization.flowers[flowerIndex]) delete customization.flowers[flowerIndex];
     updateCustomization();
@@ -293,7 +310,7 @@ document.addEventListener("change", function (event) {
     customization.flowers[event.target.dataset.flowerQuantity] = boundedQuantity(
       event.target.value,
       0,
-      99,
+      Math.min(99, PetalStore.stockLeft(PetalStore.customStem(Number(event.target.dataset.flowerQuantity)).id)),
     );
     if (!customization.flowers[event.target.dataset.flowerQuantity]) delete customization.flowers[event.target.dataset.flowerQuantity];
     updateCustomization();

@@ -4,7 +4,17 @@
    Customer carts are separated by the profile currently signed in. */
 const PetalStore = (function () {
   const memory = {};
+  const initialStock = 20;
+  const addonCounterparts = ["gifts-2", "gifts-1", "gifts-5", "gifts-6", "gifts-4", "gifts-3"];
+  const productSections = [...new Set(allProducts.map(product => product.section))];
   const storageMessage = "Could not save your changes. Browser storage is full or unavailable. Free some space and try again.";
+  const orderStatusTransitions = {
+    Placed: ["Confirmed", "Cancelled"],
+    Confirmed: ["Dispatched", "Cancelled"],
+    Dispatched: ["Delivered"],
+    Delivered: [],
+    Cancelled: [],
+  };
   function validProfile(user) {
     return user && typeof user.id === "string" && typeof user.name === "string" &&
       !!user.name.trim() && typeof user.email === "string";
@@ -14,6 +24,9 @@ const PetalStore = (function () {
     if (fallback && !Array.isArray(fallback) && typeof fallback === "object" &&
         (!value || typeof value !== "object" || Array.isArray(value))) return fallback;
     if (key === "petal-profiles") return value.filter(validProfile);
+    if (key === "petal-catalog") return value.filter(product => product && /^ITEM-[A-Z0-9]+$/.test(product.id) &&
+      typeof product.name === "string" && product.name.trim() && Number.isFinite(product.price) && product.price > 0 &&
+      productSections.includes(product.section) && /^MEDIA-[A-Z0-9]+$/.test(product.imageId));
     if (key === "petal-orders") return value.filter(order => order && typeof order.reference === "string" &&
       typeof order.owner === "string" && order.customer && typeof order.customer === "object" &&
       Array.isArray(order.items) && order.items.every(item => item && typeof item.name === "string" &&
@@ -64,6 +77,76 @@ const PetalStore = (function () {
         ? crypto.randomUUID().replaceAll("-", "").slice(0, 12)
         : Math.random().toString(36).slice(2) + Date.now().toString(36);
     return prefix + "-" + random.toUpperCase();
+  }
+  let mediaDatabase;
+  const mediaURLs = new Map();
+  function openMedia() {
+    if (!mediaDatabase) {
+      mediaDatabase = new Promise((resolve, reject) => {
+        const request = indexedDB.open("petal-media", 1);
+        request.onupgradeneeded = () => request.result.createObjectStore("files");
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = request.onblocked = () => reject(new Error("Could not open browser storage for media."));
+      }).catch(error => {
+        mediaDatabase = null;
+        throw error;
+      });
+    }
+    return mediaDatabase;
+  }
+  async function mediaRequest(mode, operation) {
+    const database = await openMedia();
+    return new Promise((resolve, reject) => {
+      const transaction = database.transaction("files", mode);
+      const request = operation(transaction.objectStore("files"));
+      transaction.oncomplete = () => resolve(request.result);
+      transaction.onabort = () => reject(new Error("Could not save or read the media file. Check available browser storage."));
+    });
+  }
+  async function saveMedia(file, imageOnly = false) {
+    const photo = /^(image\/(jpeg|png|webp))$/.test(file?.type);
+    const video = !imageOnly && /^(video\/(mp4|webm))$/.test(file?.type);
+    if (!photo && !video)
+      throw new Error(imageOnly ? "Choose a JPG, PNG, or WebP image." : "Choose a JPG, PNG, or WebP photo, or an MP4 or WebM video.");
+    const limit = video ? 40 : 10;
+    if (!file.size || file.size > limit * 1024 * 1024)
+      throw new Error("Choose a nonempty file up to " + limit + " MB.");
+    if (photo) {
+      try { (await createImageBitmap(file)).close(); }
+      catch { throw new Error("This photo could not be opened."); }
+    }
+    const id = makeId("MEDIA");
+    await mediaRequest("readwrite", files => files.add(file, id));
+    return { id, kind: video ? "video" : "image" };
+  }
+  async function deleteMedia(id) {
+    await mediaRequest("readwrite", files => files.delete(id));
+  }
+  async function attachMedia(element, id) {
+    if (!/^MEDIA-[A-Z0-9]+$/.test(id || "")) return false;
+    if (!mediaURLs.has(id)) {
+      mediaURLs.set(id, mediaRequest("readonly", files => files.get(id))
+        .then(file => file ? URL.createObjectURL(file) : "").catch(() => ""));
+    }
+    const url = await mediaURLs.get(id);
+    if (url) element.src = url;
+    return !!url;
+  }
+  function reviewMedia(attachment) {
+    if (!attachment || !["image", "video"].includes(attachment.kind) || !/^MEDIA-[A-Z0-9]+$/.test(attachment.id))
+      return null;
+    const element = document.createElement(attachment.kind === "image" ? "img" : "video");
+    element.className = "review-media";
+    if (attachment.kind === "image") element.alt = "Customer photo of the product";
+    else {
+      element.controls = true;
+      element.preload = "metadata";
+      element.playsInline = true;
+      element.setAttribute("aria-label", "Customer video of the product");
+    }
+    element.hidden = true;
+    attachMedia(element, attachment.id).then(loaded => { element.hidden = !loaded; });
+    return element;
   }
   function session() {
     const user = read("petal-session", null);
@@ -124,35 +207,72 @@ const PetalStore = (function () {
       ? Math.max(1, Math.min(99, Math.round(number)))
       : 1;
   }
+  function productDetails(product) {
+    const edits = read("petal-product-edits", {})[product.id];
+    return {
+      name: typeof edits?.name === "string" && edits.name.trim() ? edits.name : product.name,
+      price: Number.isFinite(edits?.price) && edits.price > 0 ? edits.price : product.price,
+    };
+  }
+  function addedProducts() {
+    return read("petal-catalog", []).map(product => ({ ...product, image: "assets/home/flower.png" }));
+  }
+  function catalog() {
+    return [...allProducts, ...addedProducts()];
+  }
+  function catalogProduct(id) {
+    return allProducts.find(product => product.id === id) || addedProducts().find(product => product.id === id);
+  }
+  function addProduct({ name, price, stock, section, imageId }) {
+    if (typeof name !== "string" || !name.trim() || name.trim().length > 100)
+      throw new Error("Enter a product name of 1 to 100 characters.");
+    if (!Number.isFinite(price) || price <= 0 || price > 999999 || round(price) !== price)
+      throw new Error("Enter a price from ₱0.01 to ₱999,999 with up to two decimal places.");
+    if (!Number.isSafeInteger(stock) || stock < 0)
+      throw new Error("Stock must be a whole number of zero or more.");
+    if (!productSections.includes(section)) throw new Error("Choose a product category.");
+    if (!/^MEDIA-[A-Z0-9]+$/.test(imageId || "")) throw new Error("Add a product image.");
+    const id = makeId("ITEM");
+    const product = { id, name: name.trim(), price, section, imageId };
+    writeMany({ "petal-catalog": [product, ...read("petal-catalog", [])], "petal-stock": { ...read("petal-stock", {}), [id]: stock } });
+    return id;
+  }
+  function customStem(index) {
+    const flower = customFlowers[index];
+    return { ...flower, id: flower.stockId || "flower-" + (index + 1) };
+  }
   function productPrice(product, options = {}) {
+    const { price } = productDetails(product);
+    if (product.imageId) return price;
     if (product.name.toLowerCase().includes("ferrero")) {
       const pieces = options.pieces || 5;
       if (![3, 5, 8, 12].includes(pieces)) return NaN;
-      return product.group === "addon" ? ferreroPrices[pieces] : round(product.price * pieces / 5);
+      return product.group === "addon" ? round(ferreroPrices[pieces] * price / ferreroPrices[5]) : round(price * pieces / 5);
     }
     if (product.name.toLowerCase().includes("letter")) {
       const count = Array.isArray(options.letters) ? options.letters.length : 1;
       if (count < 1 || count > 10) return NaN;
-      return round(product.price * count);
+      return round(price * count);
     }
-    return product.price;
+    return price;
   }
   function productOptions(product, values) {
     if (!values || typeof values !== "object" || Array.isArray(values)) return null;
     const name = product.name.toLowerCase();
     const options = {};
+    if (product.imageId && product.section === "gifts") return options;
     const choice = (key, choices, defaultValue = choices[0]) => {
       if (values[key] !== undefined && !choices.includes(values[key])) return false;
       options[key] = values[key] || defaultValue;
       return true;
     };
-    if (name.includes("ferrero")) {
+    if (!product.imageId && name.includes("ferrero")) {
       if (!choice("flavor", SHOP_SETTINGS.chocolateFlavors) || !choice("pieces", [3, 5, 8, 12], 5)) return null;
-    } else if (name.includes("pepero")) {
+    } else if (!product.imageId && name.includes("pepero")) {
       if (!choice("flavor", SHOP_SETTINGS.peperoFlavors)) return null;
-    } else if (name.includes("candle")) {
+    } else if (!product.imageId && name.includes("candle")) {
       if (!choice("scent", SHOP_SETTINGS.candleScents)) return null;
-    } else if (name.includes("letter")) {
+    } else if (!product.imageId && name.includes("letter")) {
       // Retain messages saved before multiple letters were supported.
       const letters = values.letters === undefined ? [values.letter] : values.letters;
       if (!Array.isArray(letters) || letters.length < 1 || letters.length > 10 ||
@@ -182,12 +302,13 @@ const PetalStore = (function () {
     const addonIndex = /^addon-([0-5])$/.exec(item.productId);
     const product = isAddon && addonIndex
       ? { ...addons[Number(addonIndex[1])], id: item.productId, group: "addon" }
-      : !isAddon && allProducts.find(product => product.id === item.productId);
+      : !isAddon && catalogProduct(item.productId);
     if (!product) return null;
     const options = productOptions(product, item.options);
     if (!options) return null;
     return {
-      productId: product.id, name: product.name, image: product.image,
+      productId: product.id, name: productDetails(product).name, image: product.image,
+      ...(product.imageId ? { imageId: product.imageId } : {}),
       unitPrice: productPrice(product, options), quantity: item.quantity,
       options, details: optionDetails(options),
     };
@@ -204,10 +325,10 @@ const PetalStore = (function () {
             flower.index >= 0 && flower.index < customFlowers.length && Number.isInteger(flower.quantity) &&
             flower.quantity >= 1 && flower.quantity <= 99) ||
           new Set(values.flowers.map(flower => flower.index)).size !== values.flowers.length) return null;
-      const flowers = values.flowers.map(flower => ({
-        index: flower.index, name: customFlowers[flower.index].name,
-        quantity: flower.quantity, unitPrice: customFlowers[flower.index].price,
-      })).sort((a, b) => a.index - b.index);
+      const flowers = values.flowers.map(flower => {
+        const details = productDetails(customStem(flower.index));
+        return { index: flower.index, name: details.name, quantity: flower.quantity, unitPrice: details.price };
+      }).sort((a, b) => a.index - b.index);
       const mode = values.wrappingMode || "style";
       const wrapperName = values.wrapping?.name;
       let wrapping;
@@ -225,7 +346,8 @@ const PetalStore = (function () {
       const unitPrice = round(flowers.reduce((sum, flower) => sum + flower.quantity * flower.unitPrice, 0) +
         wrapping.price + extras.reduce((sum, addon) => sum + addon.quantity * addon.unitPrice, 0));
       line = {
-        productId: "custom-bouquet", name: "Customize Flowers", image: customFlowers[flowers[0].index].image,
+        productId: "custom-bouquet", name: productDetails({ id: "custom-bouquet", name: "Customize Flowers" }).name,
+        image: customFlowers[flowers[0].index].image,
         unitPrice, quantity: item.quantity, options: { flowers, wrappingMode: mode, wrapping, ribbon, addons: extras },
         details: flowers.map(flower => flower.quantity + " " + flower.name + " stems").join(" · ") +
           " · " + wrapping.name + " · " + ribbon + " ribbon" + extras.map(addon => " · " + addon.quantity + " " + addon.name + " (" + addon.details + ")").join(""),
@@ -243,8 +365,8 @@ const PetalStore = (function () {
     const cacheKey = "legacy:" + key;
     memory[cacheKey] ||= old.map(item => item && ({
       lineId: makeId("LINE"), productId: item.id, quantity: quantity(item.quantity), options: item.options || {},
-    })).map(normalizeLine).filter(Boolean);
-    return JSON.parse(JSON.stringify(memory[cacheKey]));
+    }));
+    return memory[cacheKey].map(normalizeLine).filter(Boolean);
   }
   function saveCart(items) {
     const lines = items.map(normalizeLine);
@@ -266,6 +388,7 @@ const PetalStore = (function () {
       }
     }
     if (remaining) lines.push({ ...normalized, quantity: remaining, lineId: replaceId || makeId("LINE") });
+    assertStock(lines, normalized);
     saveCart(lines);
     return lines;
   }
@@ -275,8 +398,11 @@ const PetalStore = (function () {
       return item.lineId === lineId;
     });
     if (!line) return;
-    if (changes.quantity !== undefined)
+    if (changes.quantity !== undefined) {
+      const previous = line.quantity;
       line.quantity = quantity(changes.quantity);
+      if (line.quantity > previous) assertStock(lines, line);
+    }
     saveCart(lines);
   }
   function removeLine(lineId) {
@@ -293,28 +419,72 @@ const PetalStore = (function () {
       }, 0),
     );
   }
-  function available(productId) {
-    const stock = read("petal-stock", {});
-    if (Object.prototype.hasOwnProperty.call(stock, productId)) return stock[productId] === true;
+  function productStock(productId, stock = read("petal-stock", {})) {
+    if (Object.hasOwn(stock, productId)) {
+      const saved = stock[productId];
+      if (Number.isSafeInteger(saved) && saved >= 0) return saved;
+      if (typeof saved === "boolean") return saved ? initialStock : 0;
+    }
     const product = allProducts.find(item => item.id === productId);
-    const flowerIndex = /^flower-([1-8])$/.exec(productId);
-    return product ? product.available !== false
-      : /^addon-[0-5]$/.test(productId) || !!flowerIndex || productId === "custom-bouquet";
+    const availableByDefault = product ? product.available !== false
+      : /^addon-[0-5]$|^flower-[1-8]$|^custom-bouquet$/.test(productId);
+    return availableByDefault ? initialStock : 0;
+  }
+  function addonCounterpart(productId) {
+    const match = /^addon-([0-5])$/.exec(productId);
+    return match ? addonCounterparts[Number(match[1])] : null;
+  }
+  function stockLeft(productId) {
+    const stock = read("petal-stock", {});
+    const counterpart = addonCounterpart(productId);
+    const count = productStock(productId, stock);
+    return counterpart ? Math.min(count, productStock(counterpart, stock)) : count;
+  }
+  function available(productId) {
+    return stockLeft(productId) > 0;
   }
   function addonAvailable(productId) {
-    const counterparts = ["gifts-2", "gifts-1", "gifts-5", "gifts-6", "gifts-4", "gifts-3"];
-    const match = /^addon-([0-5])$/.exec(productId);
-    return !!match && available(productId) && available(counterparts[Number(match[1])]);
+    return !!addonCounterpart(productId) && available(productId);
+  }
+  function stockRequirements(items) {
+    const required = new Map();
+    const add = (id, amount) => required.set(id, (required.get(id) || 0) + amount);
+    for (const item of items) {
+      add(item.productId, item.quantity);
+      if (item.productId !== "custom-bouquet") continue;
+      for (const flower of item.options.flowers)
+        add(customStem(flower.index).id, flower.quantity * item.quantity);
+      for (const addon of item.options.addons) {
+        add(addon.productId, addon.quantity * item.quantity);
+        add(addonCounterpart(addon.productId), addon.quantity * item.quantity);
+      }
+    }
+    return required;
+  }
+  function insufficientStock(required, stock, changedLine) {
+    const changed = changedLine ? stockRequirements([changedLine]) : required;
+    return Array.from(required).find(([id, count]) => changed.has(id) && count > productStock(id, stock));
+  }
+  function assertStock(items, changedLine) {
+    const stock = read("petal-stock", {});
+    const shortage = insufficientStock(stockRequirements(items), stock, changedLine);
+    if (shortage) {
+      const [id] = shortage;
+      const item = catalogProduct(id)
+        || (addonCounterpart(id) ? addons[Number(id.slice(6))] : customFlowers.find((_, index) => customStem(index).id === id));
+      const name = productDetails({ id, name: item?.name || "Custom bouquet" }).name;
+      const left = productStock(id, stock);
+      throw new Error(left ? name + " has only " + left + " left in stock." : name + " is out of stock.");
+    }
+  }
+  function cartFitsStock(items) {
+    return !insufficientStock(stockRequirements(items), read("petal-stock", {}));
   }
   function lineAvailable(line) {
     const checked = normalizeLine(line);
-    if (!checked) return false;
-    if (checked.productId === "custom-bouquet") return available(checked.productId) &&
-      checked.options.flowers.every(flower => available(customFlowers[flower.index].stockId || "flower-" + (flower.index + 1))) &&
-      checked.options.addons.every(addon => addonAvailable(addon.productId));
-    return available(checked.productId);
+    return !!checked && cartFitsStock([checked]);
   }
-  function notify(message, kind, reference, recipient, uniqueId) {
+  function notificationChanges(message, kind, reference, recipient, uniqueId) {
     const list = read("petal-notifications", []);
     const recipientId = recipient || owner();
     if (
@@ -333,7 +503,11 @@ const PetalStore = (function () {
       date: new Date().toISOString(),
       read: false,
     });
-    writeMany({ "petal-notifications": list, ...(!session() ? { "petal-guest": owner() } : {}) });
+    return { "petal-notifications": list, ...(!session() ? { "petal-guest": owner() } : {}) };
+  }
+  function notify(message, kind, reference, recipient, uniqueId) {
+    const changes = notificationChanges(message, kind, reference, recipient, uniqueId);
+    if (changes) writeMany(changes);
   }
   function notifications() {
     return read("petal-notifications", []).filter(function (item) {
@@ -342,9 +516,10 @@ const PetalStore = (function () {
   }
   function readNotifications() {
     const list = read("petal-notifications", []);
-    for (const note of list) {
-      if (note.owner === owner()) note.read = true;
-    }
+    const currentOwner = owner();
+    const unread = list.filter(note => note.owner === currentOwner && !note.read);
+    if (!unread.length) return;
+    for (const note of unread) note.read = true;
     write("petal-notifications", list);
   }
   function syncNotifications() {
@@ -375,11 +550,34 @@ const PetalStore = (function () {
         );
     }
   }
-  function setStock(productId, isAvailable) {
-    const stock = read("petal-stock", {});
-    stock[productId] = Boolean(isAvailable);
-    write("petal-stock", stock);
-    syncNotifications();
+  function updateProduct(productId, edits) {
+    const changes = {};
+    if (edits.stock !== undefined) {
+      if (!Number.isSafeInteger(edits.stock) || edits.stock < 0)
+        throw new Error("Stock must be a whole number of zero or more.");
+      changes["petal-stock"] = { ...read("petal-stock", {}), [productId]: edits.stock };
+    }
+    const productEdits = read("petal-product-edits", {});
+    const details = { ...productEdits[productId] };
+    if (edits.name !== undefined) {
+      if (typeof edits.name !== "string" || !edits.name.trim() || edits.name.trim().length > 100)
+        throw new Error("Enter a product name of 1 to 100 characters.");
+      details.name = edits.name.trim();
+    }
+    if (edits.price !== undefined) {
+      if (!Number.isFinite(edits.price) || edits.price <= 0 || edits.price > 999999 || round(edits.price) !== edits.price)
+        throw new Error("Enter a price from ₱0.01 to ₱999,999 with up to two decimal places.");
+      details.price = edits.price;
+    }
+    if (edits.name !== undefined || edits.price !== undefined)
+      changes["petal-product-edits"] = { ...productEdits, [productId]: details };
+    writeMany(changes);
+    if (edits.stock !== undefined) {
+      try { syncNotifications(); } catch {}
+    }
+  }
+  function withInventoryLock(action) {
+    return navigator.locks ? navigator.locks.request("petal-inventory", action) : Promise.resolve().then(action);
   }
   function allOrders() {
     return read("petal-orders", []);
@@ -444,12 +642,10 @@ const PetalStore = (function () {
       throw new Error("Choose an e-wallet.");
     const items = getCart();
     if (!items.length) throw new Error("Your cart is empty.");
-    if (
-      items.some(function (line) {
-        return !lineAvailable(line);
-      })
-    )
-      throw new Error("Remove unavailable items before checkout.");
+    assertStock(items);
+    const stock = read("petal-stock", {});
+    const reserved = stockRequirements(items);
+    for (const [id, count] of reserved) stock[id] = productStock(id, stock) - count;
     if (!["credit-card", "e-wallet", "cash-on-delivery"].includes(payment.method))
       throw new Error("Please choose a payment method.");
     if (payment.method === "credit-card" &&
@@ -483,37 +679,42 @@ const PetalStore = (function () {
         ...(payment.method === "credit-card" ? { brand: payment.brand, last4: payment.last4 } : {}),
       },
       items: JSON.parse(JSON.stringify(items)),
+      reservedStock: Object.fromEntries(reserved),
       subtotal: charges.subtotal,
       delivery: { type: "Same-day delivery", fee: charges.deliveryFee },
       total: charges.total,
     };
     list.unshift(order);
-    writeMany({ "petal-orders": list, ["petal-cart:" + owner()]: [], "petal-haus-cart": [] });
+    writeMany({ "petal-orders": list, ["petal-cart:" + owner()]: [], "petal-haus-cart": [], "petal-stock": stock });
     try { notify("Your order " + reference + " has been placed.", "order", reference); } catch {}
     return order;
   }
+  function nextOrderStatuses(status) {
+    return Object.hasOwn(orderStatusTransitions, status) ? [...orderStatusTransitions[status]] : [];
+  }
   function setOrderStatus(reference, status) {
-    const nextStatus = {
-      Placed: ["Confirmed", "Cancelled"],
-      Confirmed: ["Dispatched", "Cancelled"],
-      Dispatched: ["Delivered"],
-      Delivered: [],
-      Cancelled: [],
-    };
     const list = allOrders();
     const order = list.find(function (item) {
       return item.reference === reference;
     });
-    if (!order || !nextStatus[order.status]?.includes(status))
+    if (!order || !nextOrderStatuses(order.status).includes(status))
       throw new Error("That order status change is not allowed.");
     order.status = status;
-    write("petal-orders", list);
-    notify(
+    const changes = notificationChanges(
       "Order " + reference + " is now " + status.toLowerCase() + ".",
       "order",
       reference,
       order.owner,
     );
+    if (status === "Cancelled" && order.reservedStock) {
+      const stock = read("petal-stock", {});
+      for (const [id, count] of Object.entries(order.reservedStock)) {
+        if (Number.isSafeInteger(count) && count > 0)
+          stock[id] = productStock(id, stock) + count;
+      }
+      changes["petal-stock"] = stock;
+    }
+    writeMany({ "petal-orders": list, ...changes });
   }
   function reviews() {
     const list = read("petal-reviews", []);
@@ -560,6 +761,7 @@ const PetalStore = (function () {
       anonymous,
       rating,
       message: message.trim(),
+      attachment: display.attachment === undefined ? review.attachment : display.attachment,
       updatedAt: new Date().toISOString(),
     };
     write("petal-reviews", list);
@@ -583,6 +785,7 @@ const PetalStore = (function () {
       anonymous: !!display.anonymous,
       rating: rating,
       message: message.trim(),
+      ...(display.attachment ? { attachment: display.attachment } : {}),
       date: new Date().toISOString(),
     });
     write("petal-reviews", list);
@@ -603,14 +806,43 @@ const PetalStore = (function () {
       status: "Pending",
     };
     list.unshift(inquiry);
-    write("petal-inquiries", list);
+    writeMany({ "petal-inquiries": list, ...(!session() ? { "petal-guest": inquiry.owner } : {}) });
     return inquiry;
+  }
+  function saveReply(kind, reference, value) {
+    const message = value.trim();
+    if (!message || message.length > 2000) throw new Error("Write a reply of 1 to 2000 characters.");
+    const isInquiry = kind === "inquiry";
+    const key = isInquiry ? "petal-inquiries" : "petal-reviews";
+    const records = read(key, []);
+    const item = isInquiry ? records.find(record => record.id === reference)
+      : reviews().find(record => record.reference === reference);
+    if (!item) throw new Error("This submission is no longer available.");
+    if (item.reply === message) return false;
+    const target = isInquiry ? item : records.find(record => record.reference === reference && record.owner === item.owner);
+    target.reply = message;
+    target.repliedAt = new Date().toISOString();
+    if (isInquiry) target.status = "Replied";
+    const notice = isInquiry ? "The Petal Haus replied to your Contact Us message."
+      : "The Petal Haus replied to your feedback.";
+    writeMany({ [key]: records, ...notificationChanges(notice, isInquiry ? "inquiry" : "review-reply", reference, item.owner) });
+    return true;
   }
   return {
     read,
     write,
     writeMany,
     productPrice,
+    productDetails,
+    catalog,
+    addedProducts,
+    catalogProduct,
+    addProduct,
+    saveMedia,
+    deleteMedia,
+    attachMedia,
+    reviewMedia,
+    customStem,
     addonAvailable,
     makeId,
     session,
@@ -627,18 +859,23 @@ const PetalStore = (function () {
     removeLine,
     total,
     available,
+    productStock,
+    stockLeft,
+    cartFitsStock,
     lineAvailable,
     notify,
     notifications,
     readNotifications,
     syncNotifications,
-    setStock,
+    updateProduct,
+    withInventoryLock,
     allOrders,
     orders,
     getOrder,
     placeOrder,
     checkoutCharges,
     orderHours,
+    nextOrderStatuses,
     setOrderStatus,
     reviews,
     eligibleOrders,
@@ -647,6 +884,7 @@ const PetalStore = (function () {
     updateReview,
     inquiries,
     saveInquiry,
+    saveReply,
   };
 })();
 

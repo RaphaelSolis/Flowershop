@@ -2,7 +2,21 @@
 /* PRODUCT OPTIONS: the same form is used by shop products, cart edits, and add-ons.
    It calculates the unit price first, then multiplies by the selected quantity. */
 let productSelection = null;
+function stockLabel(productId) {
+  const count = PetalStore.stockLeft(productId);
+  return count ? count + " left in stock" : "Out of stock";
+}
+function showStock(container, productId) {
+  let label = container.querySelector(".product-stock");
+  if (!label) {
+    label = document.createElement("small");
+    label.className = "product-stock";
+    container.append(label);
+  }
+  label.textContent = stockLabel(productId);
+}
 function productKind(product) {
+  if (product.imageId) return product.section === "gifts" ? "gift" : "flower";
   const name = product.name.toLowerCase();
   if (name.includes("ferrero")) return "chocolate";
   if (name.includes("pepero")) return "pepero";
@@ -98,19 +112,20 @@ function openProductOptions(product, context, existing) {
     fields += optionSelect("Candle scent", "scent", SHOP_SETTINGS.candleScents, options.scent);
   if (kind === "letter") {
     const letters = options.letters || [options.letter || ""];
-    fields += '<p class="letter-price-note">₱' + money(product.price) +
+    fields += '<p class="letter-price-note">₱' + money(PetalStore.productDetails(product).price) +
       ' per letter. Quantity applies to each letter.</p><div id="letter-fields">' +
       letters.map((letter, index) => letterField(letter, index)).join("") +
       '</div><button type="button" class="text-button" data-add-letter>ADD ANOTHER LETTER</button>';
   }
   document.getElementById("product-options-dialog").dataset.kind = kind === "flower" ? "flower" : "gift";
-  document.getElementById("product-options-title").textContent = product.name;
+  const display = PetalStore.productDetails(product);
+  document.getElementById("product-options-title").textContent = display.name;
   form.innerHTML =
     '<div class="product-option-layout"><div class="product-option-card"><div class="product-option-photo"><img src="' +
     product.image +
     '" alt="' +
-    escapeHTML(product.name) +
-    '"></div><div class="product-option-caption"><strong>' + escapeHTML(product.name) +
+    escapeHTML(display.name) +
+    '"' + productMediaAttribute(product) + '></div><div class="product-option-caption"><strong>' + escapeHTML(display.name) +
     '</strong><output id="product-options-price"></output></div></div><div class="option-fields">' +
     fields +
     '<label for="product-option-quantity">Quantity</label><div class="product-quantity">' +
@@ -123,6 +138,7 @@ function openProductOptions(product, context, existing) {
     (context === "addon" ? "Select add-on" : existing ? "Save changes" : "Add to Cart") +
     "</button></div></div>";
   if (kind === "letter") updateLetterFields();
+  loadProductPhotos(form);
   updateProductOptionPrice();
   openDialog("product-options-dialog");
 }
@@ -155,6 +171,17 @@ function optionDetails(options) {
 }
 function updateProductOptionPrice() {
   if (!productSelection) return;
+  const { product } = productSelection;
+  const display = PetalStore.productDetails(product);
+  const caption = document.querySelector("#product-options-form .product-option-caption");
+  const max = Math.min(99, PetalStore.stockLeft(product.id));
+  document.getElementById("product-options-title").textContent = display.name;
+  caption.querySelector("strong").textContent = display.name;
+  showStock(caption, product.id);
+  document.getElementById("product-option-quantity").max = Math.max(1, max);
+  document.querySelector('#product-options-form button[type="submit"]').disabled = !max;
+  const letterNote = document.querySelector("#product-options-form .letter-price-note");
+  if (letterNote) letterNote.textContent = "₱" + money(display.price) + " per letter. Quantity applies to each letter.";
   const values = readProductOptionForm();
   for (const swatch of document.querySelectorAll("[data-option-color]"))
     swatch.setAttribute("aria-pressed", swatch.dataset.optionColor === values.options.color);
@@ -250,7 +277,7 @@ function searchProducts(inputId = "search-input", resultsId = "search-results") 
     return;
   }
   const seen = new Set();
-  const matches = allProducts.filter(function (product) {
+  const matches = PetalStore.catalog().map(product => ({ ...product, ...PetalStore.productDetails(product) })).filter(function (product) {
     if (!(product.name + " " + product.section).toLowerCase().includes(query.toLowerCase())) return false;
     const key = product.name.trim().toLowerCase().replace(/\s+/g, " ");
     if (seen.has(key)) return false;
@@ -262,12 +289,12 @@ function searchProducts(inputId = "search-input", resultsId = "search-results") 
       const available = PetalStore.available(product.id);
       return (
         '<article class="search-result"><img src="' +
-        product.image +
-        '" alt=""><div><h3>' +
+        escapeHTML(product.image) +
+        '" alt=""' + productMediaAttribute(product) + '><div><h3>' +
         escapeHTML(product.name) +
         "</h3><p>₱" +
         money(product.price) +
-        '</p></div><button class="pill" type="button" data-configure="' +
+        '</p><small class="product-stock">' + stockLabel(product.id) + '</small></div><button class="pill" type="button" data-configure="' +
         product.id +
         '"' + (available ? "" : " disabled") + '>' + (available ? "Select" : "Unavailable") + '</button></article>'
       );
@@ -275,6 +302,7 @@ function searchProducts(inputId = "search-input", resultsId = "search-results") 
     .join("");
   if (!matches.length)
     results.innerHTML = "<p>No products found for “" + escapeHTML(query) + "”.</p>";
+  loadProductPhotos(results);
 }
 // One complete catalog, using the same products and option forms as the shop pages.
 const catalogCategoryLabels = {
@@ -291,35 +319,39 @@ function renderAllProducts() {
   if (!grid) return;
   const query = document.getElementById("all-products-search").value.trim().toLowerCase();
   const category = document.getElementById("all-products-category").value;
-  const matches = allProducts.filter(product =>
+  const matches = PetalStore.catalog().map(product => ({ ...product, ...PetalStore.productDetails(product) })).filter(product =>
     (!category || product.section === category) &&
     (product.name + " " + catalogCategoryName(product.section)).toLowerCase().includes(query))
     .sort((a, b) => Number(a.section === "gifts") - Number(b.section === "gifts"));
-  grid.innerHTML = matches.map(product => {
+  grid.innerHTML = matches.map(product => productCard(product, true)).join("") ||
+    '<p class="all-products-empty">No products found. Try another search or choose a different category.</p>';
+  loadProductPhotos(grid);
+  document.getElementById("all-products-count").textContent = matches.length + (matches.length === 1 ? " product" : " products");
+}
+function productCard(product, showCategory) {
     const available = PetalStore.available(product.id);
     const disabled = available ? "" : " disabled";
-    return '<article class="product-card' + (available ? "" : " out-of-stock") + '" data-product="' + escapeHTML(product.id) + '">' +
+    return '<article class="product-card' + (available ? "" : " out-of-stock") + '" data-product="' + escapeHTML(product.id) + '"' +
+      (product.imageId ? ' data-added-product' : '') + '>' +
       '<button class="product-selection-button" type="button" data-configure="' + escapeHTML(product.id) +
       '" aria-label="Configure ' + escapeHTML(product.name) + '"' + disabled + '>' +
       '<div class="photo-card"><div class="catalog-photo-window photo-only"><img src="' + escapeHTML(product.image) +
-      '" alt="' + escapeHTML(product.name) + '" width="320" height="320" loading="lazy" decoding="async" /></div>' +
+      '" alt="' + escapeHTML(product.name) + '" width="320" height="320" loading="lazy" decoding="async"' + productMediaAttribute(product) + ' /></div>' +
       '<div class="photo-caption"><h3>' + escapeHTML(product.name) + '</h3><p>₱' + money(product.price) +
-      '</p><small class="all-product-category">' + escapeHTML(catalogCategoryName(product.section)) + '</small></div></div></button>' +
+      '</p>' + (showCategory ? '<small class="all-product-category">' + escapeHTML(catalogCategoryName(product.section)) + '</small>' : '') + '<small class="product-stock">' +
+      stockLabel(product.id) + '</small></div></div></button>' +
       '<button class="add-cart" type="button" data-add="' + escapeHTML(product.id) + '" aria-label="' +
       (available ? 'Add ' + escapeHTML(product.name) + ' to cart' : escapeHTML(product.name) + ' is unavailable') + '"' + disabled + '>' +
       (available ? 'ADD TO CART <img src="assets/home/cart.png" alt="" />' : 'UNAVAILABLE') + '</button></article>';
-  }).join("") || '<p class="all-products-empty">No products found. Try another search or choose a different category.</p>';
-  document.getElementById("all-products-count").textContent = matches.length + (matches.length === 1 ? " product" : " products");
 }
 function initializeAllProducts() {
   const select = document.getElementById("all-products-category");
   if (!select) return;
   const current = select.value;
-  const categories = [...new Set(allProducts.map(product => product.section))];
+  const categories = [...new Set(PetalStore.catalog().map(product => product.section))];
   select.innerHTML = '<option value="">All categories</option>' + categories.map(section =>
     '<option value="' + escapeHTML(section) + '">' + escapeHTML(catalogCategoryName(section)) + '</option>').join("");
   select.value = categories.includes(current) ? current : "";
-  renderAllProducts();
 }
 function initializeShop() {
   initializeAllProducts();
@@ -327,16 +359,44 @@ function initializeShop() {
   const section = parameters.get("section");
   if (section && document.getElementById(section)?.classList.contains("product-section"))
     filterShopSection(section);
+  refreshProductCards();
+}
+function refreshProductCards() {
+  if (page === "all-products") {
+    renderAllProducts();
+    return;
+  }
+  if (page === "collections" || page === "occasions") {
+    const additions = PetalStore.addedProducts();
+    for (const card of document.querySelectorAll("[data-added-product]")) {
+      if (!additions.some(product => product.id === card.dataset.product)) card.remove();
+    }
+    for (const product of additions) {
+      const grid = document.getElementById(product.section)?.querySelector(".product-grid");
+      if (grid && !grid.querySelector('[data-product="' + product.id + '"]')) {
+        grid.insertAdjacentHTML("afterbegin", productCard({ ...product, ...PetalStore.productDetails(product) }, false));
+        loadProductPhotos(grid);
+      }
+    }
+  }
   for (const card of document.querySelectorAll("[data-product]")) {
     const product = findProduct(card.dataset.product);
-    const title = card.querySelector(".photo-caption h3");
-    const price = card.querySelector(".photo-caption p");
-    if (title && product) title.textContent = product.name;
-    if (price && product) price.textContent = "₱" + money(product.price);
-    const available = PetalStore.available(card.dataset.product);
+    if (!product) continue;
+    const caption = card.querySelector(".photo-caption");
+    const display = PetalStore.productDetails(product);
+    if (caption) {
+      caption.querySelector("h3").textContent = display.name;
+      caption.querySelector("p").textContent = "₱" + money(display.price);
+      showStock(caption, product.id);
+    }
+    const available = PetalStore.available(product.id);
     card.classList.toggle("out-of-stock", !available);
-    for (const button of card.querySelectorAll("[data-add],[data-configure]"))
+    const photo = card.querySelector(".catalog-photo-window img");
+    if (photo) photo.alt = display.name;
+    for (const button of card.querySelectorAll("[data-add],[data-configure]")) {
       button.disabled = !available;
+      button.setAttribute("aria-label", button.dataset.configure ? "Configure " + display.name : "Add " + display.name + " to cart");
+    }
   }
 }
 document.addEventListener("click", function (event) {
@@ -372,7 +432,7 @@ document.addEventListener("click", function (event) {
     input.focus();
   } else if (button.hasAttribute("data-product-adjust")) {
     const input = document.getElementById("product-option-quantity");
-    input.value = boundedQuantity(Number(input.value) + Number(button.dataset.productAdjust), 1, 99);
+    input.value = boundedQuantity(Number(input.value) + Number(button.dataset.productAdjust), 1, Number(input.max));
     input.dispatchEvent(new Event("input", { bubbles: true }));
   } else if (button.dataset.optionColor) {
     const form = document.getElementById("product-options-form");

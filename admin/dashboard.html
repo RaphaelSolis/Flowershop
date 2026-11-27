@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin dashboard | The Petal Haus</title>
+    <link rel="stylesheet" href="/admin/dashboard.css">
+    <script src="/settings.js" defer></script>
+    <script src="/products.js" defer></script>
+    <script src="/store.js" defer></script>
+    <script src="/admin/dashboard.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/admin/"><img src="/assets/logo.png" alt="" width="52" height="52"> The Petal Haus</a>
+      <nav class="sections" aria-label="Dashboard sections">
+        <a href="#inventory" data-section="inventory" aria-current="page">Products</a>
+        <a href="#orders" data-section="orders">Orders</a>
+        <a href="#inquiries" data-section="inquiries">Contact Us <span id="pending-inquiry-count" class="nav-count" hidden></span></a>
+        <a href="#feedback" data-section="feedback">Feedback <span id="pending-feedback-count" class="nav-count" hidden></span></a>
+      </nav>
+      <a class="storefront-link" href="/">View storefront ↗</a>
+      <form method="post" action="/admin/logout">
+        <button class="secondary" type="submit">Sign out</button>
+      </form>
+    </aside>
+    <main class="dashboard">
+      <div class="dashboard-heading">
+        <div><h1>Admin dashboard</h1></div>
+        <img src="/assets/home/story-florist.webp" alt="" width="937" height="799">
+      </div>
+      <nav class="overview" aria-label="Shop overview">
+        <a href="#inventory">Products <strong id="product-count">0</strong></a>
+        <a href="#orders">Open orders <strong id="open-order-count">0</strong></a>
+        <a href="#inventory" id="view-out-of-stock">Out of stock <strong id="out-of-stock-count">0</strong></a>
+        <a href="#inquiries">Contact Us <strong id="inquiry-count">0</strong></a>
+      </nav>
+      <p id="dashboard-status" class="status" role="status" aria-live="polite"></p>
+      <section id="orders" aria-labelledby="orders-heading">
+        <div class="section-heading">
+          <h2 id="orders-heading">Orders</h2>
+          <label>Status
+            <select id="order-filter">
+              <option value="">All orders</option>
+              <option>Placed</option>
+              <option>Confirmed</option>
+              <option>Dispatched</option>
+              <option>Delivered</option>
+              <option>Cancelled</option>
+            </select>
+          </label>
+        </div>
+        <div id="order-list" class="record-list"></div>
+      </section>
+      <section id="inventory" aria-labelledby="inventory-heading">
+        <div class="section-heading">
+          <h2 id="inventory-heading">Products</h2>
+          <div class="product-filters">
+            <label>Find a product <input id="product-filter" type="search" placeholder="Search by name or category"></label>
+            <label>Stock
+              <select id="stock-filter"><option value="">All products</option><option value="out">Out of stock</option></select>
+            </label>
+          </div>
+          <button id="add-product" type="button">Add product</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Product</th><th scope="col">Price</th><th scope="col">Stock left</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+            <tbody id="stock-list"></tbody>
+          </table>
+        </div>
+        <p id="stock-empty" class="empty" hidden>No matching products.</p>
+      </section>
+      <section id="inquiries" aria-labelledby="inquiries-heading">
+        <h2 id="inquiries-heading">Contact Us</h2>
+        <div id="inquiry-list" class="record-list"></div>
+      </section>
+      <section id="feedback" aria-labelledby="feedback-heading">
+        <h2 id="feedback-heading">Feedback</h2>
+        <div id="feedback-list" class="record-list"></div>
+      </section>
+    </main>
+    <dialog id="product-editor" aria-labelledby="editor-title">
+      <form id="product-editor-form">
+        <header class="editor-heading">
+          <img id="editor-photo" alt="" width="64" height="64" hidden>
+          <div><h2 id="editor-title">Edit product</h2><p id="editor-category"></p></div>
+        </header>
+        <label>Product name <input name="name" required maxlength="100"></label>
+        <label id="editor-section-field" hidden>Category <select name="section" required disabled></select></label>
+        <div class="editor-numbers">
+          <label id="editor-price-field">Price (₱) <input name="price" type="number" min="0.01" max="999999" step="0.01" required></label>
+          <label>Stock quantity <input name="stock" type="number" min="0" step="1" required></label>
+        </div>
+        <label id="editor-image-field" hidden>Product image <input name="image" type="file" accept="image/jpeg,image/png,image/webp" required disabled>
+          <small>JPG, PNG, or WebP up to 10 MB.</small>
+        </label>
+        <p id="editor-error" class="error" role="alert"></p>
+        <div class="editor-actions"><button class="secondary" id="close-editor" type="button">Cancel</button><button type="submit" id="save-product">Save changes</button></div>
+      </form>
+    </dialog>
+    <dialog id="reply-editor" aria-labelledby="reply-title">
+      <form id="reply-form">
+        <div><h2 id="reply-title">Write a reply</h2><p id="reply-subject"></p></div>
+        <label>Reply <textarea name="message" rows="5" maxlength="2000" required></textarea></label>
+        <p id="reply-error" class="error" role="alert"></p>
+        <div class="editor-actions"><button class="secondary" id="close-reply" type="button">Cancel</button><button type="submit">Send reply</button></div>
+      </form>
+    </dialog>
+  </body>
+</html>

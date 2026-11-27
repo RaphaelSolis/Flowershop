@@ -32,9 +32,15 @@ function boundedQuantity(value, minimum, maximum) {
     : minimum;
 }
 function findProduct(id) {
-  return allProducts.find(function (product) {
-    return product.id === id;
-  });
+  return PetalStore.catalogProduct(id);
+}
+function productMediaAttribute(product) {
+  return product.imageId ? ' data-product-photo="' + escapeHTML(product.imageId) + '"' : "";
+}
+function loadProductPhotos(container) {
+  for (const image of container.querySelectorAll("img[data-product-photo]")) {
+    PetalStore.attachMedia(image, image.dataset.productPhoto);
+  }
 }
 function openDialog(id) {
   const dialog = document.getElementById(id);
@@ -114,7 +120,7 @@ function renderPublicReviews() {
     container.innerHTML = reviews
       .map(function (review) {
         return (
-          '<article class="review-card" data-review-id="' + escapeHTML(review.id || review.reference) +
+          '<article class="review-card" id="review-' + escapeHTML(review.reference) + '" data-review-id="' + escapeHTML(review.id || review.reference) +
           '"><div class="review-stars" aria-label="' +
           review.rating +
           ' out of 5 stars">' +
@@ -131,12 +137,18 @@ function renderPublicReviews() {
           "</time>" +
           (review.updatedAt ? '<time datetime="' + escapeHTML(review.updatedAt) + '">Updated ' +
             escapeHTML(new Date(review.updatedAt).toLocaleDateString("en-PH", { timeZone: "Asia/Manila", year: "numeric", month: "long", day: "numeric" })) + '</time>' : '') +
+          (review.reply ? '<aside class="shop-reply"><b>Reply from The Petal Haus</b><p>' + escapeHTML(review.reply) + '</p></aside>' : '') +
           (PetalStore.hasProfile() && review.owner === PetalStore.owner()
             ? '<button type="button" class="text-button review-edit-button" data-edit-review="' + escapeHTML(review.reference) + '">Edit review</button>' : '') +
           "</article>"
         );
       })
       .join("") + publicReviewTemplates.get(container);
+    for (const review of reviews) {
+      const media = PetalStore.reviewMedia(review.attachment);
+      const card = document.getElementById("review-" + review.reference);
+      if (media && card) card.querySelector(".review-stars + p").after(media);
+    }
   }
 }
 function initializeAnimations() {

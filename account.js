@@ -13,6 +13,15 @@ document.addEventListener("DOMContentLoaded", function () {
       link.href = link.getAttribute("href") + "?next=checkout";
   }
   const passwordInput = form.elements.namedItem("password");
+  const emailInput = form.elements.namedItem("email");
+  const adminEndpoint = form.dataset.adminLogin;
+  if (adminEndpoint) {
+    emailInput.type = "text";
+    emailInput.autocomplete = "username";
+    emailInput.autocapitalize = "none";
+    emailInput.spellcheck = false;
+    document.getElementById("account-identifier-label").textContent = "Email or admin username:";
+  }
   const confirmationInput = form.elements.namedItem("confirmPassword");
   for (const button of form.querySelectorAll("[data-password-toggle]")) {
     button.addEventListener("click", function () {
@@ -55,7 +64,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const questions = isSignup ? readSecurityQuestions(form) : null;
     if (!form.reportValidity() || !passwordsValid || (isSignup && !questions)) return;
     const status = document.getElementById("account-status");
-    const email = form.elements.namedItem("email").value.trim().toLowerCase();
+    const identifier = emailInput.value.trim();
+    if (adminEndpoint && !identifier) {
+      status.textContent = "Enter your email or admin username.";
+      emailInput.focus();
+      return;
+    }
+    const adminLogin = !!adminEndpoint && !identifier.includes("@");
+    const email = identifier.toLowerCase();
+    if (adminEndpoint && !adminLogin) {
+      const emailCheck = document.createElement("input");
+      emailCheck.type = "email";
+      emailCheck.value = email;
+      if (!emailCheck.checkValidity()) {
+        status.textContent = "Enter a valid email address.";
+        emailInput.focus();
+        return;
+      }
+    }
     const password = form.elements.namedItem("password").value;
     const firstName = form.elements.namedItem("fname")?.value.trim();
     const lastName = form.elements.namedItem("lname")?.value.trim() || "";
@@ -69,15 +95,24 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     const name = firstName ? firstName + " " + lastName : email.split("@")[0];
-    const profiles = PetalStore.read("petal-profiles", []);
-    const existing = profiles.find(profile => profile.email === email);
+    const existing = adminLogin ? null : PetalStore.read("petal-profiles", []).find(profile => profile.email === email);
     if (isSignup && existing) { status.textContent = "This email already has an account. Please sign in."; return; }
-    if (!isSignup && !existing) { status.textContent = "No account found with that email. Please sign up first."; return; }
+    if (!isSignup && !adminLogin && !existing) { status.textContent = "No account found with that email. Please sign up first."; return; }
     status.textContent = isSignup ? "Creating your account…" : "Signing in…";
     submitting = true;
     const submit = form.querySelector('[type="submit"]');
     submit.disabled = true;
     try {
+      if (adminLogin) {
+        const response = await fetch(adminEndpoint, {
+          method: "POST",
+          body: new URLSearchParams({ username: identifier, password }),
+        });
+        if (response.status === 204) location.href = "../admin/";
+        else if (response.status === 401) status.textContent = "The username or password is incorrect.";
+        else throw new Error("Could not sign in. Please try again.");
+        return;
+      }
       if (existing && !existing.passwordRecord) {
         status.textContent = "This account needs a password reset. Please contact us for help accessing your account.";
         return;

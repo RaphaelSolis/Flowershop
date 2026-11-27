@@ -7,14 +7,14 @@
     <title>The Petal Haus | Feedback</title>
     <link rel="stylesheet" href="styles.css?v=20261127-cream-backgrounds" />
     <link rel="stylesheet" href="design-spec.css?v=20261127-cream-backgrounds" />
-    <link rel="stylesheet" href="layout.css?v=20261127-footer-cod-background" />
+    <link rel="stylesheet" href="layout.css?v=20261127-admin-storefront" />
     <script src="settings.js?v=20261122-instructions-final" defer></script>
     <script src="products.js?v=20261124-outputs" defer></script>
-    <script src="store.js?v=20261124-outputs" defer></script>
-    <script src="app.js?v=20261125-header-final" defer></script>
-    <script src="shop.js?v=20261124-outputs" defer></script>
-    <script src="customize.js?v=20261122-instructions-final" defer></script>
-    <script src="pages.js?v=20261124-outputs" defer></script>
+    <script src="store.js?v=20261127-admin-storefront" defer></script>
+    <script src="app.js?v=20261127-admin-storefront" defer></script>
+    <script src="shop.js?v=20261127-admin-storefront" defer></script>
+    <script src="customize.js?v=20261127-admin-storefront" defer></script>
+    <script src="pages.js?v=20261127-admin-storefront" defer></script>
   </head>
   <body data-page="feedback">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -159,7 +159,13 @@
             <p class="review-helper" id="review-rating-value" aria-live="polite">Choose a star rating</p>
             <label>Your Review*<textarea name="message" id="review-message" placeholder="Tell us about your experience with the product…" maxlength="1000" aria-describedby="review-character-count" required></textarea></label>
             <p class="review-helper" id="review-character-count">0/1000 characters</p>
-            <p class="review-helper">Your review will appear with your order.</p>
+            <div class="review-attachment">
+              <label>Add a product photo or video (optional)
+                <input type="file" name="attachment" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" aria-describedby="review-attachment-help" />
+              </label>
+              <p id="review-attachment-help">One JPG, PNG, or WebP photo up to 10 MB, or one MP4 or WebM video up to 40 MB. The attachment appears with your review.</p>
+              <label class="checkbox-label" id="review-remove-attachment" hidden><input type="checkbox" name="removeAttachment" /> Remove current attachment</label>
+            </div>
             <label class="review-order-choice">Your order<select name="reference" id="review-order" required></select></label>
             <p id="review-eligibility" role="status"></p>
             <div id="review-account-actions" class="review-account-actions" hidden>
