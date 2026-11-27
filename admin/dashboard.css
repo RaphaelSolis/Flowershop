@@ -100,6 +100,9 @@ thead th { font-size: .9rem; background: var(--pink); }
 .stock-badge.depleted { color: #8d2247; background: #fbe0e4; }
 .edit-button, dialog .secondary { color: var(--green); background: transparent; }
 .edit-button:hover, dialog .secondary:hover { background: #ecefdc; }
+.product-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.delete-button { color: var(--error); background: transparent; border-color: currentColor; }
+.delete-button:hover { background: #fbe0e4; }
 .sr-only { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; }
 dialog { width: min(calc(100% - 24px), 500px); padding: clamp(16px, 4vw, 28px); border: 1px solid var(--line); border-radius: 18px; background: var(--cream); color: inherit; }
 dialog::backdrop { background: #23311d99; }

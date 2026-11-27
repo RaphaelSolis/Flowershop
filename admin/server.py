@@ -19,6 +19,7 @@ from urllib.parse import parse_qs, unquote, urlsplit
 ADMIN = Path(__file__).resolve().parent
 SHOP = ADMIN.parent
 CONFIG = Path.home() / ".local/share/flowershop-admin/credentials.json"
+TEAM_CONFIG = ADMIN / "team-login.json"
 USERNAME = "PetalFlower"
 LOGIN_PATH = "/Log-Sign/LoginPage.html"
 SESSION_COOKIE = "petal_admin"
@@ -46,8 +47,8 @@ def setup_credentials():
 
 
 class ShopServer(ThreadingHTTPServer):
-    def __init__(self, port):
-        data = json.loads(CONFIG.read_text())
+    def __init__(self, port, credentials=CONFIG):
+        data = json.loads(credentials.read_text())
         self.salt = bytes.fromhex(data["salt"])
         self.digest = bytes.fromhex(data["digest"])
         if len(self.salt) != 16 or len(self.digest) != 32:
@@ -200,14 +201,16 @@ class ShopHandler(SimpleHTTPRequestHandler):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--setup", action="store_true", help="Set the initial admin password.")
+    login = parser.add_mutually_exclusive_group()
+    login.add_argument("--setup", action="store_true", help="Set the initial admin password.")
+    login.add_argument("--team-login", action="store_true", help="Enable the temporary local login documented in admin/README.md.")
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
     try:
         if args.setup:
             setup_credentials()
             return
-        with ShopServer(args.port) as server:
+        with ShopServer(args.port, TEAM_CONFIG if args.team_login else CONFIG) as server:
             print(f"Admin dashboard: {server.origin}/admin/", flush=True)
             print(f"Storefront: {server.origin}/", flush=True)
             server.serve_forever()

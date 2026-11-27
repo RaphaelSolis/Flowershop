@@ -381,6 +381,7 @@ function refreshProductCards() {
   }
   for (const card of document.querySelectorAll("[data-product]")) {
     const product = findProduct(card.dataset.product);
+    card.hidden = !product;
     if (!product) continue;
     const caption = card.querySelector(".photo-caption");
     const display = PetalStore.productDetails(product);

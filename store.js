@@ -214,14 +214,20 @@ const PetalStore = (function () {
       price: Number.isFinite(edits?.price) && edits.price > 0 ? edits.price : product.price,
     };
   }
-  function addedProducts() {
+  function storedProducts() {
     return read("petal-catalog", []).map(product => ({ ...product, image: "assets/home/flower.png" }));
   }
+  function isProductDeleted(id) {
+    return read("petal-product-edits", {})[id]?.deleted === true;
+  }
+  function addedProducts() {
+    return storedProducts().filter(product => !isProductDeleted(product.id));
+  }
   function catalog() {
-    return [...allProducts, ...addedProducts()];
+    return [...allProducts.filter(product => !isProductDeleted(product.id)), ...addedProducts()];
   }
   function catalogProduct(id) {
-    return allProducts.find(product => product.id === id) || addedProducts().find(product => product.id === id);
+    return allProducts.find(product => product.id === id) || storedProducts().find(product => product.id === id);
   }
   function addProduct({ name, price, stock, section, imageId }) {
     if (typeof name !== "string" || !name.trim() || name.trim().length > 100)
@@ -435,10 +441,12 @@ const PetalStore = (function () {
     return match ? addonCounterparts[Number(match[1])] : null;
   }
   function stockLeft(productId) {
+    if (isProductDeleted(productId)) return 0;
     const stock = read("petal-stock", {});
     const counterpart = addonCounterpart(productId);
     const count = productStock(productId, stock);
-    return counterpart ? Math.min(count, productStock(counterpart, stock)) : count;
+    if (!counterpart) return count;
+    return isProductDeleted(counterpart) ? 0 : Math.min(count, productStock(counterpart, stock));
   }
   function available(productId) {
     return stockLeft(productId) > 0;
@@ -463,7 +471,8 @@ const PetalStore = (function () {
   }
   function insufficientStock(required, stock, changedLine) {
     const changed = changedLine ? stockRequirements([changedLine]) : required;
-    return Array.from(required).find(([id, count]) => changed.has(id) && count > productStock(id, stock));
+    return Array.from(required).find(([id, count]) =>
+      changed.has(id) && (isProductDeleted(id) || count > productStock(id, stock)));
   }
   function assertStock(items, changedLine) {
     const stock = read("petal-stock", {});
@@ -473,6 +482,7 @@ const PetalStore = (function () {
       const item = catalogProduct(id)
         || (addonCounterpart(id) ? addons[Number(id.slice(6))] : customFlowers.find((_, index) => customStem(index).id === id));
       const name = productDetails({ id, name: item?.name || "Custom bouquet" }).name;
+      if (isProductDeleted(id)) throw new Error(name + " is no longer available.");
       const left = productStock(id, stock);
       throw new Error(left ? name + " has only " + left + " left in stock." : name + " is out of stock.");
     }
@@ -525,7 +535,7 @@ const PetalStore = (function () {
   function syncNotifications() {
     notify(
       "New arrivals: " +
-        allProducts
+        catalog()
           .filter(function (product) {
             return product.section === "new-arrival";
           })
@@ -551,6 +561,7 @@ const PetalStore = (function () {
     }
   }
   function updateProduct(productId, edits) {
+    if (isProductDeleted(productId)) throw new Error("This product has been deleted.");
     const changes = {};
     if (edits.stock !== undefined) {
       if (!Number.isSafeInteger(edits.stock) || edits.stock < 0)
@@ -575,6 +586,13 @@ const PetalStore = (function () {
     if (edits.stock !== undefined) {
       try { syncNotifications(); } catch {}
     }
+  }
+  function deleteProduct(productId) {
+    if (!catalogProduct(productId) || isProductDeleted(productId))
+      throw new Error("This product is no longer in the catalog.");
+    const edits = read("petal-product-edits", {});
+    // Keep the original product available to existing cart and order records.
+    write("petal-product-edits", { ...edits, [productId]: { ...edits[productId], deleted: true } });
   }
   function withInventoryLock(action) {
     return navigator.locks ? navigator.locks.request("petal-inventory", action) : Promise.resolve().then(action);
@@ -837,6 +855,7 @@ const PetalStore = (function () {
     catalog,
     addedProducts,
     catalogProduct,
+    isProductDeleted,
     addProduct,
     saveMedia,
     deleteMedia,
@@ -868,6 +887,7 @@ const PetalStore = (function () {
     readNotifications,
     syncNotifications,
     updateProduct,
+    deleteProduct,
     withInventoryLock,
     allOrders,
     orders,

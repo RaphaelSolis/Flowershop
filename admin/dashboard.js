@@ -122,9 +122,12 @@ function renderInventory() {
   for (const product of PetalStore.addedProducts())
     inventory.set(product.id, { ...product, category: displayCategory(product.section) });
   const query = productFilter.value.trim().toLowerCase();
+  let productCount = 0;
   let outOfStock = 0;
   stockList.replaceChildren();
   for (const product of inventory.values()) {
+    if (PetalStore.isProductDeleted(product.id)) continue;
+    productCount++;
     const display = PetalStore.productDetails(product);
     const stock = PetalStore.stockLeft(product.id);
     if (!stock) outOfStock++;
@@ -151,17 +154,28 @@ function renderInventory() {
     badge.className = "stock-badge" + (stock === 0 ? " depleted" : stock <= 5 ? " low" : "");
     stockCell.append(badge);
     const actions = element("td");
+    const buttons = element("div");
+    buttons.className = "product-actions";
     const edit = element("button", "Edit");
     edit.type = "button";
     edit.className = "edit-button";
     edit.dataset.editProduct = product.id;
     edit.setAttribute("aria-label", "Edit " + display.name);
-    actions.append(edit);
+    buttons.append(edit);
+    if (product.section) {
+      const remove = element("button", "Delete");
+      remove.type = "button";
+      remove.className = "delete-button";
+      remove.dataset.deleteProduct = product.id;
+      remove.setAttribute("aria-label", "Delete " + display.name);
+      buttons.append(remove);
+    }
+    actions.append(buttons);
     row.append(name, element("td", display.price === undefined ? "Varies" : money.format(display.price)), stockCell, actions);
     stockList.append(row);
   }
   document.getElementById("out-of-stock-count").textContent = outOfStock;
-  document.getElementById("product-count").textContent = inventory.size;
+  document.getElementById("product-count").textContent = productCount;
   document.getElementById("stock-empty").hidden = !!stockList.childElementCount;
 }
 
@@ -310,9 +324,29 @@ function openEditor(product) {
   document.getElementById("editor-error").textContent = "";
   editor.showModal();
 }
-stockList.addEventListener("click", event => {
-  const product = inventory.get(event.target.closest("[data-edit-product]")?.dataset.editProduct);
-  if (product) openEditor(product);
+stockList.addEventListener("click", async event => {
+  const button = event.target.closest("button");
+  const id = button?.dataset.deleteProduct || button?.dataset.editProduct;
+  const product = inventory.get(id);
+  if (!product) return;
+  if (!button.dataset.deleteProduct) {
+    openEditor(product);
+    return;
+  }
+  const { name } = PetalStore.productDetails(product);
+  if (!window.confirm('Delete "' + name + '" from the storefront?')) return;
+  button.disabled = true;
+  try {
+    if (!await verifySession()) return;
+    await PetalStore.withInventoryLock(() => PetalStore.deleteProduct(id));
+    renderInventory();
+    productFilter.focus();
+    announce(name + " deleted from the storefront.");
+  } catch (error) {
+    announce(error.message, true);
+  } finally {
+    button.disabled = false;
+  }
 });
 addProductButton.addEventListener("click", () => openEditor(null));
 document.getElementById("close-editor").addEventListener("click", () => editor.close());

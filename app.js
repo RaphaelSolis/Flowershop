@@ -32,7 +32,7 @@ function boundedQuantity(value, minimum, maximum) {
     : minimum;
 }
 function findProduct(id) {
-  return PetalStore.catalogProduct(id);
+  return PetalStore.isProductDeleted(id) ? undefined : PetalStore.catalogProduct(id);
 }
 function productMediaAttribute(product) {
   return product.imageId ? ' data-product-photo="' + escapeHTML(product.imageId) + '"' : "";

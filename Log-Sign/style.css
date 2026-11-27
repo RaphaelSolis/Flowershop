@@ -3,8 +3,12 @@
   src: url("garamond.ttf");
 }
 
+:root {
+  --account-background: #fffde9;
+}
+
 body {
-  background-color: #fffde9;
+  background-color: var(--account-background);
   margin: 0px;
   font-family: "GaramondCustom", Garamond, serif;
 }
@@ -39,7 +43,7 @@ body {
   width: 424px;
   height: 534px;
   padding: 20px;
-  background-color: white;
+  background-color: var(--account-background);
   border: 3px solid #4b7733;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;

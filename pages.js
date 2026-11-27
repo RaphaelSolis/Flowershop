@@ -49,7 +49,8 @@ function renderCartPage() {
       '<div class="cart-product"><div class="cart-product-photo"><img src="' + escapeHTML(productPhotoURL(line.image)) + '" alt="' + escapeHTML(line.name) + '"' + productMediaAttribute(line) + '></div>' +
       '<strong class="cart-product-name">' + escapeHTML(line.name) + '</strong>' +
       '<p class="cart-product-details">' + escapeHTML(line.details || "") + '</p>' +
-      (!PetalStore.lineAvailable(line) ? '<p class="form-error">The selected quantity exceeds available stock.</p>' : '') +
+      (PetalStore.isProductDeleted(line.productId) ? '<p class="form-error">This product is no longer available. Remove it to continue.</p>' :
+        !PetalStore.lineAvailable(line) ? '<p class="form-error">The selected quantity exceeds available stock.</p>' : '') +
       (findProduct(line.productId) || line.productId === "custom-bouquet" ? '<button type="button" class="text-button" data-edit-options="' + escapeHTML(line.lineId) + '">Edit options</button>' : '') + '</div>' +
       '<div class="cart-quantity"><button type="button" data-cart-adjust="-1" aria-label="Remove one ' + escapeHTML(line.name) + '">−</button>' +
       '<input type="number" min="1" max="99" step="1" value="' + line.quantity + '" data-line-quantity aria-label="Quantity for ' + escapeHTML(line.name) + '">' +
