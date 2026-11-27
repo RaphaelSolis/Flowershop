@@ -1,5 +1,14 @@
 {
+  "functions": {
+    "api/admin.js": { "includeFiles": "admin/dashboard.{html,js}" }
+  },
   "routes": [
+    { "src": "/admin/?", "dest": "/api/admin?action=page" },
+    { "src": "/admin/login", "dest": "/api/admin?action=login" },
+    { "src": "/admin/logout", "dest": "/api/admin?action=logout" },
+    { "src": "/admin/session", "dest": "/api/admin?action=session" },
+    { "src": "/admin/dashboard\\.js", "dest": "/api/admin?action=script" },
+    { "src": "/admin/dashboard\\.css", "dest": "/admin/dashboard.css" },
     { "src": "/admin(/.*)?", "status": 404 },
     { "handle": "filesystem" }
   ]
