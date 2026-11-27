@@ -245,7 +245,7 @@ function receiptMarkup(order) {
     escapeHTML(order.status) +
     "</strong></p><p>Payment: " +
     paymentDescription +
-    (order.payment.mode === "demo" ? " · <strong>Unpaid</strong>" : "") +
+    (order.payment.mode === "demo" ? " · <strong>Paid</strong>" : "") +
     "</p></div><table><thead><tr><th>Item</th><th>Qty</th><th>Unit price</th><th>Total</th></tr></thead><tbody>" +
     order.items
       .map(function (line) {
